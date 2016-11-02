@@ -1,4 +1,3 @@
-
 // Convert rgb to hex for CSS
 
 var rgbToCssColor_ = function(red, green, blue) {

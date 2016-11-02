@@ -63,63 +63,81 @@ common_colors = get_common_colors(image) # add second argument for how many colo
 
 
 # Remove this once there is real data
-common_colors = [
+demo_colors = [
               (32212, (312, 0, 9)), (28376, (35, 0, 10)), (19168, (23, 47, 16)), 
               (18000, (27, 51, 15)), (15429, (230, 42, 18)), (14265, (120, 0, 14)), 
               (12679, (101, 0, 11)), (12460, (79, 45, 17)), (12452, (155, 40, 19)), 
-              (11642, (0, 0, 8)), (11571, (0, 0, 13)), (10700, (155, 54, 14)), 
+              (11642, (9, 0, 8)), (11571, (2, 0, 13)), (10700, (155, 54, 14)), 
               (10261, (154, 78, 26)), (9488, (154, 75, 27)), (9328, (0, 0, 12)), 
               (9030, (60, 69, 11)), (8945, (155, 38, 20)), (8812, (165, 81, 25)), 
               (8606, (0, 0, 16)), (8034, (155, 63, 12)), (7986, (154, 72, 28)), 
               (7855, (155, 58, 13)), (7756, (155, 36, 21)), (7406, (155, 34, 22)), 
-              (7313, (154, 65, 31)), (7136, (154, 85, 24)), (7066, (0, 0, 15)), 
+              (7313, (154, 65, 31)), (7136, (154, 85, 24)), (7066, (7, 0, 15)), 
               (6899, (154, 68, 30)), (6827, (154, 70, 29)), (6777, (106, 34, 15))
               ]
 
 
-
-def fill_color_bins(image_tuples):
+def create_color_bins():
     """ """
+    color_bins = []
 
     # list of bins, one for each 10 degrees in Hue
-    color_bins = [[]]*36
+    for _ in xrange(36):
+        color_bins.append([])
+
+    return color_bins
+
+color_bins = create_color_bins()
+
+
+def fill_color_bins(color_bins, image_tuples):
+    """ """
+    print 'empty color_bins', color_bins
+
+    print 'image_tuples: ', len(image_tuples), image_tuples
     
     for raw_tuple in image_tuples:
+        print
+        print 'raw_tuple', raw_tuple
+
         # Round hue down to the nearest 10
         adjusted_hue = round_down(raw_tuple[1][0])
+        print 'adjusted_hue', adjusted_hue
 
         # Find the bucket index: 
         bucket_idx = int(math.floor(adjusted_hue/10))
+        print 'bucket_idx', bucket_idx
 
         # Add the raw_tuple (format: (32212, (312, 0, 9)) ) to the appropriate bucket
         color_bins[bucket_idx].append(raw_tuple)
+        print 'color_bins[bucket_idx]', color_bins[bucket_idx]
 
 
-    print '\n color_bins after adding. Total bins: ', len(color_bins), color_bins
-    print '\n color_bins[0]: ', color_bins[0]
+
+    # print '\n color_bins after adding. Total bins: ', len(color_bins), color_bins
     return color_bins
 
 
 
-color_bins = fill_color_bins(common_colors)
-print '\n color_bins', color_bins
+color_bins = fill_color_bins(color_bins, demo_colors)
+print '\n color_bins[0]', color_bins[0]
 
 
-def tally_color_bins(color_bins):
-    """ """
+# def tally_color_bins(color_bins):
+#     """ """
 
-    win_bins = []
+#     win_bins = []
 
-    for bin in color_bins:
-        bin_sum = sum([tup[0] for tup in bin])
+#     for bin in color_bins:
+#         bin_sum = sum([tup[0] for tup in bin])
 
-        win_bins.append((bin_sum, bin[1]))
+#         win_bins.append((bin_sum, bin[1]))
 
-    print '\n win_bins', win_bins
-    return win_bins
+#     print '\n win_bins', win_bins[0]
+#     return win_bins
 
 
-tally_color_bins(color_bins)
+# tally_color_bins(color_bins)
 
 
 
