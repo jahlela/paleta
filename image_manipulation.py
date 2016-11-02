@@ -1,7 +1,10 @@
 
 from PIL import Image
+from colour import Color
+
 import os.path
 import math
+
 
 ################### HELPER FUNCTIONS ###################
 
@@ -18,10 +21,11 @@ def round_down(num, divisor=10):
 def get_image_object(file_path):
     """ Creates Image object with HSV color profile """
 
-    # Prepend os file path to image 
+    # Prepend os file path to image (helps prevent )
     script_dir = os.path.dirname(os.path.abspath(__file__))
     os_file_path = os.path.join(script_dir, file_path)
 
+    # Create image object using HSV 
     image = Image.open(os_file_path).convert('HSV')
 
     return image
@@ -29,16 +33,20 @@ def get_image_object(file_path):
 # Set test image
 image = get_image_object('img/sunset.jpg')
 
-
-# default to 100 most common colors
 def get_common_colors(image, num_colors=1000):
-    """ """
+    """ Returns a list of tuples with most common colors and their pixel count. 
+
+        Tuple format:  (count, (Hue, Saturation, Value))
+        Tuple example: (8034, (155, 63, 12))
+
+        Length of list is num_colors (optional, defaults to 1000)
+     """
     
     # Width and height for .getcolors()
     w, h = image.size
 
     # Returns a list of unsorted tuples
-    # Format: (count, (H, S, V)) | Ex: (8034, (155, 63, 12))
+    # http://pillow.readthedocs.io/en/3.4.x/reference/Image.html?highlight=histogram#PIL.Image.Image.getcolors
     get_colors = image.getcolors(w * h)
 
     # Order colors from most to least common
@@ -47,65 +55,73 @@ def get_common_colors(image, num_colors=1000):
     # Return most common colors
     common_colors = get_colors[:num_colors]
 
-    return common_colors # List of raw data tuples. Length of list is num_colors.
+    # Return list of raw data tuples. Length of list is num_colors.
+    return common_colors 
 
 
 common_colors = get_common_colors(image) # add second argument for how many colors
 
-print '#############################'
-
-# Get raw data
-
-# Loop through raw --> array of lists for each bucket_index w/ list of tuples, no total
-
-# Loop through that: for each index, sort tuples and calc total 
-# Create new data struct that is a list of tuples with total_pixels and list of raw data tuples 
-
-# Sort list of tuples by total_pixels and 5 top buckets
-
-# Loop through each bucket and find most common value in that bucket 
-
-
-def create_color_bins():
-    """ """
-    color_bins = []
-
-    for _ in xrange(36):
-        color_bins.append([])
-
-    return color_bins
-
-
-color_bins = create_color_bins()
 
 # Remove this once there is real data
-top_colors = [(32212, (0, 0, 9)), (28376, (35, 0, 10)), (19168, (23, 47, 16)), (18000, (27, 51, 15)), (15429, (230, 42, 18)), (14265, (120, 0, 14)), (12679, (101, 0, 11)), (12460, (79, 45, 17)), (12452, (155, 40, 19)), (11642, (0, 0, 8)), (11571, (0, 0, 13)), (10700, (155, 54, 14)), (10261, (154, 78, 26)), (9488, (154, 75, 27)), (9328, (0, 0, 12)), (9030, (60, 69, 11)), (8945, (155, 38, 20)), (8812, (165, 81, 25)), (8606, (0, 0, 16)), (8034, (155, 63, 12)), (7986, (154, 72, 28)), (7855, (155, 58, 13)), (7756, (155, 36, 21)), (7406, (155, 34, 22)), (7313, (154, 65, 31)), (7136, (154, 85, 24)), (7066, (0, 0, 15)), (6899, (154, 68, 30)), (6827, (154, 70, 29)), (6777, (106, 34, 15))]
+common_colors = [
+              (32212, (312, 0, 9)), (28376, (35, 0, 10)), (19168, (23, 47, 16)), 
+              (18000, (27, 51, 15)), (15429, (230, 42, 18)), (14265, (120, 0, 14)), 
+              (12679, (101, 0, 11)), (12460, (79, 45, 17)), (12452, (155, 40, 19)), 
+              (11642, (0, 0, 8)), (11571, (0, 0, 13)), (10700, (155, 54, 14)), 
+              (10261, (154, 78, 26)), (9488, (154, 75, 27)), (9328, (0, 0, 12)), 
+              (9030, (60, 69, 11)), (8945, (155, 38, 20)), (8812, (165, 81, 25)), 
+              (8606, (0, 0, 16)), (8034, (155, 63, 12)), (7986, (154, 72, 28)), 
+              (7855, (155, 58, 13)), (7756, (155, 36, 21)), (7406, (155, 34, 22)), 
+              (7313, (154, 65, 31)), (7136, (154, 85, 24)), (7066, (0, 0, 15)), 
+              (6899, (154, 68, 30)), (6827, (154, 70, 29)), (6777, (106, 34, 15))
+              ]
 
 
 
-def fill_color_bins(color_bins, image_tuples):
+def fill_color_bins(image_tuples):
     """ """
+
+    # list of bins, one for each 10 degrees in Hue
+    color_bins = [[]]*36
     
     for raw_tuple in image_tuples:
         # Round hue down to the nearest 10
         adjusted_hue = round_down(raw_tuple[1][0])
 
-        # Find the bucket: 
+        # Find the bucket index: 
         bucket_idx = int(math.floor(adjusted_hue/10))
 
+        # Add the raw_tuple (format: (32212, (312, 0, 9)) ) to the appropriate bucket
         color_bins[bucket_idx].append(raw_tuple)
 
-    print 'color_bins after adding', len(color_bins), color_bins
+
+    print '\n color_bins after adding. Total bins: ', len(color_bins), color_bins
+    print '\n color_bins[0]: ', color_bins[0]
     return color_bins
 
 
 
-answer = fill_color_bins(color_bins, top_colors)
+color_bins = fill_color_bins(common_colors)
+print '\n color_bins', color_bins
 
 
 def tally_color_bins(color_bins):
     """ """
-    pass
+
+    win_bins = []
+
+    for bin in color_bins:
+        bin_sum = sum([tup[0] for tup in bin])
+
+        win_bins.append((bin_sum, bin[1]))
+
+    print '\n win_bins', win_bins
+    return win_bins
+
+
+tally_color_bins(color_bins)
+
+
 
 # [
 #     # Implied index based on hue
