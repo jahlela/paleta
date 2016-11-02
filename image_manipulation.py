@@ -9,11 +9,11 @@ import math
 # Ex. round_down(156) --> 150
 # Ex. round_down(156, 5) --> 155
 def round_down(num, divisor=10):
-    return int(num - (num % divisor))
+    return num - (num % divisor)
 
 
 def get_bucket_index(hue):
-    return math.floor(hue/10)
+    return int(math.floor(hue/10))
 
 
 
@@ -29,11 +29,12 @@ def get_image_object(file_path):
 
     return image
 
-image = get_image_object('img/jellyfish_color.jpg')
+# Set test image
+image = get_image_object('img/sunset.jpg')
 
 
 # default to 100 most common colors
-def get_top_colors_raw(image, num_colors=100):
+def get_top_colors_raw(image, num_colors=1000):
     
     # Get width and height for .getcolors()
     w, h = image.size
@@ -56,9 +57,6 @@ top_colors = get_top_colors_raw(image)
 print '#############################'
 # print 'top_colors: ', len(top_colors), top_colors
 
-
-color = (8034, (155, 63, 12))
-adjusted_hue = round_down(color[1][0]) 
 
 # Get raw data
 
@@ -91,7 +89,9 @@ image_tuples = [(32212, (0, 0, 9)), (28376, (0, 0, 10)), (19168, (155, 47, 16)),
 def fill_color_bins(color_bins, image_tuples):
     
     for raw_tuple in image_tuples:
-        adjusted_hue = round_down(color[1][0])
+        print 'raw_tuple', raw_tuple
+        adjusted_hue = round_down(raw_tuple[1][0])
+        print 'adjusted_hue', adjusted_hue
 
 ##############################################
 # THIS IS WEIRD
