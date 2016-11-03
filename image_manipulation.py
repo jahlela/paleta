@@ -62,22 +62,7 @@ def get_common_colors(image, num_colors=1000):
     return common_colors 
 
 
-common_colors = get_common_colors(image) # add second argument for how many colors
-
-print 'common_colors from real image, limit 100', common_colors[-100:]
-
-# common_colors = [
-#               (32212, (312, 0, 9)), (28376, (35, 0, 10)), (19168, (23, 47, 16)), 
-#               (18000, (27, 51, 15)), (15429, (230, 42, 18)), (14265, (120, 0, 14)), 
-#               (12679, (101, 0, 11)), (12460, (79, 45, 17)), (12452, (155, 40, 19)), 
-#               (11642, (9, 0, 8)), (11571, (2, 0, 13)), (10700, (155, 54, 14)), 
-#               (10261, (154, 78, 26)), (9488, (154, 75, 27)), (9328, (0, 0, 12)), 
-#               (9030, (60, 69, 11)), (8945, (155, 38, 20)), (8812, (165, 81, 25)), 
-#               (8606, (0, 0, 16)), (8034, (155, 63, 12)), (7986, (154, 72, 28)), 
-#               (7855, (155, 58, 13)), (7756, (155, 36, 21)), (7406, (155, 34, 22)), 
-#               (7313, (154, 65, 31)), (7136, (154, 85, 24)), (7066, (7, 0, 15)), 
-#               (6899, (154, 68, 30)), (6827, (154, 70, 29)), (6777, (106, 34, 15))
-#               ]
+common_colors = get_common_colors(image, 2000) # add second argument for how many colors
 
 def create_color_bins():
     """ Create an empty list with 36 empty lists that will represent the 36 possible
@@ -156,10 +141,12 @@ def get_display_colors(top_colors, color_limit):
     """ Takes a list of tuples of format (count, (Hue, Saturation, Value)) 
         and returns a list of hex colors. Length is color_limit. """
 
-    print '\n top_colors', top_colors
-
+    # pick the n most common colors, defined by user with color_limit
+    print 'top_colors', top_colors
     limited_colors = top_colors[:color_limit]
-    display_colors = []
+
+    # This will be the final output of hex values for dominant colors
+    palette = []
 
     # Convert each color from HSV --> RGB --> hex because strings are better
     for color_tuple in limited_colors:
@@ -179,19 +166,20 @@ def get_display_colors(top_colors, color_limit):
         else:
             # unpack to individual values for hex transformation
             red, green, blue = rgb_color
+
+            # 
             # convert from RBG --> hex (default for Colour object)
             hex_color = Color(rgb=(red, green, blue)).get_hex()
-    
-        print 'hex_color', hex_color
-
-        display_colors.append(hex_color)
+        
+        # Add each hex color to final list
+        palette.append(hex_color)
             
+    # These will go on the site!
+    return palette
 
-    return display_colors
 
-
-display_colors = get_display_colors(top_colors, 5)
-print '\n display_colors', display_colors
+palette = get_display_colors(top_colors, 10)
+print '\n palette', palette
 
 
 
