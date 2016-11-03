@@ -4,6 +4,7 @@ from colour import Color
 
 import os.path
 import math
+import colorsys
 
 
 ################### HELPER FUNCTIONS ###################
@@ -131,7 +132,24 @@ def tally_color_bins(color_bins):
 
 
 top_colors = tally_color_bins(color_bins)
+print 'top_colors', top_colors
 
+
+def get_colors_for_display(top_colors, color_count_limit, color_type):
+    """  """
+
+    display_colors = top_colors[:color_count_limit-1]
+
+    # I know, sucks to use two libraries for color conversions. 
+    for color in display_colors:
+        if color_type == 'rgb':
+            # Use colorsys to convert HSV --> RGB
+            color = colorsys.hsv_to_rgb(color)
+        elif color_type  == 'hex':
+            # Create Colour library object
+            color = Color(color)
+            # Use Colour to convert RGB --> hex
+            color.hex
 
 
 
