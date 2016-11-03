@@ -10,6 +10,8 @@ Colour (https://pypi.python.org/pypi/colour)
 from colour import Color
 
 
+# http://pillow.readthedocs.io/en/3.4.x/reference/Image.html?highlight=histogram#PIL.Image.Image.getcolors
+
 
 
 THANKS TO
