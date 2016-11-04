@@ -1,17 +1,35 @@
 {% extends 'base.html' %}
 
+<!-- This is the body content -->
 {% block content %}
 
-<h1>Welcome to Paleta</h1>
+<section id="welcome-section">
+    <div class="center">
+        <h1>Welcome to Paleta <img class="logo" src="/static/img/paleta.png" alt="logo" /></h1> 
+
+        <h3><i>Your friendly neighborhood palette generator</i></h3>
+    </div>
+</section>
+
+<section id="main-palette-section">
+
+    <figure class="palette-seed-figure">
+        <img src="/static/img/caterpillar.png" alt="The Caterpillar">
+    </figure>
+
+    <div class="sample-palette" style="background-color: #ab7e61;"></div>
+    <div class="sample-palette" style="background-color: #ebd383;"></div>
+    <div class="sample-palette" style="background-color: #c2431c;"></div>
+    <div class="sample-palette" style="background-color: #fef8ef;"></div>
+    <div class="sample-palette" style="background-color: #ede4b5;"></div>
+
+
+</section>
 
 
 
 
 
-<h2>Movies</h2>
-<p><a href="/movies">View all movies</a></p>
 
-<h2>Users</h2>
-<p><a href="/users">View all users</a></p>
 
 {% endblock %}

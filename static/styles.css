@@ -1,3 +1,4 @@
+/* *********** Universal Elements *********** */
 
 html {
     padding: 20px;
@@ -19,6 +20,37 @@ a:hover {
 h1, h2, h3, h4, h5, h6 {
     color: #00acc1;
 }
+
+h1 img.logo {
+    height: 50px;
+}
+
+.h1, h1 {
+    font-size: 50px;
+}
+
+/* *********** Specialized Elements *********** */
+
+#welcome-section .center {
+    margin-left: 30%;
+    width: 50%;
+}
+
+.palette-seed-figure img {
+    margin-left: 10%;
+    height: 250px;
+}
+
+div.sample-palette {
+    display: inline-block;
+    margin: 1%;
+    border: 2px solid black; 
+    height: 50px; 
+    width: 50px; 
+}
+
+/* *********** Interactive Elements *********** */
+
 
 .alert {
 

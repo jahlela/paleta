@@ -19,26 +19,37 @@ def round_down(num, divisor=10):
     """ Round down to nearest divisor (default 10) """
     return num - (num % divisor)
 
+def define_os_path():
+    # Prepend os file path to image 
+    os_path = os.path.dirname(os.path.abspath(__file__))
+    return os_path
+
+
 
 ################### Image Analysis ###################
 
-def get_image_object(file_path):
-    """ Creates Image object with HSV color profile """
+def get_image_object(URL, os_boolean):
+    """ Takes a URL string and a boolean for whether the image is stored on the 
+        local machine, and returns an Image object with HSV color profile. """
 
-    # Prepend os file path to image (helps prevent )
-    script_dir = os.path.dirname(os.path.abspath(__file__))
-    os_file_path = os.path.join(script_dir, file_path)
-
-    # Create image object using HSV 
-    image = Image.open(os_file_path).convert('HSV')
-
+    if os_boolean:
+        os_path = define_os_path()
+        os_file_path = os.path.join(os_path, URL)
+        # Create image object using HSV 
+        image = Image.open(os_file_path).convert('HSV')
+    else:
+        # Create image object using HSV 
+        image = Image.open(URL).convert('HSV')
+    
     return image
 
-# Set test image
-image = get_image_object('img/octopus.png')
+
+
+
 
 def get_common_colors(image, num_colors=1000):
-    """ Returns a list of tuples with most common colors and their pixel count. 
+    """ Takes an Image object and an integer for how many colors to sample, and 
+        Returns a list of tuples with most common colors and their pixel count. 
 
         Tuple format:  (count, (Hue, Saturation, Value))
         Tuple example: (8034, (155, 63, 12))
@@ -62,7 +73,7 @@ def get_common_colors(image, num_colors=1000):
     return common_colors 
 
 
-common_colors = get_common_colors(image, 2000) # add second argument for how many colors
+
 
 def create_color_bins():
     """ Create an empty list with 36 empty lists that will represent the 36 possible
@@ -76,8 +87,6 @@ def create_color_bins():
 
     return color_bins
 
-# Create color_bins
-color_bins = create_color_bins()
 
 
 def fill_color_bins(color_bins, image_tuples):
@@ -94,21 +103,18 @@ def fill_color_bins(color_bins, image_tuples):
         # Find the bucket index: 
         bucket_idx = int(math.floor(adjusted_hue/10))
 
-        # Add the raw_tuple (format: (32212, (312, 0, 9)) ) to the appropriate bucket
+        # Add the raw_tuple of format: (32212, (312, 0, 9)) to its bucket
         color_bins[bucket_idx].append(raw_tuple)
 
-    # print '\n color_bins after adding. Total bins: ', len(color_bins), color_bins
     return color_bins
 
-
-color_bins = fill_color_bins(color_bins, common_colors)
 
 
 def tally_color_bins(color_bins):
     """ Takes in a list of lists of tuples with pixel count and HSV values for 36 bins.
         Returns a list of tuples with the pixel sum and most common color from each bin. """
 
-    # Empty list that will hold each winning color 
+    # Empty list that will hold the winning color from each bin
     win_bins = []
 
     # Loop through each hue bin (which may be empty or have many tuples)
@@ -135,18 +141,17 @@ def tally_color_bins(color_bins):
     return win_bins
 
 
-top_colors = tally_color_bins(color_bins)
+
 
 def get_display_colors(top_colors, color_limit):
     """ Takes a list of tuples of format (count, (Hue, Saturation, Value)) 
         and returns a list of hex colors. Length is color_limit. """
 
     # pick the n most common colors, defined by user with color_limit
-    print 'top_colors', top_colors
     limited_colors = top_colors[:color_limit]
 
     # This will be the final output of hex values for dominant colors
-    palette = []
+    display_colors = []
 
     # Convert each color from HSV --> RGB --> hex because strings are better
     for color_tuple in limited_colors:
@@ -167,21 +172,48 @@ def get_display_colors(top_colors, color_limit):
             # unpack to individual values for hex transformation
             red, green, blue = rgb_color
 
-            # 
-            # convert from RBG --> hex (default for Colour object)
+            # Create Colour object and convert from RBG --> hex
             hex_color = Color(rgb=(red, green, blue)).get_hex()
         
         # Add each hex color to final list
-        palette.append(hex_color)
+        display_colors.append(hex_color)
             
     # These will go on the site!
+    return display_colors
+
+
+
+def get_palette(URL, os_boolean, sample_limit, palette_limit):
+    """ Takes in a string URL of an image, a boolean for whether the image is 
+        stored on the local machine, two integers for limits on sample size and 
+        palette size, and returns a list of hex strings with the image palette. """
+
+    # Set test image
+    image = get_image_object(URL, os_boolean)
+    # image = get_image_object('static/img/caterpillar.png')
+
+    # Add optional second argument for how many colors to sample 
+    # (500+ is good, though more than 2000 sees little change in output)
+    common_colors = get_common_colors(image, sample_limit) 
+
+    # Create 36 color_bins (one for each 10 degrees of hue)
+    color_bins = create_color_bins()
+
+    # Fill each of the 36 color_bins with the raw tuples 
+    color_bins_filled = fill_color_bins(color_bins, common_colors)
+
+    # Get top color from each bin in HSV format
+    top_colors = tally_color_bins(color_bins_filled)
+
+    # Get final palette in hex with user-defined limit
+    palette = get_display_colors(top_colors, palette_limit)
+    print '\n palette', palette
+
+
     return palette
 
 
-palette = get_display_colors(top_colors, 10)
-print '\n palette', palette
-
-
+get_palette('static/img/caterpillar.png', True, 2000, 5)
 
 
 
