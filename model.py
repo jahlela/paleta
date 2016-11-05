@@ -1,12 +1,8 @@
 
 
-"""Models and database functions for paleta db."""
+""" Models and database functions for paleta db. """
 
 from flask_sqlalchemy import SQLAlchemy
-
-# Here's where we create the idea of our database. We're getting this through
-# the Flask-SQLAlchemy library. On db, we can find the `session`
-# object, where we do most of our interactions (like committing, etc.)
 
 db = SQLAlchemy()
 
@@ -15,46 +11,59 @@ db = SQLAlchemy()
 
 
 class User(db.User):
-    """User details."""
+    """ User details """
 
     __tablename__ = "users"
     
     user_id = db.Column(db.Integer, primary_key=True, nullable = False,
-                               autoincrement = True)
+                                    autoincrement = True)
     first_name = db.Column(db.String(30), nullable = False))
     last_name = db.Column(db.String(30), nullable = False)
     email = db.Column(db.String(50), nullable = False, unique=True)
     password = sa.Column(PasswordType(schemes=['pbkdf2_sha512','md5_crypt'],
                                       deprecated=['md5_crypt']))
 
+    # There is a relationship defined between User and UserImage in UserImage.
+    # Backref to UserImage is "userImages"
+
 class Image(db.Image):
-    """Image details."""
+    """ Image details """
 
     __tablename__ = "images"
     
     image_id = db.Column(db.Integer, primary_key=True, nullable = False,
-                               autoincrement = True)
+                                     autoincrement = True)
+    file_name = db.Column(db.String(30), nullable = False)
+    color_1 = user_id = db.Column(db.Integer)
+    color_2 = user_id = db.Column(db.Integer)
+    color_3 = user_id = db.Column(db.Integer)
+    color_4 = user_id = db.Column(db.Integer)
+    color_5 = user_id = db.Column(db.Integer)
 
+    # There is a relationship defined between Image and UserImage in UserImage.
+    # Backref to UserImage is "userImages"
 
     
 class UserImage(db.UserImage):
-    """Details about a user's favorite images."""
+    """ All records of a user favoriting an image """
 
     __tablename__ = "userImages"
     
     user_image_id = db.Column(db.Integer, primary_key=True, nullable = False,
-                               autoincrement = True)
+                                          autoincrement = True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=False)
+    fav_image = db.Column(db.Integer, db.ForeignKey('images.image_id'), nullable=False)
 
+    # Define relationship to user
+    user = db.relationship("User", backref=db.backref("userImages", order_by=user_image_id))
+
+    # Define relationship to user
+    image = db.relationship("Image", backref=db.backref("userImages", order_by=user_image_id))
 
 
 
 ##############################################################################
 # Helper functions
-
-def init_app():
-    # So that we can use Flask-SQLAlchemy, we'll make a Flask app
-    from flask import Flask
-    app = Flask(__name__)
 
     connect_to_db(app)
     print "Connected to DB."
