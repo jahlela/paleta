@@ -48,10 +48,10 @@ def analyze_photo(URL, color_limit):
     """  """
 
     # Grab the image from a URL
-    image_request = requests.get(URL)
+    image_response = requests.get(URL)
 
     # Create a hexidecimal hash of the image data string for a unique filename
-    file_hash = hex(hash(image_request.content))
+    file_hash = hex(hash(image_response.content))
 
     # Sometimes there is a dash at the beginning -- not great for a file name
     # Replace the '-' with a 1 to maintain uniqueness
@@ -62,7 +62,7 @@ def analyze_photo(URL, color_limit):
         file_hash_name = hex(hash(r.content))[1:] + '.png'
 
     with open(file_hash_name,'w') as new_image_file:
-        new_image_file.write(image_request.content)
+        new_image_file.write(image_response.content)
 
 
 

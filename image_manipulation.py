@@ -66,11 +66,18 @@ def get_common_colors(image, num_colors=1000):
     # Order colors from most to least common
     get_colors.sort(reverse=True)
 
+
+    total_pixels = 0
+    for tuple in get_colors:
+        total_pixels += tuple[0]
+
+    print 'total_pixels', total_pixels
+
     # Return most common colors
     common_colors = get_colors[:num_colors]
 
     # Return list of raw data tuples. Length of list is num_colors.
-    return common_colors 
+    return [common_colors, total_pixels]
 
 
 
@@ -143,7 +150,7 @@ def tally_color_bins(color_bins):
 
 
 
-def get_display_colors(top_colors, color_limit):
+def get_display_colors(top_colors, color_limit, total_pixels):
     """ Takes a list of tuples of format (count, (Hue, Saturation, Value)) 
         and returns a list of hex colors. Length is color_limit. """
 
@@ -174,6 +181,18 @@ def get_display_colors(top_colors, color_limit):
 
             # Create Colour object and convert from RBG --> hex
             hex_color = Color(rgb=(red, green, blue)).get_hex()
+
+
+
+        # Get pixel count from individual color
+        pixel_count = color_tuple[0]
+        print
+        print 'get_display_colors'
+        print 'pixel_count', pixel_count
+        print 'total_pixels', total_pixels
+
+        # Here is the percent of each color, in case anyone is interested later
+        percent_color = int((float(pixel_count)/total_pixels)*100)
         
         # Add each hex color to final list
         display_colors.append(hex_color)
@@ -194,7 +213,7 @@ def get_palette(URL, os_boolean, sample_limit, palette_limit):
 
     # Add optional second argument for how many colors to sample 
     # (500+ is good, though more than 2000 sees little change in output)
-    common_colors = get_common_colors(image, sample_limit) 
+    common_colors, total_pixels = get_common_colors(image, sample_limit)
 
     # Create 36 color_bins (one for each 10 degrees of hue)
     color_bins = create_color_bins()
@@ -206,7 +225,7 @@ def get_palette(URL, os_boolean, sample_limit, palette_limit):
     top_colors = tally_color_bins(color_bins_filled)
 
     # Get final palette in hex with user-defined limit
-    palette = get_display_colors(top_colors, palette_limit)
+    palette = get_display_colors(top_colors, palette_limit, total_pixels)
     print '\n palette', palette
 
 
