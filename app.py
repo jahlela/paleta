@@ -53,6 +53,7 @@ def index():
     return render_template('homepage.html',
                             user=user)
 
+
 @app.route('/register')
 def register():
     """ Render registration page """ 
@@ -131,7 +132,7 @@ def user_login():
         return redirect("/")
 
 
-@app.route('/logout', methods=['POST'])
+@app.route('/logout')
 def logout():
     """User logout."""
     # remove the username from the session if it's there

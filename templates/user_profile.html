@@ -10,7 +10,7 @@
 
   <section id="logout">
     {% if session["logged_in"] %}
-        <form action="/logout" method="POST">
+        <form action="/logout">
             <input type="submit" value="Log out">
         </form>
     {% endif %}

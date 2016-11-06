@@ -5,32 +5,12 @@
 
 <section id="welcome-section">
     <div class="center">
-        <h1>Welcome to Paleta <img class="logo" src="/static/img/paleta.png" alt="logo" /></h1> 
+        <h1>Welcome to Paleta <img class="logo" src="/static/img/demo/paleta.png" alt="logo" /></h1> 
 
         <h3><i>Your friendly neighborhood palette generator</i></h3>
     </div>
 </section>
 
-<section id="login">
-    {% if not session["logged_in"] %}
-        <form action="/login" method="POST">
-            <p>Email  <input type="text" name="email" placeholder="email"></p>
-            <p>Password  <input type="password" name="password"  placeholder="password"></p>
-            <input type="submit" value="Log in">
-        </form>
-
-    <!-- If user is logged in, display logout button -->
-    {% else %}  
-
-        <form action="/users/{{ user.user_id }}">
-            <input type="submit" value="View Profile" />
-        </form><br>
-
-        <form action="/logout" method="POST">
-            <input type="submit" value="Log out">
-        </form>
-    {% endif %}
-</section>
 
 
 <section id="submit-image">
