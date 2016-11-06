@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block content %}
+
+  <h2>{{ user.firstname }}'s Profile</h2>
+
+  <ul>
+    <li> Name: {{ user.firstname }} {{ user.lastname }}</li>
+    <li> Email: {{ user.email }}</li>
+
+
+  <section id="logout">
+    {% if session["logged_in"] %}
+        <form action="/logout" method="POST">
+            <input type="submit" value="Log out">
+        </form>
+    {% endif %}
+  </section>
+
+
+
+{% endblock %}

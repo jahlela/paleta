@@ -202,7 +202,7 @@ def get_display_colors(top_colors, color_limit, total_pixels):
 
 
 
-def get_palette(URL, os_boolean, sample_limit, palette_limit):
+def get_palette(URL, os_boolean, sample_limit, palette_limit=5):
     """ Takes in a string URL of an image, a boolean for whether the image is 
         stored on the local machine, two integers for limits on sample size and 
         palette size, and returns a list of hex strings with the image palette. """
@@ -232,7 +232,7 @@ def get_palette(URL, os_boolean, sample_limit, palette_limit):
     return palette
 
 
-get_palette('static/img/caterpillar.png', True, 2000, 5)
+get_palette('static/img/demo/caterpillar.png', True, 2000) #Optionally, add palette_limit
 
 
 

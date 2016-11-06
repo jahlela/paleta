@@ -17,8 +17,8 @@ class User(db.Model):
     
     user_id = db.Column(db.Integer, primary_key=True, nullable = False,
                                     autoincrement = True)
-    first_name = db.Column(db.String(30), nullable = False)
-    last_name = db.Column(db.String(30), nullable = False)
+    firstname = db.Column(db.String(30), nullable = False)
+    lastname = db.Column(db.String(30), nullable = False)
     email = db.Column(db.String(50), nullable = False, unique=True)
     password = db.Column(db.String(50), nullable = False)
 
@@ -60,7 +60,7 @@ class UserImage(db.Model):
     # Define relationship to user
     user = db.relationship("User", backref=db.backref("userimages", order_by=user_image_id))
 
-    # Define relationship to user
+    # Define relationship to image
     image = db.relationship("Image", backref=db.backref("userimages", order_by=user_image_id))
 
 
@@ -71,9 +71,8 @@ class UserImage(db.Model):
 def connect_to_db(app):
     """Connect the database to our Flask app."""
 
-    # Configure to use our database
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres:///paleta'
-    app.config['SQLALCHEMY_ECHO'] = False
+    # Configure to use our PstgreSQL database
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///paleta'
     db.app = app
     db.init_app(app)
 
@@ -82,14 +81,7 @@ if __name__ == "__main__":
     # As a convenience, if we run this module interactively, it will leave
     # you in a state of being able to work with the database directly.
 
-    # So that we can use Flask-SQLAlchemy, we'll make a Flask app
-    from flask import Flask
-
-    app = Flask(__name__)
-
-
+    from server import app
     connect_to_db(app)
     print "Connected to DB."
 
-
-    db.create_all()

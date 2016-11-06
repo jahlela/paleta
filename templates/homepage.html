@@ -11,10 +11,43 @@
     </div>
 </section>
 
+<section id="login">
+    {% if not session["logged_in"] %}
+        <form action="/login" method="POST">
+            <p>Email  <input type="text" name="email" placeholder="email"></p>
+            <p>Password  <input type="password" name="password"  placeholder="password"></p>
+            <input type="submit" value="Log in">
+        </form>
+
+    <!-- If user is logged in, display logout button -->
+    {% else %}  
+
+        <form action="/users/{{ user.user_id }}">
+            <input type="submit" value="View Profile" />
+        </form><br>
+
+        <form action="/logout" method="POST">
+            <input type="submit" value="Log out">
+        </form>
+    {% endif %}
+</section>
+
+
+<section id="submit-image">
+
+    <form action="/analyze_photo" method="POST">
+        <input type="text" name="URL" value="URL" />
+        <input type="submit" value="Submit" />
+    </form>
+
+</section>
+
+
+
 <section id="main-palette-section">
 
     <figure class="palette-seed-figure">
-        <img src="/static/img/caterpillar.png" alt="The Caterpillar">
+        <img src="/static/img/demo/caterpillar.png" alt="The Caterpillar">
     </figure>
 
     <div class="sample-palette" style="background-color: #ab7e61;"></div>
@@ -25,11 +58,6 @@
 
 
 </section>
-
-
-
-
-
 
 
 {% endblock %}

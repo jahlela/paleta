@@ -6,11 +6,12 @@ html {
 }
 
 body { 
-    background-color: black;
+    /*background-color: black;*/
+    /*color: white;*/
 }
 
 a {
-    color: #FFF9C4;
+    color: #337ab7;
 }
 
 a:hover {
@@ -18,7 +19,7 @@ a:hover {
 }
 
 h1, h2, h3, h4, h5, h6 {
-    color: #00acc1;
+    /*color: #00acc1;*/
 }
 
 h1 img.logo {

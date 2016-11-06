@@ -9,13 +9,27 @@
 </head>
 
 
+<header>
+    <a href="/">Home</a>
+<header>
+
 <body>
     
-  {% block content %} 
+    <div class="container">
 
-    body content here 
+      <!-- Show flashed messages -->
+      {% with messages = get_flashed_messages() %}
+          {% for message in messages %}
+              <div class="alert alert-warning">{{ message }}</div>
+          {% endfor %}
+      {% endwith %}
 
-  {% endblock %}
+      <!-- This is where the main content goes. -->
+      {% block content %}
+          Page content goes here
+      {% endblock %}
+
+    </div>
 
 </body>
 </html>
