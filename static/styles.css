@@ -10,6 +10,10 @@ body {
     /*color: white;*/
 }
 
+section {
+    margin: 20px 0;
+}
+
 a {
     color: #337ab7;
 }
@@ -38,7 +42,7 @@ h1 img.logo {
 }
 
 .palette-seed-figure img {
-    margin-left: 10%;
+    /*margin-left: 10%;*/
     height: 250px;
 }
 

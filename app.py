@@ -9,6 +9,8 @@ from flask_debugtoolbar import DebugToolbarExtension
 # Don't import session from db -- it may be confused with Flask session
 from model import connect_to_db, db, User, Image, UserImage
 
+from image_analysis import get_palette
+
 import os.path
 import requests
 
@@ -49,6 +51,9 @@ def index():
         user_id = session["user_id"]
         # get user object from database with their user_id
         user = User.query.get(user_id)
+
+
+    
 
     return render_template('homepage.html',
                             user=user)
@@ -146,6 +151,7 @@ def logout():
 @app.route('/analyze_photo', methods=['POST'])
 def analyze_photo():
     """  """
+
     # Grab URL from form
     URL = request.form['URL']
 
@@ -171,8 +177,6 @@ def analyze_photo():
         file_hash_name = os_path + '/static/img/photos/' + hex(hash(image_response.content))[1:] + '.png'
         print 'os_path', os_path
         print 'file_hash_name', file_hash_name
-        print 'file_hash_name', file_hash_name
-
 
 
     with open(file_hash_name,'wb') as new_image_file:
@@ -181,7 +185,16 @@ def analyze_photo():
     message = "Successfully submitted this URL: " + URL
 
     flash(message)
-    return redirect("/")
+
+
+    palette = get_palette(file_hash_name, False, 1000)
+    print
+    print "app.py palette", palette
+    print
+
+
+
+    return { "hi" : 5}
 
 
 ################## Run Server ##################

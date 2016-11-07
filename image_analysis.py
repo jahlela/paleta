@@ -1,4 +1,3 @@
-
 from PIL import Image
 from colour import Color
 
@@ -13,10 +12,8 @@ logging.basicConfig(level=logging.DEBUG,
 
 ################### HELPER FUNCTIONS ###################
 
-# Takes two integers, num and divisor. Rounds num down to nearest divisor (default 10)
-# Ex. round_down(156) --> 150
 def round_down(num, divisor=10):
-    """ Round down to nearest divisor (default 10) """
+    """ Rounds integer down to nearest divisor (default 10) """
     return num - (num % divisor)
 
 def define_os_path():
@@ -70,8 +67,6 @@ def get_common_colors(image, num_colors=1000):
     total_pixels = 0
     for tuple in get_colors:
         total_pixels += tuple[0]
-
-    print 'total_pixels', total_pixels
 
     # Return most common colors
     common_colors = get_colors[:num_colors]
@@ -186,10 +181,6 @@ def get_display_colors(top_colors, color_limit, total_pixels):
 
         # Get pixel count from individual color
         pixel_count = color_tuple[0]
-        print
-        print 'get_display_colors'
-        print 'pixel_count', pixel_count
-        print 'total_pixels', total_pixels
 
         # Here is the percent of each color, in case anyone is interested later
         percent_color = int((float(pixel_count)/total_pixels)*100)
@@ -226,7 +217,6 @@ def get_palette(URL, os_boolean, sample_limit, palette_limit=5):
 
     # Get final palette in hex with user-defined limit
     palette = get_display_colors(top_colors, palette_limit, total_pixels)
-    print '\n palette', palette
 
 
     return palette

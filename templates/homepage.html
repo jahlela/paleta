@@ -27,15 +27,12 @@
 <section id="main-palette-section">
 
     <figure class="palette-seed-figure">
-        <img src="/static/img/demo/caterpillar.png" alt="The Caterpillar">
+        <img src="/static/img/photos/1x18ecdd4fccf430fd.png" alt="">
     </figure>
 
-    <div class="sample-palette" style="background-color: #ab7e61;"></div>
-    <div class="sample-palette" style="background-color: #ebd383;"></div>
-    <div class="sample-palette" style="background-color: #c2431c;"></div>
-    <div class="sample-palette" style="background-color: #fef8ef;"></div>
-    <div class="sample-palette" style="background-color: #ede4b5;"></div>
-
+    {% for color in ['#223a00', '#e9f9f4', '#a8a800', '#cae3db', '#f2fefc'] %}
+        <div class="sample-palette" style="background-color: {{ color }} ;"></div>
+    {% endfor %}
 
 </section>
 
