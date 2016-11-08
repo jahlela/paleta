@@ -34,12 +34,9 @@ class Image(db.Model):
     image_id = db.Column(db.Integer, primary_key=True, nullable = False,
                                      autoincrement = True)
     file_name = db.Column(db.String(30), nullable = False)
-
-    color_1 = db.Column(db.Integer)
-    color_2 = db.Column(db.Integer)
-    color_3 = db.Column(db.Integer)
-    color_4 = db.Column(db.Integer)
-    color_5 = db.Column(db.Integer)                
+    # colors has a format of: "#aa7c60 | #e9cf7a | #c0411a | #fdf1e4 | #ede3b3"
+    # table will accommodate up to 10 colors in this format
+    colors = db.Column(db.String(100), nullable = False)
 
 
     # There is a relationship defined between Image and UserImage in UserImage.
@@ -81,7 +78,8 @@ if __name__ == "__main__":
     # As a convenience, if we run this module interactively, it will leave
     # you in a state of being able to work with the database directly.
 
-    from server import app
+    from app import app
     connect_to_db(app)
     print "Connected to DB."
 
+    db.create_all()

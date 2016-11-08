@@ -9,7 +9,7 @@ from flask_debugtoolbar import DebugToolbarExtension
 # Don't import session from db -- it may be confused with Flask session
 from model import connect_to_db, db, User, Image, UserImage
 
-from image_analysis import get_palette
+from image_analysis import hash_photo
 
 import os.path
 import requests
@@ -37,10 +37,19 @@ def before_request():
 ################## Render Templates ##################
 
 
-@app.route('/')
-def index():
+@app.route('/', methods=['GET'])
+def index(image=None, palette=None):
     """ Render homepage """
 
+    # Default to caterpillar image
+    if image == None:
+        image='/static/img/demo/caterpillar.png'
+
+    # Default to caterpillar colors
+    if palette == None:
+        palette=['#aa7c60', '#e9cf7a', '#c0411a', '#fdf1e4', '#ede3b3']
+
+    # 
     if "user_id" not in session:
         session["user_id"] = {}
         user = None
@@ -52,11 +61,25 @@ def index():
         # get user object from database with their user_id
         user = User.query.get(user_id)
 
-
     
 
     return render_template('homepage.html',
-                            user=user)
+                            user=user, 
+                            palette=palette,
+                            image=image)
+
+
+
+
+@app.route('/', methods=['POST'])
+def analyze_photo():
+    """  """
+
+    # Grab URL from form and use it to create an image file path and palette
+    URL = request.form['URL']
+    image, palette = hash_photo(URL)
+
+    return index(image, palette)
 
 
 @app.route('/register')
@@ -73,8 +96,21 @@ def user_details(user_id):
     # get user object from database with their user_id
     user = User.query.get(user_id)
 
+    photo_query = UserImage.query.filter(user_id==user_id)
+    print 'photo_query', photo_query
+
+    photos = {
+        '/static/img/demo/caterpillar.png' : ['#aa7c60', '#e9cf7a', '#c0411a', '#fdf1e4', '#ede3b3']
+    }
+
+    # Default to caterpillar colors
+    if colors == None:
+        colors=['#aa7c60', '#e9cf7a', '#c0411a', '#fdf1e4', '#ede3b3']
+
+
     return render_template('/user_profile.html',
-                            user=user)
+                            user=user,
+                            photos=photos)
 
 
 
@@ -147,54 +183,6 @@ def logout():
     flash("Successfully logged out!")
     return redirect("/")
 
-
-@app.route('/analyze_photo', methods=['POST'])
-def analyze_photo():
-    """  """
-
-    # Grab URL from form
-    URL = request.form['URL']
-
-    # Grab the image from a URL
-    image_response = requests.get(URL)
-
-    os_path = os.path.dirname(os.path.abspath(__file__))
-    
-
-    # Create a hexidecimal hash of the image data string for a unique filename
-    file_hash = hex(hash(image_response.content))
-    print 'file_hash', file_hash
-
-    # Sometimes there is a dash at the beginning -- not great for a file name
-    # Replace the '-' with a 1 to maintain uniqueness
-    if file_hash[0] == '-':
-        file_hash_name = os_path +'/static/img/photos/1' +  hex(hash(image_response.content))[2:] + '.png'
-        print 'os_path', os_path
-        print 'file_hash_name', file_hash_name
-        
-    # Create a filename as is
-    else:
-        file_hash_name = os_path + '/static/img/photos/' + hex(hash(image_response.content))[1:] + '.png'
-        print 'os_path', os_path
-        print 'file_hash_name', file_hash_name
-
-
-    with open(file_hash_name,'wb') as new_image_file:
-        new_image_file.write(image_response.content)
-
-    message = "Successfully submitted this URL: " + URL
-
-    flash(message)
-
-
-    palette = get_palette(file_hash_name, False, 1000)
-    print
-    print "app.py palette", palette
-    print
-
-
-
-    return { "hi" : 5}
 
 
 ################## Run Server ##################

@@ -18,4 +18,18 @@
 
 
 
+
+  <section id="main-palette-section">
+
+    <figure class="palette-seed-figure">
+        <img src={{ image }} alt="">
+    </figure>
+
+    {% for color in palette %}
+        <div class="sample-palette" style="background-color: {{ color }} ;"></div>
+    {% endfor %}
+
+  </section>
+
+
 {% endblock %}

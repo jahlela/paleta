@@ -15,8 +15,8 @@
 
 <section id="submit-image">
 
-    <form action="/analyze_photo" method="POST">
-        <input type="text" name="URL" value="URL" />
+    <form action="/" method="POST">
+        <input type="text" name="URL" placeholder="URL" style="width: 300px;" />
         <input type="submit" value="Submit" />
     </form>
 
@@ -27,10 +27,10 @@
 <section id="main-palette-section">
 
     <figure class="palette-seed-figure">
-        <img src="/static/img/photos/1x18ecdd4fccf430fd.png" alt="">
+        <img src={{ image }} alt="">
     </figure>
 
-    {% for color in ['#223a00', '#e9f9f4', '#a8a800', '#cae3db', '#f2fefc'] %}
+    {% for color in palette %}
         <div class="sample-palette" style="background-color: {{ color }} ;"></div>
     {% endfor %}
 

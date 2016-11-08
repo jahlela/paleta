@@ -4,6 +4,7 @@ from colour import Color
 import os.path
 import math
 import colorsys
+import requests
 
 import logging
 logging.basicConfig(level=logging.DEBUG,
@@ -218,13 +219,49 @@ def get_palette(URL, os_boolean, sample_limit, palette_limit=5):
     # Get final palette in hex with user-defined limit
     palette = get_display_colors(top_colors, palette_limit, total_pixels)
 
-
     return palette
 
 
-get_palette('static/img/demo/caterpillar.png', True, 2000) #Optionally, add palette_limit
+
+def hash_photo(URL):
+
+    # Grab the image from a URL
+    image_response = requests.get(URL)
+
+    os_path = define_os_path()
+
+    # Create a hexidecimal hash of the image data string for a unique filename
+    file_hash = hex(hash(image_response.content))
+    print 'file_hash', file_hash
+
+    # Sometimes there is a dash at the beginning -- not great for a file name
+    # Replace the '-' with a 1 to maintain uniqueness
+    if file_hash[0] == '-':
+        local_file_name = '/static/img/photos/1' +  hex(hash(image_response.content))[2:] + '.png'
+        file_hash_name = os_path + local_file_name
+        print 'os_path', os_path
+        print 'file_hash_name', file_hash_name
+        
+    # Create a filename as is
+    else:
+        local_file_name = '/static/img/photos/' + hex(hash(image_response.content))[1:] + '.png'
+        file_hash_name = os_path + local_file_name
+        print 'os_path', os_path
+        print 'file_hash_name', file_hash_name
+
+
+    with open(file_hash_name,'wb') as new_image_file:
+        new_image_file.write(image_response.content)
+
+
+    # list of hex strings, ex. "#e64410"
+    palette = get_palette(file_hash_name, False, 3000)
+    print
+    print "image_analysis.py palette", palette
+    print
 
 
 
+    return [local_file_name, palette]
 
 
