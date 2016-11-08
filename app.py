@@ -13,6 +13,7 @@ from image_analysis import hash_photo
 
 import os.path
 import requests
+import bcrypt
 
 app = Flask(__name__)
 
@@ -128,27 +129,32 @@ def register_new_user():
 
     print 'email', email
 
-    # user_in_db = db.session.query(User).filter(User.email==email).all()
+    # Grab any record matching this email (will be None if no previous record)
     user_in_db = User.query.filter_by(email=email).first()
 
+    # If there is a previous record with this email, prompt user to try again
     if user_in_db:
         flash("It looks like you are already registered. Try logging in again.")
+
         return redirect("/")
 
     # if username (email) is in not in database, add them and log them in
     else:
-        # add to db
-        new_user = User(firstname=firstname, lastname=lastname, email=email, password=password)
+        # Add new user to db
+        new_user = User(firstname=firstname, lastname=lastname, email=email, 
+                        password=bcrypt.hashpw(password, bcrypt.gensalt() ))
         db.session.add(new_user)
         db.session.commit()
 
         # Get new User record for logging in
         current_user = User.query.filter_by(email=email).first()
 
+        # Add user to browser session
         session["user_id"] = current_user.user_id
         session["logged_in"] = True
         flash("Successfully registered and logged in!")
-        # redirect to homepage
+
+        # Redirect to homepage
         return redirect("/")
 
 
@@ -163,6 +169,8 @@ def user_login():
         session["user_id"] = {}
 
     current_user = User.query.filter_by(email=email).first()
+    input_password_hash = bcrypt.hashpw(password.encode("UTF_8"),
+                          current_user.password.encode("UTF_8")).decode()
 
     # check login credentials against database, and route user accordingly
     if not current_user:
@@ -170,7 +178,7 @@ def user_login():
         flash("No record found. Please register!")
         return redirect("/register")
 
-    elif current_user and current_user.password == password:
+    elif current_user and current_user.password == input_password_hash:
         # store username in Flask session
         session["user_id"] = current_user.user_id
         session["logged_in"] = True
@@ -178,7 +186,7 @@ def user_login():
         return redirect("/")
 
     # if username in db and password belongs to same user, redirect to homepage 
-    elif current_user.password != password:
+    elif current_user.password != input_password_hash:
         flash("Password does not match. Please try again.")
         return redirect("/")
 

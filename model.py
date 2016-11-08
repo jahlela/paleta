@@ -20,7 +20,7 @@ class User(db.Model):
     firstname = db.Column(db.String(30), nullable = False)
     lastname = db.Column(db.String(30), nullable = False)
     email = db.Column(db.String(50), nullable = False, unique=True)
-    password = db.Column(db.String(50), nullable = False)
+    password = db.Column(db.String(500), nullable = False)
 
     # There is a relationship defined between User and UserImage in UserImage.
     # Backref to UserImage is "userimages"
