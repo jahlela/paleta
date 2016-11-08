@@ -50,6 +50,7 @@
             <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
             <h4 class="modal-title" id="myModalLabel">Login</h4>
           </div>
+
           <div class="modal-body">
             <p>Have a login!</p>
             <form action="/login" method="POST">
@@ -57,7 +58,11 @@
                 <p>Password  <input type="password" name="password"  placeholder="password"></p>
                 <input type="submit" value="Log in">
             </form>
-          </div>
+
+            <hr>
+            <p>Don't have an account?</p>
+            <a class="btn" href="register">Sign Up</a>
+          </div> <!-- .modal-body -->
 
 
 
@@ -65,10 +70,11 @@
           <div class="modal-footer">
             <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
             <button type="button" class="btn btn-primary">Submit</button>
-          </div>
-        </div>
-      </div>
-    </div>
+          </div> <!-- .modal-footer -->
+
+        </div> <!-- .modal-content -->
+      </div> <!-- .modal-dialog -->
+    </div> <!-- #loginModal-->
 
 
 
