@@ -33,7 +33,7 @@ class Image(db.Model):
     
     image_id = db.Column(db.Integer, primary_key=True, nullable = False,
                                      autoincrement = True)
-    file_name = db.Column(db.String(30), nullable = False)
+    file_name = db.Column(db.String(300), nullable = False)
     # colors has a format of: "#aa7c60 | #e9cf7a | #c0411a | #fdf1e4 | #ede3b3"
     # table will accommodate up to 10 colors in this format
     colors = db.Column(db.String(100), nullable = False)

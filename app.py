@@ -142,7 +142,7 @@ def register_new_user():
     else:
         # Add new user to db
         new_user = User(firstname=firstname, lastname=lastname, email=email, 
-                        password=bcrypt.hashpw(password, bcrypt.gensalt() ))
+                password=bcrypt.hashpw(password.encode("UTF_8"), bcrypt.gensalt()))
         db.session.add(new_user)
         db.session.commit()
 
