@@ -129,17 +129,27 @@ def register_new_user():
     print 'email', email
 
     # user_in_db = db.session.query(User).filter(User.email==email).all()
-    user_in_db = False
-    # if username (email) is in not in database, add them 
-    if not user_in_db:
+    user_in_db = User.query.filter_by(email=email).first()
+
+    if user_in_db:
+        flash("It looks like you are already registered. Try logging in again.")
+        return redirect("/")
+
+    # if username (email) is in not in database, add them and log them in
+    else:
         # add to db
         new_user = User(firstname=firstname, lastname=lastname, email=email, password=password)
         db.session.add(new_user)
         db.session.commit()
 
-    # redirect to homepage
-    return redirect("/")
+        # Get new User record for logging in
+        current_user = User.query.filter_by(email=email).first()
 
+        session["user_id"] = current_user.user_id
+        session["logged_in"] = True
+        flash("Successfully registered and logged in!")
+        # redirect to homepage
+        return redirect("/")
 
 
 @app.route("/login", methods=['POST'])
