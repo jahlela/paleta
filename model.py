@@ -1,5 +1,3 @@
-
-
 """ Models and database functions for paleta db. """
 
 from flask_sqlalchemy import SQLAlchemy
@@ -51,7 +49,7 @@ class UserImage(db.Model):
     user_image_id = db.Column(db.Integer, primary_key=True, nullable = False,
                                           autoincrement = True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=False)
-    fav_image = db.Column(db.Integer, db.ForeignKey('images.image_id'), nullable=False)
+    image_id = db.Column(db.Integer, db.ForeignKey('images.image_id'), nullable=False)
 
 
     # Define relationship to user

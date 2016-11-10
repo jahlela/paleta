@@ -39,18 +39,17 @@ def before_request():
 
 
 @app.route('/', methods=['GET'])
-def index(image=None, palette=None):
+def index(file_name=None, colors=None):
     """ Render homepage """
 
     # Default to caterpillar image
-    if image == None:
-        image='/static/img/demo/caterpillar.png'
+    if file_name == None:
+        file_name='/static/img/demo/caterpillar.png'
 
     # Default to caterpillar colors
-    if palette == None:
-        palette=['#aa7c60', '#e9cf7a', '#c0411a', '#fdf1e4', '#ede3b3']
+    if colors == None:
+        colors=['#aa7c60', '#e9cf7a', '#c0411a', '#fdf1e4', '#ede3b3']
 
-    # 
     if "user_id" not in session:
         session["user_id"] = {}
         user = None
@@ -62,12 +61,12 @@ def index(image=None, palette=None):
         # get user object from database with their user_id
         user = User.query.get(user_id)
 
-    
+
 
     return render_template('homepage.html',
                             user=user, 
-                            palette=palette,
-                            image=image)
+                            palette=colors,
+                            image=file_name)
 
 
 
@@ -76,11 +75,48 @@ def index(image=None, palette=None):
 def analyze_photo():
     """  """
 
-    # Grab URL from form and use it to create an image file path and palette
-    URL = request.form['URL']
-    image, palette = hash_photo(URL)
+    
 
-    return index(image, palette)
+    # Grab URL from form and use it to create an image file path and palette
+    #  image is a hashed file name of the original image's content
+    URL = request.form['URL']
+    file_name, colors = hash_photo(URL)
+    print 'file_name', file_name
+    print 'colors', colors
+
+
+
+    # Next, check if the image is already in the db 
+    image_in_db = Image.query.filter(file_name==file_name).first()
+    print 'image_in_db', image_in_db
+
+    if image_in_db:
+        print 'if image_in_db'
+        colors = image_in_db.colors
+        print 'colors', colors
+        image_id = image_in_db.image_id
+        print 'image_id', image_id
+    # If not, add the image to the db
+    else:
+        new_photo = Image(file_name=file_name, colors=colors)
+        db.session.add(new_photo)
+        db.session.commit()
+
+    
+
+    # # Grab user_id if a user is logged in
+    # if "user_id" in session:
+    #     user_id = session["user_id"]
+
+    
+    # userimage_in_db = UserImage.query.filter(user_id==user_id, image_id==image_id).first()
+
+    # if not userimage_in_db:
+    #     new_user_image = UserImage(user_id==user_id, image_id==image_id)
+    #     db.session.add(new_user_image)
+    #     db.session.commit()
+
+    return index(file_name, colors)
 
 
 @app.route('/register')
