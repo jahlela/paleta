@@ -75,8 +75,6 @@ def index(file_name=None, colors=None):
 def analyze_photo():
     """  """
 
-    
-
     # Grab URL from form and use it to create an image file path and palette
     #  image is a hashed file name of the original image's content
     URL = request.form['URL']
@@ -87,17 +85,19 @@ def analyze_photo():
 
 
     # Next, check if the image is already in the db 
-    image_in_db = Image.query.filter(file_name==file_name).first()
+    image_in_db = Image.query.filter(Image.file_name==file_name).first()
     print 'image_in_db', image_in_db
 
     if image_in_db:
         print 'if image_in_db'
-        colors = image_in_db.colors
+        # colors = image_in_db.colors
         print 'colors', colors
         image_id = image_in_db.image_id
         print 'image_id', image_id
+
     # If not, add the image to the db
     else:
+        print "I got to the image_in_db else"
         new_photo = Image(file_name=file_name, colors=colors)
         db.session.add(new_photo)
         db.session.commit()
@@ -115,6 +115,8 @@ def analyze_photo():
     #     new_user_image = UserImage(user_id==user_id, image_id==image_id)
     #     db.session.add(new_user_image)
     #     db.session.commit()
+
+    print 'colors', colors
 
     return index(file_name, colors)
 
