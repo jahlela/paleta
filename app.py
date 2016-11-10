@@ -102,19 +102,27 @@ def analyze_photo():
         db.session.add(new_photo)
         db.session.commit()
 
-    
-
-    # # Grab user_id if a user is logged in
-    # if "user_id" in session:
-    #     user_id = session["user_id"]
+        image_id = new_photo.image_id
 
     
-    # userimage_in_db = UserImage.query.filter(user_id==user_id, image_id==image_id).first()
 
-    # if not userimage_in_db:
-    #     new_user_image = UserImage(user_id==user_id, image_id==image_id)
-    #     db.session.add(new_user_image)
-    #     db.session.commit()
+    # Grab user_id if a user is logged in
+    if session["logged_in"]:
+        user_id = session["user_id"]
+        
+
+    
+        userimage_in_db = UserImage.query.filter(UserImage.user_id==user_id, 
+                                            UserImage.image_id==image_id).first()
+
+        if not userimage_in_db:
+            print 'not userimage_in_db'
+            print 'user_id', user_id
+            print 'image_id', image_id
+            new_user_image = UserImage(user_id=user_id, image_id=image_id)
+            db.session.add(new_user_image)
+            db.session.commit()
+
 
     print 'colors', colors
 
