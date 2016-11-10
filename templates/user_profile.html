@@ -22,10 +22,10 @@
   <section id="main-palette-section">
 
     <figure class="palette-seed-figure">
-        <img src={{ image }} alt="">
+        <img src={{ photos[0] }} alt="">
     </figure>
 
-    {% for color in palette %}
+    {% for color in photos[1] %}
         <div class="sample-palette" style="background-color: {{ color }} ;"></div>
     {% endfor %}
 

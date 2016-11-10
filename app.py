@@ -137,7 +137,7 @@ def register():
 
 
 @app.route('/users/<user_id>', methods=["GET"])
-def user_details(user_id):
+def user_details(user_id, photos=None):
     """User details."""
 
     # get user object from database with their user_id
@@ -146,14 +146,10 @@ def user_details(user_id):
     photo_query = UserImage.query.filter(user_id==user_id)
     print 'photo_query', photo_query
 
-    photos = {
-        '/static/img/demo/caterpillar.png' : ['#aa7c60', '#e9cf7a', '#c0411a', '#fdf1e4', '#ede3b3']
-    }
-
-    # Default to caterpillar colors
-    if colors == None:
-        colors=['#aa7c60', '#e9cf7a', '#c0411a', '#fdf1e4', '#ede3b3']
-
+    # Default to caterpillar with colors
+    if photos == None:
+        photos = ['/static/img/demo/caterpillar.png', 
+                    ['#aa7c60', '#e9cf7a', '#c0411a', '#fdf1e4', '#ede3b3']]
 
     return render_template('/user_profile.html',
                             user=user,
