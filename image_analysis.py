@@ -118,14 +118,14 @@ def tally_color_bins(color_bins):
         Returns a list of tuples with the pixel sum and most common color from each bin. """
 
     # Empty list that will hold the winning color from each bin
-    win_bins = []
+    top_bin_colors = []
 
     # Loop through each hue bin (which may be empty or have many tuples)
     for bin in color_bins:
         # If the bin is empty, skip it.
         if len(bin) == 0:
             pass
-        # If the bin is not empty, add a new tuple to win_bins with the total pixel
+        # If the bin is not empty, add a new tuple to top_bin_colors with the total pixel
         # count for the bin and the HSL value of the color
         else:
             # Find sum of all pixel counts in bin
@@ -135,23 +135,23 @@ def tally_color_bins(color_bins):
             # them in get_common_colors
             hsv_color = bin[0][1]
 
-            # Add each new tuple to win_bins
-            win_bins.append((bin_sum, hsv_color))
+            # Add each new tuple to top_bin_colors
+            top_bin_colors.append((bin_sum, hsv_color))
 
     # Sort win_bins from most common to least common color
-    win_bins.sort(reverse=True)
+    top_bin_colors.sort(reverse=True)
 
-    return win_bins
-
-
+    return top_bin_colors
 
 
-def get_display_colors(top_colors, color_limit, total_pixels):
+
+
+def get_display_colors(top_bin_colors, color_limit, total_pixels):
     """ Takes a list of tuples of format (count, (Hue, Saturation, Value)) 
         and returns a list of hex colors. Length is color_limit. """
 
     # pick the n most common colors, defined by user with color_limit
-    limited_colors = top_colors[:color_limit]
+    limited_colors = top_bin_colors[:color_limit]
 
     # This will be the final output of hex values for dominant colors
     display_colors = []
@@ -168,9 +168,9 @@ def get_display_colors(top_colors, color_limit, total_pixels):
 
         # Colour returns black and white as 'black' and 'white, not as a hex
         if rgb_color == (0,0,0):
-            hex_color = '#000'
+            hex_color = '#000000'
         elif rgb_color == (1,1,1):
-            hex_color = '#FFF'
+            hex_color = '#FFF000'
         else:
             # unpack to individual values for hex transformation
             red, green, blue = rgb_color
@@ -214,10 +214,11 @@ def get_palette(URL, os_boolean, sample_limit, palette_limit=5):
     color_bins_filled = fill_color_bins(color_bins, common_colors)
 
     # Get top color from each bin in HSV format
-    top_colors = tally_color_bins(color_bins_filled)
+    top_bin_colors = tally_color_bins(color_bins_filled)
+    print top_bin_colors
 
     # Get final palette in hex with user-defined limit
-    palette = get_display_colors(top_colors, palette_limit, total_pixels)
+    palette = get_display_colors(top_bin_colors, palette_limit, total_pixels)
 
     return palette
 

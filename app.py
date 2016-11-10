@@ -39,18 +39,17 @@ def before_request():
 
 
 @app.route('/', methods=['GET'])
-def index(image=None, palette=None):
+def index(file_name=None, colors=None):
     """ Render homepage """
 
     # Default to caterpillar image
-    if image == None:
-        image='/static/img/demo/caterpillar.png'
+    if file_name == None:
+        file_name='/static/img/demo/caterpillar.png'
 
     # Default to caterpillar colors
-    if palette == None:
-        palette=['#aa7c60', '#e9cf7a', '#c0411a', '#fdf1e4', '#ede3b3']
+    if colors == None:
+        colors=['#aa7c60', '#e9cf7a', '#c0411a', '#fdf1e4', '#ede3b3']
 
-    # 
     if "user_id" not in session:
         session["user_id"] = {}
         user = None
@@ -62,12 +61,12 @@ def index(image=None, palette=None):
         # get user object from database with their user_id
         user = User.query.get(user_id)
 
-    
+
 
     return render_template('homepage.html',
                             user=user, 
-                            palette=palette,
-                            image=image)
+                            palette=colors,
+                            image=file_name)
 
 
 
@@ -77,10 +76,57 @@ def analyze_photo():
     """  """
 
     # Grab URL from form and use it to create an image file path and palette
+    #  image is a hashed file name of the original image's content
     URL = request.form['URL']
-    image, palette = hash_photo(URL)
+    file_name, colors = hash_photo(URL)
+    print 'file_name', file_name
+    print 'colors', colors
 
-    return index(image, palette)
+
+
+    # Next, check if the image is already in the db 
+    image_in_db = Image.query.filter(Image.file_name==file_name).first()
+    print 'image_in_db', image_in_db
+
+    if image_in_db:
+        print 'if image_in_db'
+        # colors = image_in_db.colors
+        print 'colors', colors
+        image_id = image_in_db.image_id
+        print 'image_id', image_id
+
+    # If not, add the image to the db
+    else:
+        print "I got to the image_in_db else"
+        new_photo = Image(file_name=file_name, colors=colors)
+        db.session.add(new_photo)
+        db.session.commit()
+
+        image_id = new_photo.image_id
+
+    
+
+    # Grab user_id if a user is logged in
+    if session["logged_in"]:
+        user_id = session["user_id"]
+        
+
+    
+        userimage_in_db = UserImage.query.filter(UserImage.user_id==user_id, 
+                                            UserImage.image_id==image_id).first()
+
+        if not userimage_in_db:
+            print 'not userimage_in_db'
+            print 'user_id', user_id
+            print 'image_id', image_id
+            new_user_image = UserImage(user_id=user_id, image_id=image_id)
+            db.session.add(new_user_image)
+            db.session.commit()
+
+
+    print 'colors', colors
+
+    return index(file_name, colors)
 
 
 @app.route('/register')
@@ -91,7 +137,7 @@ def register():
 
 
 @app.route('/users/<user_id>', methods=["GET"])
-def user_details(user_id):
+def user_details(user_id, photos=None):
     """User details."""
 
     # get user object from database with their user_id
@@ -100,14 +146,10 @@ def user_details(user_id):
     photo_query = UserImage.query.filter(user_id==user_id)
     print 'photo_query', photo_query
 
-    photos = {
-        '/static/img/demo/caterpillar.png' : ['#aa7c60', '#e9cf7a', '#c0411a', '#fdf1e4', '#ede3b3']
-    }
-
-    # Default to caterpillar colors
-    if colors == None:
-        colors=['#aa7c60', '#e9cf7a', '#c0411a', '#fdf1e4', '#ede3b3']
-
+    # Default to caterpillar with colors
+    if photos == None:
+        photos = ['/static/img/demo/caterpillar.png', 
+                    ['#aa7c60', '#e9cf7a', '#c0411a', '#fdf1e4', '#ede3b3']]
 
     return render_template('/user_profile.html',
                             user=user,
