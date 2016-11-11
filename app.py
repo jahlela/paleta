@@ -245,6 +245,27 @@ def logout():
 
 
 
+################## Helper Function ##################
+
+def clean_image_records():
+
+    images_in_db = Image.query.all()
+    print 'images_in_db', images_in_db
+
+
+    for image in images_in_db:
+        if image.colors[0] == "{":
+            print image.colors
+            image.colors = image.colors[1:-1]
+        elif image.colors[0] == "\"":
+            print image.colors
+            image.colors = image.colors[1:-1]
+
+    db.session.commit()
+
+
+
+
 ################## Run Server ##################
 
 
@@ -255,6 +276,8 @@ if __name__ == "__main__":
     app.jinja_env.auto_reload = app.debug
 
     connect_to_db(app)
+
+    clean_image_records()
 
     # Use the DebugToolbar
     DebugToolbarExtension(app)
