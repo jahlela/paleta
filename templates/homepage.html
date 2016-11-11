@@ -12,7 +12,8 @@
 </section>
 
 
-
+<!-- Here, a user can enter a URL, and make a POST request that will return 
+     the photo and a palette -->
 <section id="submit-image">
 
     <form action="/" method="POST">
@@ -23,11 +24,11 @@
 </section>
 
 
-
+<!-- Show example image with palette  -->
 <section id="main-palette-section">
 
     <figure class="palette-seed-figure">
-        <img src={{ image }} alt="">
+        <img src="{{ file_name }}" alt="">
     </figure>
 
     {% set colors = colors.split(',') %}

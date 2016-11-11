@@ -7,19 +7,11 @@
     <li> Name: {{ user.firstname }} {{ user.lastname }}</li>
     <li> Email: {{ user.email }}</li>
 
-
-  <section id="logout">
-    {% if session["logged_in"] %}
-        <form action="/logout">
-            <input type="submit" value="Log out">
-        </form>
-    {% endif %}
-  </section>
+  </ul>
 
 
 
-
-
+  <!-- For each photo associated with this user, show the image and palette -->
   {% for photo in photos %}
     <section class="main-palette-section">
 

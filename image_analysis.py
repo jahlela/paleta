@@ -43,8 +43,6 @@ def get_image_object(URL, os_boolean):
 
 
 
-
-
 def get_common_colors(image, num_colors=1000):
     """ Takes an Image object and an integer for how many colors to sample, and 
         Returns a list of tuples with most common colors and their pixel count. 
@@ -179,7 +177,6 @@ def get_display_colors(top_bin_colors, color_limit, total_pixels):
             hex_color = Color(rgb=(red, green, blue)).get_hex()
 
 
-
         # Get pixel count from individual color
         pixel_count = color_tuple[0]
 
@@ -227,44 +224,34 @@ def get_palette(URL, os_boolean, sample_limit, palette_limit=5):
 
 def hash_photo(URL):
 
-    # Grab the image from a URL
-    image_response = requests.get(URL)
-
     os_path = define_os_path()
+
+    # Grab the image from a URL
+    image_response = requests.get(URL)    
 
     # Create a hexidecimal hash of the image data string for a unique filename
     file_hash = hex(hash(image_response.content))
-    print 'file_hash', file_hash
 
     # Sometimes there is a dash at the beginning -- not great for a file name
     # Replace the '-' with a 1 to maintain uniqueness
     if file_hash[0] == '-':
         local_file_name = '/static/img/photos/1' +  hex(hash(image_response.content))[2:] + '.png'
         file_hash_name = os_path + local_file_name
-        print 'os_path', os_path
-        print 'file_hash_name', file_hash_name
         
     # Create a filename as is
     else:
         local_file_name = '/static/img/photos/' + hex(hash(image_response.content))[1:] + '.png'
         file_hash_name = os_path + local_file_name
-        print 'os_path', os_path
-        print 'file_hash_name', file_hash_name
 
-
+    # Write the image to local repository with the content hash as a name
     with open(file_hash_name,'wb') as new_image_file:
         new_image_file.write(image_response.content)
 
-
-    # list of hex strings, ex. "#e64410"
+    # Get a palette, ex. "#4ac84c,#c2d2ce,#3e3a50,#674f4f,#c0cfca"
     palette = get_palette(file_hash_name, False, 3000)
     palette = str(','.join(palette))
-    print
-    print "image_analysis.py palette", palette
-    print
 
-
-
+    # This is slightly different than the /profile way, but it works.
     return [local_file_name, palette]
 
 

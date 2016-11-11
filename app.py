@@ -66,23 +66,19 @@ def index(file_name=None, colors=None):
     return render_template('homepage.html',
                             user=user, 
                             colors=colors,
-                            image=file_name)
-
+                            file_name=file_name)
 
 
 
 @app.route('/', methods=['POST'])
 def analyze_photo():
-    """  """
+    """ For any image URL, analyze it, store it in the db, and display it 
+        on the homepage """
 
     # Grab URL from form and use it to create an image file path and palette
     #  image is a hashed file name of the original image's content
     URL = request.form['URL']
     file_name, colors = hash_photo(URL)
-    print 'file_name', file_name
-    print 'colors', colors
-
-
 
     # Next, check if the image is already in the db 
     image_in_db = Image.query.filter(Image.file_name==file_name).first()
@@ -104,8 +100,7 @@ def analyze_photo():
     if session["logged_in"]:
         user_id = session["user_id"]
         
-
-    
+        # Query the database for a previous record of this photo and user
         userimage_in_db = UserImage.query.filter(UserImage.user_id==user_id, 
                                             UserImage.image_id==image_id).first()
 
@@ -114,9 +109,7 @@ def analyze_photo():
             db.session.add(new_user_image)
             db.session.commit()
 
-    
-    print 'colors', colors
-
+    # Technically just calls the index function in the '/' GET route
     return index(file_name, colors)
 
 
@@ -130,30 +123,17 @@ def register():
 
 @app.route('/users/<user_id>', methods=["GET"])
 def user_details(user_id, photos=None):
-    """User details."""
+    """ User details """
 
     # get user object from database with their user_id
-    user = User.query.get(user_id)
-
-    # # Default to caterpillar with colors
-    # if photos == None:
-    #     photos = ['/static/img/demo/caterpillar.png', 
-    #                 ['#aa7c60', '#e9cf7a', '#c0411a', '#fdf1e4', '#ede3b3']]
-
     user_id = session["user_id"]
-
-    photos = []
+    user = User.query.get(user_id)    
 
     images_by_user = UserImage.query.filter(UserImage.user_id==user_id).all()
-    print
-    print 'images_by_user', type(images_by_user)
 
-
+    photos = []
     for userimage in images_by_user:
         photos.append(userimage.image)
-
-    print
-    print 'photos', photos
 
     return render_template('/user_profile.html',
                             user=user,
@@ -166,14 +146,12 @@ def user_details(user_id, photos=None):
 
 @app.route("/register", methods=["POST"])
 def register_new_user():
-    """Add new users."""
+    """ Add new user and log them in """
     
     firstname = request.form['firstname']
     lastname = request.form['lastname']
     email = request.form['email']
     password = request.form['password']
-
-    print 'email', email
 
     # Grab any record matching this email (will be None if no previous record)
     user_in_db = User.query.filter_by(email=email).first()
@@ -206,7 +184,7 @@ def register_new_user():
 
 @app.route("/login", methods=['POST'])
 def user_login():
-    """User login"""
+    """ User login """
 
     email = request.form['email']
     password = request.form['password']
@@ -239,7 +217,8 @@ def user_login():
 
 @app.route('/logout')
 def logout():
-    """User logout."""
+    """ User logout """
+
     # remove the username from the session if it's there
     session['user_id'] = None
     session['logged_in'] = False
