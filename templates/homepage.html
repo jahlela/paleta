@@ -30,7 +30,8 @@
         <img src={{ image }} alt="">
     </figure>
 
-    {% for color in palette %}
+    {% set colors = colors.split(',') %}
+    {% for color in colors %}
         <div class="sample-palette" style="background-color: {{ color }} ;"></div>
     {% endfor %}
 

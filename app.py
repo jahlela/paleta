@@ -48,7 +48,7 @@ def index(file_name=None, colors=None):
 
     # Default to caterpillar colors
     if colors == None:
-        colors=['#aa7c60', '#e9cf7a', '#c0411a', '#fdf1e4', '#ede3b3']
+        colors="#aa7c60,#e9cf7a,#c0411a,#fdf1e4,#ede3b3"
 
     if "user_id" not in session:
         session["user_id"] = {}
@@ -65,7 +65,7 @@ def index(file_name=None, colors=None):
 
     return render_template('homepage.html',
                             user=user, 
-                            palette=colors,
+                            colors=colors,
                             image=file_name)
 
 

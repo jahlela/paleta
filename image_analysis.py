@@ -219,6 +219,7 @@ def get_palette(URL, os_boolean, sample_limit, palette_limit=5):
 
     # Get final palette in hex with user-defined limit
     palette = get_display_colors(top_bin_colors, palette_limit, total_pixels)
+    print 'palette', palette 
 
     return palette
 
@@ -257,6 +258,7 @@ def hash_photo(URL):
 
     # list of hex strings, ex. "#e64410"
     palette = get_palette(file_hash_name, False, 3000)
+    palette = str(','.join(palette))
     print
     print "image_analysis.py palette", palette
     print
