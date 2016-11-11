@@ -19,17 +19,21 @@
 
 
 
-  <section id="main-palette-section">
 
-    <figure class="palette-seed-figure">
-        <img src={{ photos[0] }} alt="">
-    </figure>
+  {% for photo in photos %}
+    <section class="main-palette-section">
 
-    {% for color in photos[1] %}
-        <div class="sample-palette" style="background-color: {{ color }} ;"></div>
-    {% endfor %}
+      <figure class="palette-seed-figure">
+          <img src="{{ photo.file_name }}" alt="">
+      </figure>
 
-  </section>
+      {% set colors = photo.colors.split(',') %}
+      {% for color in colors %}
+          <div class="sample-palette" style="background-color: {{ color }} ;"></div>
+      {% endfor %}
+
+    </section>
+  {% endfor %}
 
 
 {% endblock %}

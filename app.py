@@ -86,25 +86,19 @@ def analyze_photo():
 
     # Next, check if the image is already in the db 
     image_in_db = Image.query.filter(Image.file_name==file_name).first()
-    print 'image_in_db', image_in_db
 
     if image_in_db:
-        print 'if image_in_db'
         # colors = image_in_db.colors
-        print 'colors', colors
         image_id = image_in_db.image_id
-        print 'image_id', image_id
 
     # If not, add the image to the db
     else:
-        print "I got to the image_in_db else"
         new_photo = Image(file_name=file_name, colors=colors)
         db.session.add(new_photo)
         db.session.commit()
 
         image_id = new_photo.image_id
 
-    
 
     # Grab user_id if a user is logged in
     if session["logged_in"]:
@@ -116,17 +110,15 @@ def analyze_photo():
                                             UserImage.image_id==image_id).first()
 
         if not userimage_in_db:
-            print 'not userimage_in_db'
-            print 'user_id', user_id
-            print 'image_id', image_id
             new_user_image = UserImage(user_id=user_id, image_id=image_id)
             db.session.add(new_user_image)
             db.session.commit()
 
-
+    
     print 'colors', colors
 
     return index(file_name, colors)
+
 
 
 @app.route('/register')
@@ -143,13 +135,25 @@ def user_details(user_id, photos=None):
     # get user object from database with their user_id
     user = User.query.get(user_id)
 
-    photo_query = UserImage.query.filter(user_id==user_id)
-    print 'photo_query', photo_query
+    # # Default to caterpillar with colors
+    # if photos == None:
+    #     photos = ['/static/img/demo/caterpillar.png', 
+    #                 ['#aa7c60', '#e9cf7a', '#c0411a', '#fdf1e4', '#ede3b3']]
 
-    # Default to caterpillar with colors
-    if photos == None:
-        photos = ['/static/img/demo/caterpillar.png', 
-                    ['#aa7c60', '#e9cf7a', '#c0411a', '#fdf1e4', '#ede3b3']]
+    user_id = session["user_id"]
+
+    photos = []
+
+    images_by_user = UserImage.query.filter(UserImage.user_id==user_id).all()
+    print
+    print 'images_by_user', type(images_by_user)
+
+
+    for userimage in images_by_user:
+        photos.append(userimage.image)
+
+    print
+    print 'photos', photos
 
     return render_template('/user_profile.html',
                             user=user,
@@ -242,6 +246,30 @@ def logout():
 
     flash("Successfully logged out!")
     return redirect("/")
+
+
+
+# @app.route('/remove_image_from_profile', methods=["POST"])
+# def remove_image_from_profile():
+#     """ The user should already be logged in. """
+
+#     # Grab user_id from the browser session and image_id from the request    
+#     user_id = session["user_id"]
+#     image_id = request.form["image_id"]
+    
+#     userimage_in_db = UserImage.query.filter(UserImage.user_id==user_id, 
+#                                         UserImage.image_id==image_id).first()
+
+#     if userimage_in_db:
+#         db.session.delete(userimage_in_db)
+#         db.session.commit()
+#         flash('Image removed from profile')
+#     else: 
+#         flash('This image could not be found.')
+
+
+#     return redirect('/users/' + user_id + '\'')
+
 
 
 
