@@ -44,12 +44,12 @@ def get_pixels(URL=None, os_boolean=False):
     def mult(p,s):
         return (s * p[0], s * p[1], s * p[2])
 
-    centroids = [(255,255,255), (0, 255, 255), (255,0, 255), (255,255,0), (0,0,255), (0,255,0), (255,0,0)]
+    centroids = [(255,255,255), (0, 255, 255), (255,0, 255), (255,255,0), (200,200,200)]
 
 # c = centroid in all abbrvs
     counter = 1
 
-    for _ in xrange(5):
+    for _ in xrange(20):
         # print "\n \n Big Iteration", counter
         counter += 1
 
@@ -58,10 +58,10 @@ def get_pixels(URL=None, os_boolean=False):
         nearests = [((0,0,0),0.00001) for _ in xrange(len(centroids))]
 
         # For each pixel in the image (defined by width and height)
-        for w in xrange(width/2):
-            for h in xrange(height/2):
+        for i in xrange(width/8):
+            for j in xrange(height/8):
                 # Use PIL's .getpixel() to find the RGB color at each pixel
-                pixel = image.getpixel((2*w,2*h))
+                pixel = image.getpixel((8*i,8*j))
 
                 # Default the min centroid index and min distance to 0 and infiniti
                 min_cent_idx, min_dist = (0, float("inf"))
