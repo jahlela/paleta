@@ -11,30 +11,16 @@
     </div>
 </section>
 
-
-
-<section id="submit-image">
-
+<!-- Here, a user can enter a URL, and make a POST request that will return the photo and a palette -->
+<section id="submit-image-section">
     <form action="/" method="POST">
         <input type="text" name="URL" placeholder="URL" style="width: 300px;" />
         <input type="submit" value="Submit" />
     </form>
-
 </section>
 
-
-
-<section id="main-palette-section">
-
-    <figure class="palette-seed-figure">
-        <img src={{ image }} alt="">
-    </figure>
-
-    {% for color in palette %}
-        <div class="sample-palette" style="background-color: {{ color }} ;"></div>
-    {% endfor %}
-
+<section id="sample-palette-section">
+    {% include 'palette.html' %}
 </section>
-
 
 {% endblock %}

@@ -6,30 +6,10 @@
   <ul>
     <li> Name: {{ user.firstname }} {{ user.lastname }}</li>
     <li> Email: {{ user.email }}</li>
+  </ul>
 
-
-  <section id="logout">
-    {% if session["logged_in"] %}
-        <form action="/logout">
-            <input type="submit" value="Log out">
-        </form>
-    {% endif %}
-  </section>
-
-
-
-
-  <section id="main-palette-section">
-
-    <figure class="palette-seed-figure">
-        <img src={{ photos[0] }} alt="">
-    </figure>
-
-    {% for color in photos[1] %}
-        <div class="sample-palette" style="background-color: {{ color }} ;"></div>
-    {% endfor %}
-
-  </section>
-
+  <div id="user-images">
+    {% include 'palette.html' %}
+  </div>
 
 {% endblock %}
