@@ -83,7 +83,7 @@ def get_kmeans(file_path=None, iterations=20):
 
     return centroids
 
-palette = get_pixels() 
+palette = get_kmeans() 
 
 
 
