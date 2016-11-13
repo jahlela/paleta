@@ -38,7 +38,7 @@ def before_request():
 
 
 @app.route('/', methods=['GET'])
-def index(file_name=None, colors=None):
+def index(photos=None):
     """ Render homepage """
 
 
@@ -53,7 +53,8 @@ def index(file_name=None, colors=None):
         # get user object from database with their user_id
         user = User.query.get(user_id)
 
-    photos = [Image.query.get(32)]
+    if photos is None:
+        photos = [Image.query.get(32)]
 
     return render_template('homepage.html',
                             user=user,
@@ -76,7 +77,6 @@ def analyze_photo():
     if image_in_db:
         # colors = image_in_db.colors
         image_id = image_in_db.image_id
-
     # If not, add the image to the db
     else:
         new_photo = Image(file_name=file_name, colors=colors)
@@ -99,8 +99,10 @@ def analyze_photo():
             db.session.add(new_user_image)
             db.session.commit()
 
+    photos = [Image.query.filter(Image.file_name==file_name).first()]
+
     # Technically just calls the index function in the '/' GET route
-    return index(file_name, colors)
+    return index(photos)
 
 
 
