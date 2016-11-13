@@ -69,6 +69,7 @@ def analyze_photo():
     # Grab URL from form and use it to create an image file path and palette
     #  image is a hashed file name of the original image's content
     URL = request.form['URL']
+    # hash_photo is defined in image_analysis.py
     file_name, colors = hash_photo(URL)
 
     # Next, check if the image is already in the db 

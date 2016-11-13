@@ -6,6 +6,8 @@ import math
 import colorsys
 import requests
 
+from kmeans import get_kmeans
+
 import logging
 logging.basicConfig(level=logging.DEBUG,
                     format='%(asctime)s %(levelname)s %(message)s')
