@@ -1,4 +1,3 @@
-
 from jinja2 import StrictUndefined
 from flask_sqlalchemy import sqlalchemy
 from sqlalchemy import func
@@ -42,13 +41,6 @@ def before_request():
 def index(file_name=None, colors=None):
     """ Render homepage """
 
-    # Default to caterpillar image
-    if file_name == None:
-        file_name='/static/img/demo/caterpillar.png'
-
-    # Default to caterpillar colors
-    if colors == None:
-        colors="#aa7c60,#e9cf7a,#c0411a,#fdf1e4,#ede3b3"
 
     if "user_id" not in session:
         session["user_id"] = {}
@@ -61,13 +53,11 @@ def index(file_name=None, colors=None):
         # get user object from database with their user_id
         user = User.query.get(user_id)
 
-
+    photos = [Image.query.get(32)]
 
     return render_template('homepage.html',
-                            user=user, 
-                            colors=colors,
-                            file_name=file_name)
-
+                            user=user,
+                            photos=photos)
 
 
 @app.route('/', methods=['POST'])
@@ -127,19 +117,20 @@ def user_details(user_id, photos=None):
 
     # get user object from database with their user_id
     user_id = session["user_id"]
-    user = User.query.get(user_id)    
+    user = User.query.get(user_id)
 
     images_by_user = UserImage.query.filter(UserImage.user_id==user_id).all()
 
-    photos = []
-    for userimage in images_by_user:
-        photos.append(userimage.image)
-
-    return render_template('/user_profile.html',
-                            user=user,
-                            photos=photos)
-
-
+    if images_by_user:
+        photos = []
+        for userimage in images_by_user:
+	    photos.append(userimage.image)
+        return render_template('/user_profile.html',
+                               user=user,
+                               photos=photos)
+    else:
+        return render_template('/user_profile.html',
+                               user=user)
 
 ################## Redirects ##################
 

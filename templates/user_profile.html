@@ -6,30 +6,10 @@
   <ul>
     <li> Name: {{ user.firstname }} {{ user.lastname }}</li>
     <li> Email: {{ user.email }}</li>
-
   </ul>
 
-
   <div id="user-images">
-    <!-- For each photo associated with this user, show the image and palette -->
-    {% for photo in photos %}
-    <div class="user_image_with_palette">
-
-      <figure class="palette-seed-figure">
-          <img src="{{ photo.file_name }}" alt="">
-      </figure>
-
-      {% set colors = photo.colors.split(',') %}
-      {% for color in colors %}
-      <div class="sample-palette" style="background-color: {{ color }} ;"></div>
-      {% endfor %}
-      
-      <a href="/remove_image/{{ photo.image_id }}">
-        <button class="remove-image">Remove {{ photo.image_id }}</button>
-      </a>
-
-    </div>
-    {% endfor %}
+    {% include 'palette.html' %}
   </div>
 
 {% endblock %}

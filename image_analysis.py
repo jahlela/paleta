@@ -57,7 +57,13 @@ def get_common_colors(image, num_colors=1000):
     w, h = image.size
 
     # Returns a list of unsorted tuples
-    get_colors = image.getcolors(w * h)
+    raw_colors = image.getcolors(w * h)
+    print 'len(raw_colors)', len(raw_colors)
+
+    # Keep colors whose Saturation and Value > 100 (out of 255), and Value < 230
+    get_colors = [color for color in raw_colors if color[1][1] > 100 
+                  or color[1][2] < 230 or color[1][0] > 100] 
+    print 'len(get_colors)', len(get_colors)
 
     # Order colors from most to least common
     get_colors.sort(reverse=True)
@@ -212,7 +218,7 @@ def get_palette(URL, os_boolean, sample_limit, palette_limit=5):
 
     # Get top color from each bin in HSV format
     top_bin_colors = tally_color_bins(color_bins_filled)
-    print top_bin_colors
+    # print top_bin_colors
 
     # Get final palette in hex with user-defined limit
     palette = get_display_colors(top_bin_colors, palette_limit, total_pixels)

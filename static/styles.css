@@ -41,18 +41,28 @@ h1 img.logo {
     width: 50%;
 }
 
+#submit-image-section {
+    margin: auto 0;
+}
+
 .palette-seed-figure img {
     /*margin-left: 10%;*/
     height: 250px;
 }
 
-div.sample-palette {
+.palette-color {
     display: inline-block;
     margin: 1%;
     border: 2px solid black; 
     height: 50px; 
     width: 50px; 
 }
+
+#sample-palette-section div.remove-image-div {
+    display: none;
+}
+
+
 
 /* *********** Interactive Elements *********** */
 
