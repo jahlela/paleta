@@ -9,6 +9,7 @@ from flask_debugtoolbar import DebugToolbarExtension
 from model import connect_to_db, db, User, Image, UserImage
 
 from image_analysis import hash_photo
+from color_difference import get_image_and_palette
 
 import os.path
 import requests
@@ -70,7 +71,7 @@ def analyze_photo():
     #  image is a hashed file name of the original image's content
     URL = request.form['URL']
     # hash_photo is defined in image_analysis.py
-    file_name, colors = hash_photo(URL)
+    file_name, colors = get_image_and_palette(URL)
 
     # Next, check if the image is already in the db 
     image_in_db = Image.query.filter(Image.file_name==file_name).first()

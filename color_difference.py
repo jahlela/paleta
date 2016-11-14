@@ -1,54 +1,80 @@
-import itertools
+from PIL import Image
+from colour import Color
+import os.path
+import requests
 
-from image_analysis import get_display_colors
+from image_analysis import define_os_path
 
+from kmeans import get_kmeans
 
-
-top_bin_colors = [(154995, (19, 255, 237)), (125281, (23, 255, 242)), (52067, (0, 255, 113)), (2816, (31, 255, 236)), (1878, (254, 255, 126)), (180, (56, 145, 114))]
-
-
-display_colors = get_display_colors(top_bin_colors, 35, 20000)
-
-
+################### HELPER FUNCTIONS ###################
 
 
+################### Image Analysis ###################
 
+def get_file_path(URL):
 
-def find_distinct_colors(display_colors):
-    """ Takes in a list of hex colors and """
+    os_path = define_os_path()
 
-    print 'display_colors', display_colors
+    # Grab the image from a URL
+    image_response = requests.get(URL)    
 
-    
-    
+    # Create a hexidecimal hash of the image data string for a unique filename
+    file_hash = hex(hash(image_response.content))
 
-    # Convert hex to decimal for percent difference
-    for color in display_colors:
-        dec_colors = [int(x[1:], 16) for x in display_colors]
-    
-    dec_colors.sort()
-    print 'dec_colors', dec_colors
-
-    # diff_interval is maximum possible value (white:FFFFFF:16777215) / 100, 
-    # rounded down to nearest 10 --> 167770
-    diff_interval = 167770
-
-    next_min = dec_colors[0] + diff_interval
-    keepers = []
-
-    for color in dec_colors:
-        # If the color is different enough, add it to keepers and update next_min
-        if next_min =< color:
-            print 'color', color
-            hex_color = "#" + hex(color)[2:]
-            keepers.append(hex_color)
-            next_min = color + diff_interval
-        print color, next_min
-    
-    print 'keepers', keepers
-    return keepers
+    # Sometimes there is a dash at the beginning -- not great for a file name
+    # Replace the '-' with a 1 to maintain uniqueness
+    if file_hash[0] == '-':
+        local_file_name = '/static/img/photos/1' +  hex(hash(image_response.content))[2:] + '.png'
+        file_hash_name = os_path + local_file_name
         
-find_distinct_colors(display_colors)
+    # Create a filename as is
+    else:
+        local_file_name = '/static/img/photos/' + hex(hash(image_response.content))[1:] + '.png'
+        file_hash_name = os_path + local_file_name
+
+    # Write the image to local repository with the content hash as a name
+    with open(file_hash_name,'wb') as new_image_file:
+        new_image_file.write(image_response.content)
+
+    file_path = file_hash_name
+    print 'file_path', file_path
+    
+    # return file_path
+    return file_path
+
+
+def get_image_and_palette(URL):
+    """ Takes in a string URL of an image, a boolean for whether the image is 
+        stored on the local machine, two integers for limits on sample size and 
+        palette size, and returns a list of hex strings with the image palette. """
+
+    file_path = get_file_path(URL)
+
+    kmeans_list = get_kmeans(file_path)
+
+    palette = []
+
+    # Convert each color from RGB --> hex because strings are better
+    for rgb_color in kmeans_list:
+
+        # unpack to individual values for hex transformation
+        red, green, blue = rgb_color
+
+        # Create Colour object and convert from RBG --> hex
+        hex_color = Color(rgb=(red/256.00, green/256.00, blue/256.00)).get_hex()
+
+        # Add each hex color to final list
+        palette.append(hex_color)
+
+    print 'palette', palette 
+    return [file_path, palette]
+
+
+
+
+
+
 
 
 

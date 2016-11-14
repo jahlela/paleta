@@ -1,20 +1,11 @@
 from PIL import Image
-from colour import Color
 
-import os.path
 import math
-import colorsys
 import requests
 
 
 
 ################### Helper Functions ###################
-
-
-def define_os_path():
-    # Prepend os file path to image 
-    os_path = os.path.dirname(os.path.abspath(__file__))
-    return os_path
 
 def distance(p1, p2):
     x1,y1,z1 = p1
