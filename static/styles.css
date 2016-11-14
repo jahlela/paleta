@@ -53,7 +53,7 @@ h1 img.logo {
 
 .image-with-palette {
     display: inline-block;
-    min-width: 300px;
+    min-width: 330px;
     padding: 10px;
 }
 
@@ -75,6 +75,9 @@ h1 img.logo {
     display: none;
 }
 
+#user-info-ul li {
+    list-style-type: none;
+}
 
 
 /* *********** Interactive Elements *********** */
