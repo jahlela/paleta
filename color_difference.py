@@ -18,8 +18,12 @@ def get_file_path(URL):
 
     os_path = define_os_path()
 
-    # Grab the image from a URL
-    image_response = requests.get(URL)
+    # Fake sites into thinking my app's request is coming from a browser
+    headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) \
+                    AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 \
+                    Safari/537.36'}
+    # Grab the image from a URL using fake browser headers
+    image_response = requests.get(URL, headers=headers)
 
     
     if image_response.status_code is not 200:

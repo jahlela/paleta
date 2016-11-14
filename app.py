@@ -108,6 +108,7 @@ def analyze_photo():
             db.session.add(new_user_image)
             db.session.commit()
 
+    # This must be a list, even though there is only one element
     new_photo = [Image.query.filter(Image.file_name==file_name).first()]
 
     # Technically just calls the index function in the '/' GET route
