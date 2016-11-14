@@ -9,6 +9,7 @@ from flask_debugtoolbar import DebugToolbarExtension
 from model import connect_to_db, db, User, Image, UserImage
 
 from image_analysis import hash_photo
+from color_difference import get_image_and_palette
 
 import os.path
 import requests
@@ -25,7 +26,8 @@ app.jinja_env.undefined = StrictUndefined
 
 ################## Setup ##################
 
-
+# Make sure logged_in is initialized in the session so that everything in the 
+# menu renders properly
 @app.before_request
 def before_request():
     """ Default session["logged_in"] to false if next endpoint is not /login"""
@@ -40,7 +42,6 @@ def before_request():
 @app.route('/', methods=['GET'])
 def index(photos=None):
     """ Render homepage """
-
 
     if "user_id" not in session:
         session["user_id"] = {}
@@ -70,7 +71,12 @@ def analyze_photo():
     #  image is a hashed file name of the original image's content
     URL = request.form['URL']
     # hash_photo is defined in image_analysis.py
-    file_name, colors = hash_photo(URL)
+    file_name, colors = get_image_and_palette(URL)
+    print '\n New phto request to get_image_and_palette'
+    print 'file_name', file_name
+    print 'colors', colors
+
+    colors = str(','.join(colors))
 
     # Next, check if the image is already in the db 
     image_in_db = Image.query.filter(Image.file_name==file_name).first()
@@ -124,6 +130,7 @@ def user_details(user_id, photos=None):
 
     images_by_user = UserImage.query.filter(UserImage.user_id==user_id).all()
 
+    # If the user has images associated with them, display them 
     if images_by_user:
         photos = []
         for userimage in images_by_user:
@@ -131,6 +138,7 @@ def user_details(user_id, photos=None):
         return render_template('/user_profile.html',
                                user=user,
                                photos=photos)
+    # If not, just show user information
     else:
         return render_template('/user_profile.html',
                                user=user)
@@ -242,7 +250,28 @@ def remove_image_from_profile(image_id):
 
     return redirect('/users/' + str(user_id))
 
+################## Helper Functions ##################
 
+def clean_image_records():
+
+    images_in_db = Image.query.all()
+    print 'images_in_db', images_in_db
+
+
+    # Make sure all items in the string are indeed a string and not a set
+    for image in images_in_db:
+        if image.colors[0] == "{":
+            print image.colors
+            image.colors = image.colors[1:-1]
+        elif image.colors[0] == "\"":
+            print image.colors
+            image.colors = image.colors[1:-1]
+
+        # Make sure all files start with /static
+        if image.file_name[0] == "s":
+            image.file_name = "/" + image.file_name
+
+    db.session.commit()
 
 
 ################## Run Server ##################
@@ -255,6 +284,7 @@ if __name__ == "__main__":
     app.jinja_env.auto_reload = app.debug
 
     connect_to_db(app)
+    # clean_image_records()
 
     # Use the DebugToolbar
     DebugToolbarExtension(app)
