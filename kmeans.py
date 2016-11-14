@@ -32,6 +32,10 @@ def get_kmeans(file_path=None, iterations=20):
     if file_path is None:
         file_path = "static/img/demo/caterpillar.png"
 
+    # Not elegant, but makes it not break
+    elif file_path[0] == "/":
+        file_path = file_path[1:]
+
     # Create image object
     image = Image.open(file_path).convert("RGB")
     width, height = image.size
@@ -49,6 +53,9 @@ def get_kmeans(file_path=None, iterations=20):
             for j in xrange(height/8):
                 # Use PIL's .getpixel() to find the RGB color at each pixel
                 pixel = image.getpixel((8*i,8*j))
+
+                if pixel == (0,0,0):
+                    pass
 
                 # Default the min centroid index and min distance to 0 and infiniti
                 min_cent_idx, min_dist = (0, float("inf"))

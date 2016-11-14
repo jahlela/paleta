@@ -21,27 +21,30 @@ def get_file_path(URL):
 
     # Create a hexidecimal hash of the image data string for a unique filename
     file_hash = hex(hash(image_response.content))
+    print 'file_hash', file_hash
 
     # Sometimes there is a dash at the beginning -- not great for a file name
     # Replace the '-' with a 1 to maintain uniqueness
     if file_hash[0] == '-':
         local_file_name = '/static/img/photos/1' +  hex(hash(image_response.content))[2:] + '.png'
         file_hash_name = os_path + local_file_name
+        print 'file_hash_name', file_hash_name
         
     # Create a filename as is
     else:
         local_file_name = '/static/img/photos/' + hex(hash(image_response.content))[1:] + '.png'
         file_hash_name = os_path + local_file_name
+        print 'file_hash_name', file_hash_name
 
     # Write the image to local repository with the content hash as a name
     with open(file_hash_name,'wb') as new_image_file:
         new_image_file.write(image_response.content)
 
-    file_path = file_hash_name
-    print 'file_path', file_path
+    
+    print 'local_file_name', local_file_name
     
     # return file_path
-    return file_path
+    return local_file_name
 
 
 def get_image_and_palette(URL):

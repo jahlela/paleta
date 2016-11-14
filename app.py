@@ -42,7 +42,6 @@ def before_request():
 def index(photos=None):
     """ Render homepage """
 
-
     if "user_id" not in session:
         session["user_id"] = {}
         user = None
@@ -72,6 +71,11 @@ def analyze_photo():
     URL = request.form['URL']
     # hash_photo is defined in image_analysis.py
     file_name, colors = get_image_and_palette(URL)
+    print '\n New phto request to get_image_and_palette'
+    print 'file_name', file_name
+    print 'colors', colors
+
+    colors = str(','.join(colors))
 
     # Next, check if the image is already in the db 
     image_in_db = Image.query.filter(Image.file_name==file_name).first()
@@ -243,7 +247,26 @@ def remove_image_from_profile(image_id):
 
     return redirect('/users/' + str(user_id))
 
+################## Helper Functions ##################
 
+def clean_image_records():
+
+    images_in_db = Image.query.all()
+    print 'images_in_db', images_in_db
+
+
+    for image in images_in_db:
+        if image.colors[0] == "{":
+            print image.colors
+            image.colors = image.colors[1:-1]
+        elif image.colors[0] == "\"":
+            print image.colors
+            image.colors = image.colors[1:-1]
+
+        if image.file_name[0] == "s":
+            image.file_name = "/" + image.file_name
+
+    db.session.commit()
 
 
 ################## Run Server ##################
@@ -256,6 +279,7 @@ if __name__ == "__main__":
     app.jinja_env.auto_reload = app.debug
 
     connect_to_db(app)
+    clean_image_records()
 
     # Use the DebugToolbar
     DebugToolbarExtension(app)
