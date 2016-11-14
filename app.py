@@ -26,7 +26,8 @@ app.jinja_env.undefined = StrictUndefined
 
 ################## Setup ##################
 
-
+# Make sure logged_in is initialized in the session so that everything in the 
+# menu renders properly
 @app.before_request
 def before_request():
     """ Default session["logged_in"] to false if next endpoint is not /login"""
@@ -129,6 +130,7 @@ def user_details(user_id, photos=None):
 
     images_by_user = UserImage.query.filter(UserImage.user_id==user_id).all()
 
+    # If the user has images associated with them, display them 
     if images_by_user:
         photos = []
         for userimage in images_by_user:
@@ -136,6 +138,7 @@ def user_details(user_id, photos=None):
         return render_template('/user_profile.html',
                                user=user,
                                photos=photos)
+    # If not, just show user information
     else:
         return render_template('/user_profile.html',
                                user=user)
@@ -255,6 +258,7 @@ def clean_image_records():
     print 'images_in_db', images_in_db
 
 
+    # Make sure all items in the string are indeed a string and not a set
     for image in images_in_db:
         if image.colors[0] == "{":
             print image.colors
@@ -263,6 +267,7 @@ def clean_image_records():
             print image.colors
             image.colors = image.colors[1:-1]
 
+        # Make sure all files start with /static
         if image.file_name[0] == "s":
             image.file_name = "/" + image.file_name
 
@@ -279,7 +284,7 @@ if __name__ == "__main__":
     app.jinja_env.auto_reload = app.debug
 
     connect_to_db(app)
-    clean_image_records()
+    # clean_image_records()
 
     # Use the DebugToolbar
     DebugToolbarExtension(app)

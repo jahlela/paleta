@@ -3,12 +3,14 @@ from colour import Color
 import os.path
 import requests
 
-from image_analysis import define_os_path
-
 from kmeans import get_kmeans
 
 ################### HELPER FUNCTIONS ###################
 
+def define_os_path():
+    # Prepend os file path to image 
+    os_path = os.path.dirname(os.path.abspath(__file__))
+    return os_path
 
 ################### Image Analysis ###################
 
