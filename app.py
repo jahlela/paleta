@@ -70,11 +70,13 @@ def analyze_photo():
     # Grab URL from form and use it to create an image file path and palette
     #  image is a hashed file name of the original image's content
     URL = request.form['URL']
-    # hash_photo is defined in image_analysis.py
-    file_name, colors = get_image_and_palette(URL)
-    print '\n New phto request to get_image_and_palette'
-    print 'file_name', file_name
-    print 'colors', colors
+    
+    try:
+        file_name, colors = get_image_and_palette(URL)
+    except: 
+        flash("Whoops! Looks like we can't access that image. \
+               Please try a different one.")
+        return redirect('/')
 
     colors = str(','.join(colors))
 
@@ -106,10 +108,10 @@ def analyze_photo():
             db.session.add(new_user_image)
             db.session.commit()
 
-    photos = [Image.query.filter(Image.file_name==file_name).first()]
+    new_photo = [Image.query.filter(Image.file_name==file_name).first()]
 
     # Technically just calls the index function in the '/' GET route
-    return index(photos)
+    return index(new_photo)
 
 
 

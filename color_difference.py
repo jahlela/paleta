@@ -19,7 +19,11 @@ def get_file_path(URL):
     os_path = define_os_path()
 
     # Grab the image from a URL
-    image_response = requests.get(URL)    
+    image_response = requests.get(URL)
+
+    
+    if image_response.status_code is not 200:
+        raise StandardError("File not valid. Try another image.")    
 
     # Create a hexidecimal hash of the image data string for a unique filename
     file_hash = hex(hash(image_response.content))
@@ -54,7 +58,10 @@ def get_image_and_palette(URL):
         stored on the local machine, two integers for limits on sample size and 
         palette size, and returns a list of hex strings with the image palette. """
 
-    file_path = get_file_path(URL)
+    try:
+        file_path = get_file_path(URL)
+    except: 
+        raise StandardError("File not valid. Try another image.")
 
     kmeans_list = get_kmeans(file_path)
 
