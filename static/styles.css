@@ -51,6 +51,12 @@ h1 img.logo {
     /*color: black;*/
 }
 
+.image-with-palette {
+    display: inline-block;
+    min-width: 300px;
+    padding: 10px;
+}
+
 .palette-seed-figure img {
     /*margin-left: 10%;*/
     height: 250px;
@@ -64,6 +70,7 @@ h1 img.logo {
     width: 50px; 
 }
 
+/* Hide delete button from the home page images*/
 #sample-palette-section div.remove-image-div {
     display: none;
 }

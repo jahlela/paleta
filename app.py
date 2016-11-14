@@ -1,6 +1,6 @@
 from jinja2 import StrictUndefined
 from flask_sqlalchemy import sqlalchemy
-from sqlalchemy import func
+from sqlalchemy import func, desc
 
 from flask import Flask, jsonify, render_template, request, redirect, session, flash
 from flask_debugtoolbar import DebugToolbarExtension
@@ -55,7 +55,7 @@ def index(photos=None):
         user = User.query.get(user_id)
 
     if photos is None:
-        photos = [Image.query.get(32)]
+        photos = [Image.query.get(80)]
 
     return render_template('homepage.html',
                             user=user,
@@ -133,11 +133,12 @@ def user_details(user_id, photos=None):
 
     images_by_user = UserImage.query.filter(UserImage.user_id==user_id).all()
 
-    # If the user has images associated with them, display them 
+    # If the user has images associated with them, display them by most recent
     if images_by_user:
         photos = []
         for userimage in images_by_user:
-	    photos.append(userimage.image)
+	       photos.append(userimage.image)
+        photos.reverse()
         return render_template('/user_profile.html',
                                user=user,
                                photos=photos)
