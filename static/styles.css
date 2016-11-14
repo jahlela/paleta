@@ -3,11 +3,16 @@
 html {
     padding: 20px;
     margin: 0;
+    text-align: center;
 }
 
 body { 
     /*background-color: black;*/
     /*color: white;*/
+}
+
+.container {
+    text-align: center;
 }
 
 section {
@@ -23,7 +28,7 @@ a:hover {
 }
 
 h1, h2, h3, h4, h5, h6 {
-    /*color: #00acc1;*/
+    color: #00acc1;
 }
 
 h1 img.logo {
@@ -37,12 +42,13 @@ h1 img.logo {
 /* *********** Specialized Elements *********** */
 
 #welcome-section .center {
-    margin-left: 30%;
+    margin-left: 25%;
     width: 50%;
 }
 
 #submit-image-section {
     margin: auto 0;
+    /*color: black;*/
 }
 
 .palette-seed-figure img {

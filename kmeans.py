@@ -20,6 +20,12 @@ def add(p1,p2):
 def mult(p,s):
     return (s * p[0], s * p[1], s * p[2])
 
+def is_too_dark(rgb):
+      r, g, b = rgb
+
+      luminance = ((r*0.299 + g*0.587 + b*0.114) / 256)
+
+      return luminance < .15
 
 ################### Kmeans Analysis ###################
 
@@ -54,8 +60,8 @@ def get_kmeans(file_path=None, iterations=20):
                 # Use PIL's .getpixel() to find the RGB color at each pixel
                 pixel = image.getpixel((8*i,8*j))
 
-                if pixel == (0,0,0):
-                    pass
+                if is_too_dark(pixel):
+                    continue
 
                 # Default the min centroid index and min distance to 0 and infiniti
                 min_cent_idx, min_dist = (0, float("inf"))
