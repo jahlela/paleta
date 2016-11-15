@@ -66,22 +66,9 @@ h1 img.logo {
     display: inline-block;
     margin: 1%;
     border: 2px solid black; 
-    height: 50px; 
-    width: 50px; 
-}
-
-/* Hide delete button from the home page images*/
-#sample-palette-section div.remove-image-div {
-    display: none;
-}
-
-#user-info-ul li {
-    list-style-type: none;
-}
-
-
+    border-radius: 5px;
+  }
 /* *********** Interactive Elements *********** */
-
 
 .alert {
 

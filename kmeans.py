@@ -48,7 +48,7 @@ def get_kmeans(file_path=None, iterations=20):
 
     centroids = [(255,255,255), (0, 255, 255), (255,0, 255), (255,255,0), (200,200,200)]
 
-    for _ in xrange(20):
+    for _ in xrange(10):
         # List of tuples with the average of pixels that are most similar to that 
         # centroid and the count of those pixels. The count is non-zero to prevent
         # division by zero errors

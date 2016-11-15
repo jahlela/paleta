@@ -1,3 +1,4 @@
+import PIL
 from PIL import Image
 from colour import Color
 import os.path
@@ -14,6 +15,17 @@ def define_os_path():
 
 ################### Image Analysis ###################
 
+def resize_and_save(local_file_name):
+    image = Image.open(local_file_name)
+    width, height = image.size
+
+    new_height = 250.0
+    height_percent = (new_height / height)
+    new_width = int(height_percent * width)
+
+    image = image.resize((new_width, int(new_height)), PIL.Image.ANTIALIAS)
+    image.save(local_file_name,optimize=True,quality=85)
+
 def get_file_path(URL):
 
     os_path = define_os_path()
@@ -23,8 +35,7 @@ def get_file_path(URL):
                     AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 \
                     Safari/537.36'}
     # Grab the image from a URL using fake browser headers
-    image_response = requests.get(URL, headers=headers)
-
+    image_response = requests.get(URL, headers=headers, stream=True)
     
     if image_response.status_code is not 200:
         raise StandardError("File not valid. Try another image.")    
@@ -50,7 +61,8 @@ def get_file_path(URL):
     with open(file_hash_name,'wb') as new_image_file:
         new_image_file.write(image_response.content)
 
-    
+    resize_and_save(local_file_name)
+
     print 'local_file_name', local_file_name
     
     # return file_path
