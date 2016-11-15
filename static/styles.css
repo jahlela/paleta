@@ -50,22 +50,25 @@ h1 img.logo {
     margin: auto 0;
     /*color: black;*/
 }
-
+/*
 .image-with-palette {
     display: inline-block;
     min-width: 330px;
     padding: 10px;
 }
-
+*/
 .palette-seed-figure img {
-    /*margin-left: 10%;*/
-    height: 250px;
+    max-height: 250px;
+    max-height: 250px;
+    padding: 10px 10px;
+    border-radius: 15px;
 }
 
 .palette-color {
     display: inline-block;
     margin: 1%;
     border: 2px solid black; 
+    border-radius: 5px;
     height: 50px; 
     width: 50px; 
 }
@@ -79,8 +82,33 @@ h1 img.logo {
     list-style-type: none;
 }
 
-
 /* *********** Interactive Elements *********** */
+
+/* Masonry elements that display adaptively */
+
+.grid {
+  background: white;
+  max-width: 1300px;
+}
+
+/* clearfix */
+.grid:after {
+  content: '';
+  display: block;
+  clear: both;
+}
+
+/* ---- grid-item ---- */
+
+.grid-item {
+  min-width: 330px;
+  max-width: 500px;
+  /*height: 250px;*/
+  float: left;
+  border: 2px solid #333;
+  border-color: hsla(0, 0%, 0%, 0.5);
+  border-radius: 5px;
+}
 
 
 .alert {
