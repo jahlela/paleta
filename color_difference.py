@@ -3,17 +3,36 @@ from PIL import Image
 from colour import Color
 import os.path
 import requests
+import time
 
 from kmeans import get_kmeans
 
 ################### HELPER FUNCTIONS ###################
 
 def define_os_path():
-    # Prepend os file path to image 
+    """ Fetch os file path """
+
     os_path = os.path.dirname(os.path.abspath(__file__))
     return os_path
 
 ################### Image Analysis ###################
+def resize_and_save(local_file_name, input_height = 250.0):
+    """ Takes an image file path and overwrites the image with a smaller version """
+
+    # Open local image and get width and height
+    image = Image.open(local_file_name)
+    width, height = image.size
+
+    # Define new height and width, keeping the ratio between them constant
+    new_height = float(input_height)
+    height_percent = (new_height / height)
+    new_width = int(height_percent * width)
+
+    # Resize image, preserving aspect ratio
+    image = image.resize((new_width, int(new_height)), PIL.Image.ANTIALIAS)
+    image.save(local_file_name, optimize=True, quality=95)
+    image.close()
+
 
 def resize_and_save(local_file_name):
     image = Image.open(local_file_name)
@@ -27,6 +46,11 @@ def resize_and_save(local_file_name):
     image.save(local_file_name,optimize=True,quality=85)
 
 def get_file_path(URL):
+    """ Takes a web-hosted URL and returns the local file path of the image after
+        performing a get request. """
+
+    # Start timer for get request
+    start_get = time.time()
 
     os_path = define_os_path()
 
@@ -35,10 +59,14 @@ def get_file_path(URL):
                     AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 \
                     Safari/537.36'}
     # Grab the image from a URL using fake browser headers
-    image_response = requests.get(URL, headers=headers, stream=True)
-    
+    image_response = requests.get(URL, headers=headers)
+    # Show 
+    print '\n Get request time elapsed: ', (time.time() - start_get)
+
+    # Raise an error if the get request was unsuccessful
+
     if image_response.status_code is not 200:
-        raise StandardError("File not valid. Try another image.")    
+        raise StandardError("Response code not 200. Try another image.")    
 
     # Create a hexidecimal hash of the image data string for a unique filename
     file_hash = hex(hash(image_response.content))
@@ -61,24 +89,24 @@ def get_file_path(URL):
     with open(file_hash_name,'wb') as new_image_file:
         new_image_file.write(image_response.content)
 
-    resize_and_save(local_file_name)
+    # Pass the file_hash_name to be resized
+    resize_and_save(file_hash_name)
 
-    print 'local_file_name', local_file_name
-    
     # return file_path
     return local_file_name
 
 
 def get_image_and_palette(URL):
-    """ Takes in a string URL of an image, a boolean for whether the image is 
-        stored on the local machine, two integers for limits on sample size and 
-        palette size, and returns a list of hex strings with the image palette. """
+    """ Takes in a string URL of an image and returns a list of hex 
+        strings with the image palette. """
 
+    # Fail elegantly
     try:
         file_path = get_file_path(URL)
     except: 
         raise StandardError("File not valid. Try another image.")
 
+    # Perform kmeans distribution analysis on the local file
     kmeans_list = get_kmeans(file_path)
 
     palette = []
@@ -95,7 +123,6 @@ def get_image_and_palette(URL):
         # Add each hex color to final list
         palette.append(hex_color)
 
-    print 'palette', palette 
     return [file_path, palette]
 
 

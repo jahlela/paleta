@@ -60,14 +60,27 @@ h1 img.logo {
 .palette-seed-figure img {
     /*margin-left: 10%;*/
     height: 250px;
+    padding-bottom: 10px;
 }
 
 .palette-color {
     display: inline-block;
     margin: 1%;
-    border: 2px solid black; 
+    border: .5px solid black; 
     border-radius: 5px;
-  }
+    height: 50px; 
+    width: 50px; 
+}
+
+/* Hide delete button from the home page images*/
+#sample-palette-section div.remove-image-div {
+    display: none;
+}
+
+#user-info-ul li {
+    list-style-type: none;
+}
+
 /* *********** Interactive Elements *********** */
 
 .alert {
