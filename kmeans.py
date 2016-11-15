@@ -2,8 +2,7 @@ from PIL import Image
 
 import math
 import requests
-
-
+import time
 
 ################### Helper Functions ###################
 
@@ -34,6 +33,9 @@ def get_kmeans(file_path=None, iterations=20):
         represent the centroids of 5 k-mean clusters (dominant palette). 
 
         Optional: number of iterations """
+
+    start_kmeans = time.time()
+
 
     if file_path is None:
         file_path = "static/img/demo/caterpillar.png"
@@ -75,19 +77,13 @@ def get_kmeans(file_path=None, iterations=20):
                 nearests[min_cent_idx] = (add(pixel, s), n + 1)
 
         for cent_idx in xrange(len(centroids)):
-            centroids[cent_idx] = mult(nearests[cent_idx][0], 1 / nearests[cent_idx][1])
-        
+            centroids[cent_idx] = mult(nearests[cent_idx][0], 1 / nearests[cent_idx][1]) 
 
         for idx in xrange(len(centroids)):
             centroids[idx] = (int(centroids[idx][0]), int(centroids[idx][1]), int(centroids[idx][2]))
-
-    
-    print '\n \t centroids', centroids
-
+    print '\n Kmeans time elapsed: ', (time.time() - start_kmeans)
 
     return centroids
-
-palette = get_kmeans() 
 
 
 
