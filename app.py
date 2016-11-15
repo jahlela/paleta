@@ -73,7 +73,8 @@ def analyze_photo():
     
     try:
         file_name, colors = get_image_and_palette(URL)
-    except: 
+    except StandardError as e:
+        print e 
         flash("Whoops! Looks like we can't access that image. \
                Please try a different one.")
         return redirect('/')

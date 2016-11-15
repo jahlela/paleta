@@ -38,7 +38,7 @@ def get_file_path(URL):
     image_response = requests.get(URL, headers=headers, stream=True)
     
     if image_response.status_code is not 200:
-        raise StandardError("File not valid. Try another image.")    
+        raise StandardError("Response code not 200. Try another image.")    
 
     # Create a hexidecimal hash of the image data string for a unique filename
     file_hash = hex(hash(image_response.content))
@@ -61,7 +61,7 @@ def get_file_path(URL):
     with open(file_hash_name,'wb') as new_image_file:
         new_image_file.write(image_response.content)
 
-    resize_and_save(local_file_name)
+    # resize_and_save(local_file_name)
 
     print 'local_file_name', local_file_name
     
