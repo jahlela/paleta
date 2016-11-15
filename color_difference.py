@@ -34,6 +34,17 @@ def resize_and_save(local_file_name, input_height = 250.0):
     image.close()
 
 
+def resize_and_save(local_file_name):
+    image = Image.open(local_file_name)
+    width, height = image.size
+
+    new_height = 250.0
+    height_percent = (new_height / height)
+    new_width = int(height_percent * width)
+
+    image = image.resize((new_width, int(new_height)), PIL.Image.ANTIALIAS)
+    image.save(local_file_name,optimize=True,quality=85)
+
 def get_file_path(URL):
     """ Takes a web-hosted URL and returns the local file path of the image after
         performing a get request. """
@@ -53,8 +64,9 @@ def get_file_path(URL):
     print '\n Get request time elapsed: ', (time.time() - start_get)
 
     # Raise an error if the get request was unsuccessful
+
     if image_response.status_code is not 200:
-        raise StandardError("File not valid. Try another image.")    
+        raise StandardError("Response code not 200. Try another image.")    
 
     # Create a hexidecimal hash of the image data string for a unique filename
     file_hash = hex(hash(image_response.content))
