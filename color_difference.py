@@ -1,3 +1,4 @@
+import PIL
 from PIL import Image
 from colour import Color
 import os.path
@@ -13,6 +14,23 @@ def define_os_path():
     return os_path
 
 ################### Image Analysis ###################
+def resize_and_save(local_file_name):
+    image = Image.open(local_file_name)
+    print '\n local_file_name', local_file_name
+    print 'image', image
+    width, height = image.size
+    print 'width, height', width, height
+
+    new_height = 250.0
+    height_percent = (new_height / height)
+    print 'height_percent', height_percent
+    new_width = int(height_percent * width)
+    print 'new_width', new_width
+
+    image = image.resize((new_width, int(new_height)), PIL.Image.ANTIALIAS)
+    print 'image', image
+    image.save(local_file_name,optimize=True,quality=95)
+
 
 def get_file_path(URL):
 
@@ -50,7 +68,8 @@ def get_file_path(URL):
     with open(file_hash_name,'wb') as new_image_file:
         new_image_file.write(image_response.content)
 
-    
+    resize_and_save(file_hash_name)
+
     print 'local_file_name', local_file_name
     
     # return file_path
