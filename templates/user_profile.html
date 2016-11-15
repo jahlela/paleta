@@ -8,8 +8,8 @@
     <li> Email: {{ user.email }}</li>
   </ul>
 
-  <div id="user-images" class="grid" 
-       data-masonry='{ "itemSelector": ".grid-item", "columnWidth": 200 }'>
+  <div id="user-images" class="grid">
+    <div class="grid-sizer"></div>
     {% include 'palette.html' %}
   </div>
 
