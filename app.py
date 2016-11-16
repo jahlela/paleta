@@ -124,6 +124,27 @@ def register():
     return render_template("/register.html")
 
 
+@app.route('/gallery', methods=["GET"])
+def gallery(photos=None):
+    """ Display photo gallery """
+
+    # get user object from database with their user_id
+    if session["logged_in"]:
+        user_id = session["user_id"]
+        user = User.query.get(user_id)
+
+    gallery_images = Image.query.all()
+    photos = []
+
+    for photo in gallery_images:
+        photos.append(photo)
+    photos.reverse()
+
+    return render_template('/gallery.html',
+                            photos=photos, 
+                            user=user)
+
+
 @app.route('/users/<user_id>', methods=["GET"])
 def user_details(user_id, photos=None):
     """ User details """

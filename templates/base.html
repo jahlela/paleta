@@ -20,7 +20,7 @@
 
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav navbar-right">
-
+                        <li><a href="/gallery">Gallery</a></li>
                     <!-- If user is not logged in, display links to login or register -->
                     {% if not session["logged_in"] %}
                         <li><a href="#" data-toggle="modal" data-target="#loginModal">Login</a></li>
@@ -30,7 +30,6 @@
                     {% else %}  
                         <li><a href="/users/{{ user.user_id }}">Profile</a></li>
                         <li><a href="/logout">Logout</a></li>
-                        
                     {% endif %}
                 </ul>
             </div>
