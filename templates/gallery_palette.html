@@ -1,0 +1,22 @@
+{% for photo in photos %}
+    <div class="image-with-palette">
+
+      <figure class="palette-seed-figure">
+          <img src="{{ photo.file_name }}" alt="">
+      </figure>
+
+      {% set colors = photo.colors.split(',') %}
+      {% for color in colors %}
+      <div class="palette-color" style="background-color: {{ color }} ;"></div>
+      {% endfor %}
+      
+      {% if session["logged_in"] %}
+          <div class="favorite-image-div">
+              <a href="/favorite_image/{{ photo.image_id }}">
+                <button class="favorite-image-btn">Favorite {{ photo.image_id }}</button>
+              </a>
+          </div>
+      {% endif %}
+
+    </div>
+{% endfor %}

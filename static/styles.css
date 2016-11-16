@@ -91,3 +91,13 @@ h1 img.logo {
 .alert-warnings {
 
 }
+
+/* *********** @media Queries *********** */
+
+@media (min-width: 1250px)
+.container {
+    width: 1300px;
+}
+
+
+
