@@ -110,14 +110,6 @@ def get_kmeans(file_path=None, iterations=20):
         for idx in xrange(len(centroids)):
             centroids[idx] = (int(centroids[idx][0]), int(centroids[idx][1]), int(centroids[idx][2]))
 
-
-
-
-
-        
-
-
-
     print '\n Kmeans time elapsed: ', (time.time() - start_kmeans)
     return centroids
 
