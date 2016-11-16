@@ -132,6 +132,8 @@ def gallery(photos=None):
     if session["logged_in"]:
         user_id = session["user_id"]
         user = User.query.get(user_id)
+    else:
+        user = None
 
     gallery_images = Image.query.all()
     photos = []
@@ -275,6 +277,29 @@ def remove_image_from_profile(image_id):
 
 
     return redirect('/users/' + str(user_id))
+
+
+
+@app.route('/favorite_image/<image_id>')
+def add_image_to_profile(image_id):
+    """ The user should already be logged in. """
+
+    # Grab user_id from the browser session     
+    user_id = session["user_id"]
+    
+    userimage_in_db = UserImage.query.filter(UserImage.user_id==user_id, 
+                                        UserImage.image_id==image_id).first()
+
+    if userimage_in_db:
+        flash('Image already added to profile')
+    else: 
+        new_user_image = UserImage(user_id=user_id, image_id=image_id)
+        db.session.add(new_user_image)
+        db.session.commit()
+        flash('Image added!')
+
+
+    return redirect('/gallery')
 
 ################## Helper Functions ##################
 
