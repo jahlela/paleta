@@ -1,5 +1,6 @@
 from PIL import Image
 
+import random
 import math
 import requests
 import time
@@ -7,6 +8,7 @@ import time
 ################### Helper Functions ###################
 
 def distance(p1, p2):
+    """ Find Euclidean distance between two points in 3D space """
     x1,y1,z1 = p1
     x2,y2,z2 = p2
     return (x1 - x2)**2 + (y1 - y2)**2 + (z1 - z2)**2
@@ -20,11 +22,24 @@ def mult(p,s):
     return (s * p[0], s * p[1], s * p[2])
 
 def is_too_dark(rgb):
-      r, g, b = rgb
+  r, g, b = rgb
 
-      luminance = ((r*0.299 + g*0.587 + b*0.114) / 256)
+  luminance = ((r*0.299 + g*0.587 + b*0.114) / 256.0)
+  return luminance < .1
 
-      return luminance < .15
+def get_random_rgb():
+    rgb_tuple = []
+
+    for _ in xrange(3):
+        rgb_tuple.append(random.randint(0,255))
+
+    return tuple(rgb_tuple)
+
+def nearest_is_empty(nearests):
+    """ Checks for nearests with no members and tries another color """
+    for nearest in nearests:
+        if nearest[0] is (0,0,0):
+            nearest[0] = get_random_rgb()
 
 ################### Kmeans Analysis ###################
 
@@ -36,11 +51,11 @@ def get_kmeans(file_path=None, iterations=20):
 
     start_kmeans = time.time()
 
-
     if file_path is None:
         file_path = "static/img/demo/caterpillar.png"
 
     # Not elegant, but makes it not break
+    # Please do not delete without testing!
     elif file_path[0] == "/":
         file_path = file_path[1:]
 
@@ -50,18 +65,20 @@ def get_kmeans(file_path=None, iterations=20):
 
     centroids = [(255,255,255), (0, 255, 255), (255,0, 255), (255,255,0), (200,200,200)]
 
-    for _ in xrange(10):
+    for count in xrange(iterations):
+
         # List of tuples with the average of pixels that are most similar to that 
         # centroid and the count of those pixels. The count is non-zero to prevent
         # division by zero errors
-        nearests = [((0,0,0),0.00001) for _ in xrange(len(centroids))]
+        nearests = [((0,0,0),0.1) for _ in xrange(len(centroids))]
 
         # For each pixel in the image (defined by width and height)
-        for i in xrange(width/8):
-            for j in xrange(height/8):
+        for i in xrange(width/2):
+            for j in xrange(height/2):
                 # Use PIL's .getpixel() to find the RGB color at each pixel
-                pixel = image.getpixel((8*i,8*j))
+                pixel = image.getpixel((2*i,2*j))
 
+                # Skip this pixel if it's luminance is too low
                 if is_too_dark(pixel):
                     continue
 
@@ -76,13 +93,32 @@ def get_kmeans(file_path=None, iterations=20):
                 (s,n) = nearests[min_cent_idx]
                 nearests[min_cent_idx] = (add(pixel, s), n + 1)
 
+
+                # print '\n nearests', nearests
+
+                # # Only check for accidental (0,0,0) values for the first half, 
+                # # in case it's a legitimate value in the image
+                # if count < math.floor(iterations/2):
+                #     nearest_is_empty(nearests)
+
+                # print 'after random nearests', nearests
+                # print
+        
         for cent_idx in xrange(len(centroids)):
             centroids[cent_idx] = mult(nearests[cent_idx][0], 1 / nearests[cent_idx][1]) 
 
         for idx in xrange(len(centroids)):
             centroids[idx] = (int(centroids[idx][0]), int(centroids[idx][1]), int(centroids[idx][2]))
-    print '\n Kmeans time elapsed: ', (time.time() - start_kmeans)
 
+
+
+
+
+        
+
+
+
+    print '\n Kmeans time elapsed: ', (time.time() - start_kmeans)
     return centroids
 
 

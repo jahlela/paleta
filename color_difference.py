@@ -66,6 +66,7 @@ def get_file_path(URL):
     # Raise an error if the get request was unsuccessful
 
     if image_response.status_code is not 200:
+        print 'Status code not 200'
         raise StandardError("Response code not 200. Try another image.")    
 
     # Create a hexidecimal hash of the image data string for a unique filename
@@ -104,6 +105,7 @@ def get_image_and_palette(URL):
     try:
         file_path = get_file_path(URL)
     except: 
+        print 'Failed for some other reason'
         raise StandardError("File not valid. Try another image.")
 
     # Perform kmeans distribution analysis on the local file
