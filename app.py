@@ -336,6 +336,8 @@ def get_color_bin(color):
 
     hex_color = color[1:]
     print 'hex_color', hex_color
+    if hex_color == '000':
+        hex_color = '000000'
     rgb_color = tuple(int(hex_color[i:i+2], 16) for i in (0, 2 ,4))
     print 'rgb_color', rgb_color
 
@@ -384,9 +386,13 @@ def add_all_image_colors():
 
     all_images = Image.query.all()
 
-    for image in all_images:
+    for image in all_images[102:]:
+        print '\n image_id', image.image_id
         colors = image.colors.split(",")
+        counter = 1
         for color in colors:
+            print 'counter', counter
+            counter += 1
             add_image_colors_to_db(image.image_id, color)
 
     return

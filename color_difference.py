@@ -123,6 +123,8 @@ def get_image_and_palette(URL):
         hex_color = Color(rgb=(red/256.00, green/256.00, blue/256.00)).get_hex()
 
         # Add each hex color to final list
+        if hex_color == '000':
+            hex_color = '000000'
         palette.append(hex_color)
 
     return [file_path, palette]
