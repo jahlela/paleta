@@ -331,10 +331,29 @@ def add_colors_to_db(image):
     return 
 
 
+def get_color_bin(color):
+    """ Takes a hex value of form '#020451' and returns a string of that color's bin """
 
-def add_image_colors_to_db(image_id, color):
+    hex_color = color[1:]
+    print 'hex_color', hex_color
+    rgb_color = tuple(int(hex_color[i:i+2], 16) for i in (0, 2 ,4))
+    print 'rgb_color', rgb_color
+
+    color_bin = ''
+    # Grab values for red, green, blue channels and round down to the 
+    # nearest 64 and divide by 64 to find bin 
+    for channel in rgb_color:
+        bin_partial = (channel - (channel % 64))/64
+        color_bin += str(bin_partial)
+    print 'color_bin', color_bin
+    return color_bin
 
 
+def add_image_colors_to_db(image_id=1, color = '#0c0b0a'):
+
+    # color_string = '#0c0b0a,#131110,#191412,#0d0d0d,#14120f'
+    # colors = color_string.split(",")
+    # color = colors[0]
 
     color_record = Color.query.filter(Color.color==color).first()
     print 'color_record', color_record
@@ -342,30 +361,22 @@ def add_image_colors_to_db(image_id, color):
     print 'color_id', color_id
 
 
-
-
-    has_image_color = ImageColor.query.filter(ImageColor.image_id==image.image_id, 
-                                              ImageColor.color_id==color_id)
+    has_image_color = ImageColor.query.filter(ImageColor.image_id==image_id, 
+                                              ImageColor.color_id==color_id).first()
     print 'has_image_color', has_image_color
 
     if not has_image_color:
 
-        hex_color = color[1:]
-        rgb_color = tuple(int(hex_color[i:i+2], 16) for i in (0, 2 ,4))
-
-        color_bin = ''
-        # Grab values for red, green, blue channels and round down to the 
-        # nearest 64 and divide by 64 to find bin 
-        for channel in rgb_color:
-            bin_partial = (channel - (channel % 64))/64
-            color_bin += str(bin_partial)
-
+        color_bin = get_color_bin(color)
 
         new_image_color = ImageColor(image_id=image_id, 
                                      color_id=color_id,
                                      color_bin=color_bin)
+        print 'new_image_color', new_image_color
         db.session.add(new_image_color)
         db.session.commit()
+
+        return new_image_color
 
     return
 
