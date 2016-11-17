@@ -52,14 +52,10 @@ class Image(db.Model):
                                                        nullable = False)
     file_name = db.Column(db.String(300), nullable = False)
 
-    # # colors has a format of: "#aa7c60,#e9cf7a,#c0411a,#fdf1e4,#ede3b3"
-    # # table will accommodate up to 10 colors in this format, but default is 5
-    # colors = db.Column(db.String(100), nullable = False)
-
     # There is a relationship defined between Image and ImageColorBin in ImageColorBin.
     # Backref to ImageColorBin is "imagecolorbins"
 
-    
+
 
     def add_color_bins_to_db(self):
         """ Takes an image_id, calculates and adds its color bins to the db """

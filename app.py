@@ -73,22 +73,14 @@ def analyze_photo():
     
     try:
         file_name, colors = get_image_and_palette(URL)
-    except StandardError as e:
-        print e 
+    except StandardError as error:
+        print error 
         flash("Whoops! Looks like we can't access that image. \
                Please try a different one.")
         return redirect('/')
 
     # make db entry for each color
-
-
-
-
-
-
-
-
-    colors = str(','.join(colors))
+    add_colors_to_db(colors)
 
     # Next, check if the image is already in the db 
     image_in_db = Image.query.filter(Image.file_name==file_name).first()
@@ -98,7 +90,7 @@ def analyze_photo():
         image_id = image_in_db.image_id
     # If not, add the image to the db
     else:
-        new_photo = Image(file_name=file_name, colors=colors)
+        new_photo = Image(file_name=file_name)
         db.session.add(new_photo)
         db.session.commit()
 

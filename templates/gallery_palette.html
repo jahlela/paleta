@@ -5,9 +5,9 @@
           <img src="{{ photo.file_name }}" alt="">
       </figure>
 
-      {% set colors = photo.colors.split(',') %}
-      {% for color in colors %}
-      <div class="palette-color" style="background-color: {{ color }} ;"></div>
+      {% set imagecolors = photo.imagecolors %}
+      {% for imagecolor in imagecolors %}
+      <div class="palette-color" style="background-color: {{ imagecolor.color.color }} ;"></div>
       {% endfor %}
       
       {% if session["logged_in"] %}
