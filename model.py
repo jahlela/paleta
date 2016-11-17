@@ -24,8 +24,6 @@ class User(db.Model):
     # Backref to UserImage is "userimages"
 
 
-
-
 class UserImage(db.Model):
     """ All records of a user favoriting an image """
 
@@ -45,24 +43,6 @@ class UserImage(db.Model):
     image = db.relationship("Image", backref=db.backref("userimages", order_by=user_image_id))
 
 
-
-class ImageColorBin(db.Model):
-    """ Records of images and their color bins """
-
-    __tablename__ = "imagecolorbins"
-
-    image_color_bin_id = db.Column(db.Integer, primary_key=True, autoincrement = True,
-                                                  nullable = False)
-    image_id = db.Column(db.Integer, db.ForeignKey('images.image_id'), index=True, 
-                                                  nullable = False)
-    color_bin = db.Column(db.String(10), index=True, nullable = False)
-
-    # Define relationship to image
-    image = db.relationship("Image", backref=db.backref("imagecolorbins"), order_by=image_color_bin_id)
-
-
-
-
 class Image(db.Model):
     """ Image details """
 
@@ -80,17 +60,14 @@ class Image(db.Model):
     # Backref to ImageColorBin is "imagecolorbins"
 
 
-
-    
-
     def add_color_bins_to_db(self):
         """ Takes an image_id, calculates and adds its color bins to the db """
 
         bins = self.get_image_color_bins()
 
         for color_bin in bins:
-            bin_for_image = ImageColorBin.query.filter(image_id==self.image_id, 
-                                                        color_bin==color_bin)
+            # bin_for_image = ImageColorBin.query.filter(image_id==self.image_id, 
+                                                        # color_bin==color_bin)
 
             if not bin_for_image:
                 new_image_color_bin = ImageColorBin(image_id=image_id, color_bin=color_bin)
@@ -98,8 +75,6 @@ class Image(db.Model):
                 db.session.commit()
 
         return
-
-
 
     # Add db image object as parameter
     def get_image_color_bins(self):
@@ -136,16 +111,11 @@ class Image(db.Model):
 class Color(db.Model):
     """ Color details """
 
-    __tablename__ = "imagecolors"
+    __tablename__ = "colors"
     
     color_id = db.Column(db.Integer, primary_key=True, autoincrement = True,
                                                     nullable = False)
-    red = db.Column(db.Integer)
-    green = db.Column(db.Integer)
-    blue = db.Column(db.Integer)
-
-    # Define relationship to colorbins
-    colorbins = db.relationship("ColorBin", backref=db.backref("colors"), order_by=color_id)
+    color = db.Column(db.String(30), nullable = False)
 
     # There is a relationship defined between Color and ImageColor in ImageColor.
     # Backref is "imagecolors"
@@ -160,7 +130,7 @@ class ImageColor(db.Model):
                                                     nullable = False)
     image_id = db.Column(db.Integer, db.ForeignKey('images.image_id'), index=True, 
                                                     nullable = False)
-    color_id = db.Column(db.Integer, db.ForeignKey('colors.color_id'), index=True, 
+    color_id = db.Column(db.Integer, db.ForeignKey('colors.color_id'), 
                                                     nullable = False)
     color_bin = db.Column(db.String(10), index=True, nullable = False)
 
@@ -172,35 +142,8 @@ class ImageColor(db.Model):
     
 
 
+
 ################### Helper Functions ####################
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 def connect_to_db(app):
@@ -220,9 +163,9 @@ if __name__ == "__main__":
     connect_to_db(app)
     print "Connected to DB."
 
-    add_color_bins_to_db(75)
+    # add_color_bins_to_db(75)
 
 
-    # db.create_all()
+    db.create_all()
 
 
