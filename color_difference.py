@@ -34,17 +34,6 @@ def resize_and_save(local_file_name, input_height = 250.0):
     image.close()
 
 
-def resize_and_save(local_file_name):
-    image = Image.open(local_file_name)
-    width, height = image.size
-
-    new_height = 250.0
-    height_percent = (new_height / height)
-    new_width = int(height_percent * width)
-
-    image = image.resize((new_width, int(new_height)), PIL.Image.ANTIALIAS)
-    image.save(local_file_name,optimize=True,quality=85)
-
 def get_file_path(URL):
     """ Takes a web-hosted URL and returns the local file path of the image after
         performing a get request. """
