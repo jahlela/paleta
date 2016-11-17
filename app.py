@@ -79,6 +79,15 @@ def analyze_photo():
                Please try a different one.")
         return redirect('/')
 
+    # make db entry for each color
+
+
+
+
+
+
+
+
     colors = str(','.join(colors))
 
     # Next, check if the image is already in the db 
@@ -306,29 +315,7 @@ def add_image_to_profile(image_id):
 
 
 
-def add_colors_to_db(image):
 
-    color_string = image.colors
-    print 'color_string', color_string
-    colors = color_string.split(",")
-    print 'colors', colors
-
-    for color in colors:
-
-        color_in_db = Color.query.filter(Color.color==color).first()
-        # print 'color_in_db', color_in_db
-        print
-
-        if color_in_db:
-            print 'Color already in the table'
-        else:
-            print 'Color not in colors table'
-            new_color = Color(color=color)
-            print 'new_color', new_color
-            db.session.add(new_color)
-            db.session.commit()
-            
-    return 
 
 
 def get_color_bin(color):
