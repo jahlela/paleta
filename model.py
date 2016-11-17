@@ -81,7 +81,6 @@ class Image(db.Model):
         """ takes an image_id, and loops through its colors, creating 
             a set of the base-4 codes for each bin represented by that image,
             then commits a record for each bin associated with the image to the db """
-        # image_id = 75
         
         # Grab colors from image 
         color_string = self.colors

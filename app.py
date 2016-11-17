@@ -349,7 +349,7 @@ def get_color_bin(color):
     return color_bin
 
 
-def add_image_colors_to_db(image_id=1, color = '#0c0b0a'):
+def add_image_colors_to_db(image_id, color):
 
     # color_string = '#0c0b0a,#131110,#191412,#0d0d0d,#14120f'
     # colors = color_string.split(",")
@@ -379,6 +379,26 @@ def add_image_colors_to_db(image_id=1, color = '#0c0b0a'):
         return new_image_color
 
     return
+
+def add_all_image_colors():
+
+    all_images = Image.query.all()
+
+    for image in all_images:
+        colors = image.colors.split(",")
+        for color in colors:
+            add_image_colors_to_db(image.image_id, color)
+
+    return
+
+                # color_query = Color.query.filter(Color.color==color).first()
+                # color_id = color_query.color_id
+
+
+
+
+
+
 
 ################## Run Server ##################
 
