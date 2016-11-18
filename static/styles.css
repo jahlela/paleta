@@ -77,8 +77,32 @@ h1 img.logo {
     display: none;
 }
 
+
+#hex-color-seed {
+    height: 23px;
+    width: 50px;
+    display: inline-block;
+}
+
+form.palette-square-form {
+    display: inline-block;
+    margin: 0 -20px;
+}
+
+.palette-color-text {
+    display: none;
+}
+
+.palette-color-text {
+    display: initial;
+}
+
 #user-info-ul li {
     list-style-type: none;
+}
+
+h2.no-accent-heading {
+    color: black;
 }
 
 /* *********** Interactive Elements *********** */

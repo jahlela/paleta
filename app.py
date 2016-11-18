@@ -165,19 +165,25 @@ def user_details(user_id, photos=None):
 
 
 
-@app.route('/image_filter', methods=["GET"])
-def show_images_by_color_bin(color_bin):
+# @app.route('/image_filter/<hex_color>', methods=["GET"])
+# def show_images_by_color_bin_get(hex_color="#6f3f79"):
+#     """ Filter images by color_bin """
+
+@app.route('/image_filter')
+def show_images_by_color_bin_get(hex_color="#6f3f79"):
     """ Filter images by color_bin """
 
     # get user object from database with their user_id
-    user_id = session["user_id"]
-    user = User.query.get(user_id)
+    if session["logged_in"]:
+        user_id = session["user_id"]
+        user = User.query.get(user_id)
+    else:
+        user = None
 
 
-    hex_color = request.args.get['hex_color']
     color_bin = get_color_bin(hex_color)
 
-    color_image_query = ImageColor.query.filter(ImageColor.color_bin==color_bin).all()
+    color_image_query = ImageColor.query.filter(ImageColor.color_bin==color_bin).distinct()
 
     # If there are photos represented in that bin, display them
     if color_image_query:
@@ -187,11 +193,22 @@ def show_images_by_color_bin(color_bin):
         photos.reverse()
         return render_template('/image_filter.html',
                                 user=user,
+                                hex_color=hex_color,
                                 photos=photos)
     # If not, just show user information
     else:
         flash("Whoops! No similar images found.")
         return redirect('/gallery')
+
+
+@app.route('/image_filter', methods=["POST"])
+def show_images_by_color_bin_post():
+    """ Filter images by color_bin """
+
+    hex_color = request.form["hex_color"]
+
+    return show_images_by_color_bin_get(hex_color)
+
 
 ################## Redirects ##################
 

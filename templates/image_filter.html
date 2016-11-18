@@ -1,11 +1,14 @@
 {% extends 'base.html' %}
 {% block content %}
 
-  <h2>Paleta Similar Images</h2>
+  <h2 class="no-accent-heading">Similar to <span style="color: {{ hex_color }}">{{ hex_color }}</span>
+      <div id="hex-color-seed" style="background-color: {{ hex_color }}" ></div>
+  </h2>
 
-
-    <form action='/image_filter' methods="GET">
-        <p>Enter a hex color:  <input type="text" name="hex_color" placeholder="#02e644"></p>
+    <form action='/image_filter' method="POST">
+        <p>Enter a hex color:  <input type="text" name="hex_color" placeholder="#6f3f79">
+        <input type="submit" value="Activate wizardry"></input>
+        </p>
     </form>
 
 
@@ -16,6 +19,9 @@
             to make a new account</a>.
         <p>
     {% endif %}
+
+  
+
 
   <div id="color-filter-images">
     {% include 'gallery_palette.html' %}
