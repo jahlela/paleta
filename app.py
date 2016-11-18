@@ -10,6 +10,7 @@ from model import connect_to_db, db, User, Image, UserImage, Color, ImageColor
 
 from image_analysis import hash_photo
 from color_difference import get_image_and_palette
+# from helpers import add_colors_to_db, add_image_to_db, add_image_colors_to_db
 
 import os.path
 import requests
@@ -55,7 +56,7 @@ def index(photos=None):
         user = User.query.get(user_id)
 
     if photos is None:
-        photos = [Image.query.get(80)]
+        photos = [Image.query.get(162)]
 
     return render_template('homepage.html',
                             user=user,
@@ -82,20 +83,10 @@ def analyze_photo():
     # make db entry for each color
     add_colors_to_db(colors)
 
-    # Next, check if the image is already in the db 
-    image_in_db = Image.query.filter(Image.file_name==file_name).first()
+    # Add image to db and save resulting image_id
+    image_id = add_image_to_db(file_name)
 
-    if image_in_db:
-        # colors = image_in_db.colors
-        image_id = image_in_db.image_id
-    # If not, add the image to the db
-    else:
-        new_photo = Image(file_name=file_name)
-        db.session.add(new_photo)
-        db.session.commit()
-
-        image_id = new_photo.image_id
-
+    add_image_colors_to_db(image_id, colors)
 
     # Grab user_id if a user is logged in
     if session["logged_in"]:
@@ -304,10 +295,35 @@ def add_image_to_profile(image_id):
 
 ################## Helper Functions ##################
 
+def add_colors_to_db(colors):
+    """ Takes a list of comma-separated hex values, and makes a record in 
+        Color if none existed previously """
 
+    for color in colors:
+        color_in_db = Color.query.filter(Color.color==color).first()
+        # Color not already in the table
+        if not color_in_db:
+            new_color = Color(color=color)
+            db.session.add(new_color)
+            db.session.commit()
+    return
 
+def add_image_to_db(file_name):
+    # Next, check if the image is already in the db 
+    image_in_db = Image.query.filter(Image.file_name==file_name).first()
 
+    if image_in_db:
+        # colors = image_in_db.colors
+        image_id = image_in_db.image_id
+    # If not, add the image to the db
+    else:
+        new_photo = Image(file_name=file_name)
+        db.session.add(new_photo)
+        db.session.commit()
 
+        image_id = new_photo.image_id
+
+    return image_id
 
 
 def get_color_bin(color):
@@ -327,57 +343,33 @@ def get_color_bin(color):
         bin_partial = (channel - (channel % 64))/64
         color_bin += str(bin_partial)
     print 'color_bin', color_bin
+
     return color_bin
 
 
-def add_image_colors_to_db(image_id, color):
+def add_image_colors_to_db(image_id, colors):
 
-    # color_string = '#0c0b0a,#131110,#191412,#0d0d0d,#14120f'
-    # colors = color_string.split(",")
-    # color = colors[0]
+    for color in colors:
 
-    color_record = Color.query.filter(Color.color==color).first()
-    print 'color_record', color_record
-    color_id = color_record.color_id
-    print 'color_id', color_id
+        color_record = Color.query.filter(Color.color==color).first()
+        color_id = color_record.color_id
 
+        has_image_color = ImageColor.query.filter(ImageColor.image_id==image_id, 
+                                                  ImageColor.color_id==color_id).first()
 
-    has_image_color = ImageColor.query.filter(ImageColor.image_id==image_id, 
-                                              ImageColor.color_id==color_id).first()
-    print 'has_image_color', has_image_color
+        if not has_image_color:
 
-    if not has_image_color:
+            color_bin = get_color_bin(color)
 
-        color_bin = get_color_bin(color)
+            new_image_color = ImageColor(image_id=image_id, 
+                                         color_id=color_id,
+                                         color_bin=color_bin)
+            print 'new_image_color', new_image_color
+            db.session.add(new_image_color)
+            db.session.commit()
 
-        new_image_color = ImageColor(image_id=image_id, 
-                                     color_id=color_id,
-                                     color_bin=color_bin)
-        print 'new_image_color', new_image_color
-        db.session.add(new_image_color)
-        db.session.commit()
-
-        return new_image_color
 
     return
-
-def add_all_image_colors():
-
-    all_images = Image.query.all()
-
-    for image in all_images[102:]:
-        print '\n image_id', image.image_id
-        colors = image.colors.split(",")
-        counter = 1
-        for color in colors:
-            print 'counter', counter
-            counter += 1
-            add_image_colors_to_db(image.image_id, color)
-
-    return
-
-                # color_query = Color.query.filter(Color.color==color).first()
-                # color_id = color_query.color_id
 
 
 
