@@ -105,6 +105,15 @@ h2.no-accent-heading {
     color: black;
 }
 
+input.palette-color-text {
+    background-color: rgba(0,0,0,0);
+    border: none;
+}
+
+input.palette-color {
+    color: rgba(0,0,0,0);
+}
+
 /* *********** Interactive Elements *********** */
 
 .alert {

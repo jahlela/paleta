@@ -165,13 +165,23 @@ def user_details(user_id, photos=None):
 
 
 
-# @app.route('/image_filter/<hex_color>', methods=["GET"])
+# @app.route('/image_filter')
 # def show_images_by_color_bin_get(hex_color="#6f3f79"):
 #     """ Filter images by color_bin """
 
-@app.route('/image_filter')
-def show_images_by_color_bin_get(hex_color="#6f3f79"):
+@app.route('/image_filter', methods=["GET"])
+def show_images_by_color_bin_get():
     """ Filter images by color_bin """
+
+    hex_color = request.args.get("hex_color")
+
+    if not hex_color:
+        hex_color = "#6f3f79"
+
+    if hex_color[0] != '#':
+        hex_color = '#' + hex_color
+
+    print hex_color
 
     # get user object from database with their user_id
     if session["logged_in"]:

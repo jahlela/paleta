@@ -7,10 +7,9 @@
 
       {% set imagecolors = photo.imagecolors %}
       {% for imagecolor in imagecolors %}
-      <form class="palette-square-form" action='/image_filter' method="POST">
-          <input type="hidden" name="hex_color" value="{{ imagecolor.color.color }}" ></input>
-          <input type="submit" class="palette-color" value="" style="background-color: {{ imagecolor.color.color }}"></input>
-          <a class="palette-color-text" style="color: {{ imagecolor.color.color }}" href="/image_filter/{{ imagecolor.color.color }}">{{ imagecolor.color.color }}</p>
+      <form class="palette-square-form" action='/image_filter' method="GET">
+          <input type="submit" class="palette-color" name="hex_color" value="{{ imagecolor.color.color }}" style="background-color: {{ imagecolor.color.color }}"></input>
+          <input type="submit" class="palette-color-text" style="color: {{ imagecolor.color.color }}"  name="hex_color" value="{{ imagecolor.color.color }}" ></input>
       </form>
 
       {% endfor %}
