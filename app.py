@@ -163,6 +163,36 @@ def user_details(user_id, photos=None):
         return render_template('/user_profile.html',
                                user=user)
 
+
+
+@app.route('/image_filter', methods=["GET"])
+def show_images_by_color_bin(color_bin):
+    """ Filter images by color_bin """
+
+    # get user object from database with their user_id
+    user_id = session["user_id"]
+    user = User.query.get(user_id)
+
+
+    hex_color = request.args.get['hex_color']
+    color_bin = get_color_bin(hex_color)
+
+    color_image_query = ImageColor.query.filter(ImageColor.color_bin==color_bin).all()
+
+    # If there are photos represented in that bin, display them
+    if color_image_query:
+        photos = []
+        for color_image in color_image_query:
+           photos.append(color_image.image)
+        photos.reverse()
+        return render_template('/image_filter.html',
+                                user=user,
+                                photos=photos)
+    # If not, just show user information
+    else:
+        flash("Whoops! No similar images found.")
+        return redirect('/gallery')
+
 ################## Redirects ##################
 
 

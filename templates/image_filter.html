@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% block content %}
+
+  <h2>Paleta Similar Images</h2>
+
+
+    <form action='/image_filter' methods="GET">
+        <p>Enter a hex color:  <input type="text" name="hex_color" placeholder="#02e644"></p>
+    </form>
+
+
+    {% if not session["logged_in"] %}
+        <p>
+            <a href="#" data-toggle="modal" data-target="#loginModal">Login</a> 
+            to save images to your profile. Or <a href="/register">register</a> 
+            to make a new account</a>.
+        <p>
+    {% endif %}
+
+  <div id="color-filter-images">
+    {% include 'gallery_palette.html' %}
+  </div>
+
+{% endblock %}
