@@ -43,7 +43,7 @@ def nearest_is_empty(nearests):
 
 ################### Kmeans Analysis ###################
 
-def get_kmeans(file_path=None, iterations=20):
+def get_kmeans(file_path=None, iterations=200):
     """ Takes in an image file_path and returns a list of RGB values that 
         represent the centroids of 5 k-mean clusters (dominant palette). 
 

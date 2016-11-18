@@ -73,7 +73,7 @@ h1 img.logo {
 }
 
 /* Hide delete button from the home page images*/
-#sample-palette-section div.remove-image-div {
+#sample-palette-section div.favorite-image-div {
     display: none;
 }
 
