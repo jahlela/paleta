@@ -74,7 +74,8 @@ class Image(db.Model):
 
         return image_id
 
-
+    users = db.relationship("User", backref="images", 
+                                    secondary="userimages") #Access Image directly
 
 class Color(db.Model):
     """ Color details """

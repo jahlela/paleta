@@ -5,11 +5,14 @@
           <img src="{{ photo.file_name }}" alt="">
       </figure>
 
+
+
       {% set imagecolors = photo.imagecolors %}
       {% for imagecolor in imagecolors %}
       <form class="palette-square-form" action='/image_filter' method="GET">
           <input type="submit" class="palette-color" name="hex_color" value="{{ imagecolor.color.color }}" style="background-color: {{ imagecolor.color.color }}"></input>
-          <input type="submit" class="palette-color-text" style="color: {{ imagecolor.color.color }}"  name="hex_color" value="{{ imagecolor.color.color }}" ></input>
+          
+          <a class="palette-color-text" href="{{ url_for('image_filter', hex_color=imagecolor.color.color) }}" style="color: {{ imagecolor.color.color }}">{{ imagecolor.color.color }}</a>
       </form>
 
       {% endfor %}
@@ -20,9 +23,17 @@
       
       {% if session["logged_in"] %}
           <div class="favorite-image-div">
-              <a href="/favorite_image/{{ photo.image_id }}">
-                <button class="favorite-image-btn">Favorite {{ photo.image_id }}</button>
+              {% if not user in photo.users %}
+              <a href="/favorite_image/{{ photo.image_id }}">                 
+                  <span class="favorite-image-btn glyphicon glyphicon-star-empty" style="color: black; font-size: bigger;" aria-hidden="true"></span>
               </a>
+
+              {% else %}
+              <a href="/remove_image/{{ photo.image_id }}">                 
+                  <span class="favorite-image-btn glyphicon glyphicon-star" aria-hidden="true"></span>
+              </a>
+
+              {% endif %}
           </div>
       {% endif %}
 

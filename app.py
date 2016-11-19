@@ -2,7 +2,7 @@ from jinja2 import StrictUndefined
 from flask_sqlalchemy import sqlalchemy
 from sqlalchemy import func, desc
 
-from flask import Flask, jsonify, render_template, request, redirect, session, flash
+from flask import Flask, jsonify, render_template, request, redirect, session, flash, url_for
 from flask_debugtoolbar import DebugToolbarExtension
 
 # Don't import session from db -- it may be confused with Flask session
@@ -154,7 +154,7 @@ def user_details(user_id, photos=None):
         photos = []
         for userimage in images_by_user:
 	       photos.append(userimage.image)
-        photos.reverse()
+        # photos.reverse()
         return render_template('/user_profile.html',
                                user=user,
                                photos=photos)
@@ -165,12 +165,8 @@ def user_details(user_id, photos=None):
 
 
 
-# @app.route('/image_filter')
-# def show_images_by_color_bin_get(hex_color="#6f3f79"):
-#     """ Filter images by color_bin """
-
 @app.route('/image_filter', methods=["GET"])
-def show_images_by_color_bin_get():
+def image_filter():
     """ Filter images by color_bin """
 
     hex_color = request.args.get("hex_color")
@@ -178,10 +174,10 @@ def show_images_by_color_bin_get():
     if not hex_color:
         hex_color = "#6f3f79"
 
-    if hex_color[0] != '#':
-        hex_color = '#' + hex_color
+    # if hex_color[0] != '#':
+    #     hex_color = '#' + hex_color
 
-    print hex_color
+    print 'get hex_color', hex_color
 
     # get user object from database with their user_id
     if session["logged_in"]:
@@ -209,15 +205,6 @@ def show_images_by_color_bin_get():
     else:
         flash("Whoops! No similar images found.")
         return redirect('/gallery')
-
-
-@app.route('/image_filter', methods=["POST"])
-def show_images_by_color_bin_post():
-    """ Filter images by color_bin """
-
-    hex_color = request.form["hex_color"]
-
-    return show_images_by_color_bin_get(hex_color)
 
 
 ################## Redirects ##################
@@ -335,6 +322,9 @@ def add_image_to_profile(image_id):
 
     # Grab user_id from the browser session     
     user_id = session["user_id"]
+    print
+    print 'favoriting picture: ', image_id
+    print 'user_id', user_id
     
     userimage_in_db = UserImage.query.filter(UserImage.user_id==user_id, 
                                         UserImage.image_id==image_id).first()
