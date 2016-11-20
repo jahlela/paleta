@@ -96,7 +96,6 @@ def analyze_photo():
     return index(new_photo)
 
 
-
 @app.route('/register')
 def register():
     """ Render registration page """ 
@@ -152,31 +151,19 @@ def user_details(user_id, photos=None):
                                user=user)
 
 
-
 @app.route('/image_filter', methods=["GET"])
 def image_filter():
     """ Filter images by color_bin """
 
-    hex_color = request.args.get("hex_color")
-
-    if not hex_color:
-        hex_color = "#6f3f79"
-
-    # if hex_color[0] != '#':
-    #     hex_color = '#' + hex_color
-
-    print 'get hex_color', hex_color
+    hex_color = request.args.get("hex_color") or "#6f3f79"
 
     # get user object from database with their user_id
     if session["logged_in"]:
-        user_id = session["user_id"]
-        user = User.query.get(user_id)
+        user = User.query.get(session["user_id"])
     else:
         user = None
 
-
     color_bin = get_color_bin(hex_color)
-
     color_image_query = ImageColor.query.filter(ImageColor.color_bin==color_bin).distinct()
 
     # If there are photos represented in that bin, display them
@@ -281,7 +268,6 @@ def logout():
     return redirect("/")
 
 
-
 @app.route('/remove_image/<image_id>')
 def remove_image_from_profile(image_id):
     """ The user should already be logged in. """
@@ -328,20 +314,6 @@ def add_image_to_profile(image_id):
 
     return redirect('/gallery')
 
-################## Helper Functions ##################
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 ################## Run Server ##################
@@ -354,7 +326,6 @@ if __name__ == "__main__":
     app.jinja_env.auto_reload = app.debug
 
     connect_to_db(app)
-
 
     # Use the DebugToolbar
     DebugToolbarExtension(app)
