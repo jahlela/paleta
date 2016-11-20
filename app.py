@@ -80,27 +80,15 @@ def analyze_photo():
                Please try a different one.")
         return redirect('/')
 
-    # make db entry for each color
-    Color.add_colors_to_db(colors)
-
     # Add image to db and save resulting image_id
     image_id = Image.add_image_to_db(file_name)
-
+    # make db entry for each color
+    Color.add_colors_to_db(colors)
+    # Add image colors to db
     ImageColor.add_image_colors_to_db(image_id, colors)
-
-    # Grab user_id if a user is logged in
+    # If user is logged in, add a user_image record if none already exists
     if session["logged_in"]:
-        user_id = session["user_id"]
-        
-        # Query the database for a previous record of this photo and user
-        userimage_in_db = UserImage.query.filter(UserImage.user_id==user_id, 
-                                            UserImage.image_id==image_id).first()
-
-        if not userimage_in_db:
-            new_user_image = UserImage(user_id=user_id, image_id=image_id)
-            db.session.add(new_user_image)
-            db.session.commit()
-
+        add_user_image_to_db(session["user_id"], image_id)
     # This must be a list, even though there is only one element
     new_photo = [Image.query.filter(Image.file_name==file_name).first()]
 

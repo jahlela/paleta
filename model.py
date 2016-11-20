@@ -44,6 +44,20 @@ class UserImage(db.Model):
     image = db.relationship("Image", backref=db.backref("userimages", order_by=user_image_id))
 
 
+    @classmethod
+    def add_user_image_to_db(cls, user_id, image_id):
+
+        # Query the database for a previous record of this photo and user
+        userimage_in_db = UserImage.query.filter(UserImage.user_id==user_id, 
+                                            UserImage.image_id==image_id).first()
+
+        # If no prior record, create one
+        if not userimage_in_db:
+            new_user_image = UserImage(user_id=user_id, image_id=image_id)
+            db.session.add(new_user_image)
+            db.session.commit()
+
+
 class Image(db.Model):
     """ Image details """
 
@@ -58,7 +72,7 @@ class Image(db.Model):
 
     @classmethod
     def add_image_to_db(cls, file_name):
-        # Next, check if the image is already in the db 
+        # Check if the image is already in the db 
         image_in_db = cls.query.filter(cls.file_name==file_name).first()
 
         if image_in_db:

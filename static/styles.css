@@ -9,6 +9,7 @@ html {
 body { 
     /*background-color: black;*/
     /*color: white;*/
+    margin-top: 30px;
 }
 
 .container {
@@ -39,6 +40,17 @@ h1 img.logo {
     font-size: 50px;
 }
 
+.btn {
+    background-color: #00acc1;
+}
+
+.btn:hover {
+    background-color: #589ea7;
+}
+
+.navbar {
+    color: #00acc1;
+}
 /* *********** Specialized Elements *********** */
 
 #welcome-section .center {
@@ -87,10 +99,6 @@ h1 img.logo {
 form.palette-square-form {
     display: inline-block;
     margin: 0 -20px;
-}
-
-.palette-color-text {
-    display: none;
 }
 
 .palette-color-text {
