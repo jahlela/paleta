@@ -34,17 +34,6 @@ def resize_and_save(local_file_name, input_height = 250.0):
     image.close()
 
 
-def resize_and_save(local_file_name):
-    image = Image.open(local_file_name)
-    width, height = image.size
-
-    new_height = 250.0
-    height_percent = (new_height / height)
-    new_width = int(height_percent * width)
-
-    image = image.resize((new_width, int(new_height)), PIL.Image.ANTIALIAS)
-    image.save(local_file_name,optimize=True,quality=85)
-
 def get_file_path(URL):
     """ Takes a web-hosted URL and returns the local file path of the image after
         performing a get request. """
@@ -123,6 +112,8 @@ def get_image_and_palette(URL):
         hex_color = Color(rgb=(red/256.00, green/256.00, blue/256.00)).get_hex()
 
         # Add each hex color to final list
+        if hex_color == '000':
+            hex_color = '000000'
         palette.append(hex_color)
 
     return [file_path, palette]

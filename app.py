@@ -2,13 +2,14 @@ from jinja2 import StrictUndefined
 from flask_sqlalchemy import sqlalchemy
 from sqlalchemy import func, desc
 
-from flask import Flask, jsonify, render_template, request, redirect, session, flash
+from flask import Flask, jsonify, render_template, request, redirect, session, flash, url_for
 from flask_debugtoolbar import DebugToolbarExtension
 
 # Don't import session from db -- it may be confused with Flask session
-from model import connect_to_db, db, User, Image, UserImage
+from model import connect_to_db, db, User, Image, UserImage, Color, ImageColor
 
-from image_analysis import hash_photo
+from helpers import get_color_bin
+# from image_analysis import hash_photo
 from color_difference import get_image_and_palette
 
 import os.path
@@ -55,7 +56,7 @@ def index(photos=None):
         user = User.query.get(user_id)
 
     if photos is None:
-        photos = [Image.query.get(80)]
+        photos = [Image.query.get(162)]
 
     return render_template('homepage.html',
                             user=user,
@@ -73,42 +74,21 @@ def analyze_photo():
     
     try:
         file_name, colors = get_image_and_palette(URL)
-    except StandardError as e:
-        print e 
+    except StandardError as error:
+        print error 
         flash("Whoops! Looks like we can't access that image. \
                Please try a different one.")
         return redirect('/')
 
-    colors = str(','.join(colors))
-
-    # Next, check if the image is already in the db 
-    image_in_db = Image.query.filter(Image.file_name==file_name).first()
-
-    if image_in_db:
-        # colors = image_in_db.colors
-        image_id = image_in_db.image_id
-    # If not, add the image to the db
-    else:
-        new_photo = Image(file_name=file_name, colors=colors)
-        db.session.add(new_photo)
-        db.session.commit()
-
-        image_id = new_photo.image_id
-
-
-    # Grab user_id if a user is logged in
+    # Add image to db and save resulting image_id
+    image_id = Image.add_image_to_db(file_name)
+    # make db entry for each color
+    Color.add_colors_to_db(colors)
+    # Add image colors to db
+    ImageColor.add_image_colors_to_db(image_id, colors)
+    # If user is logged in, add a user_image record if none already exists
     if session["logged_in"]:
-        user_id = session["user_id"]
-        
-        # Query the database for a previous record of this photo and user
-        userimage_in_db = UserImage.query.filter(UserImage.user_id==user_id, 
-                                            UserImage.image_id==image_id).first()
-
-        if not userimage_in_db:
-            new_user_image = UserImage(user_id=user_id, image_id=image_id)
-            db.session.add(new_user_image)
-            db.session.commit()
-
+        add_user_image_to_db(session["user_id"], image_id)
     # This must be a list, even though there is only one element
     new_photo = [Image.query.filter(Image.file_name==file_name).first()]
 
@@ -162,7 +142,7 @@ def user_details(user_id, photos=None):
         photos = []
         for userimage in images_by_user:
 	       photos.append(userimage.image)
-        photos.reverse()
+        # photos.reverse()
         return render_template('/user_profile.html',
                                user=user,
                                photos=photos)
@@ -170,6 +150,50 @@ def user_details(user_id, photos=None):
     else:
         return render_template('/user_profile.html',
                                user=user)
+
+
+
+@app.route('/image_filter', methods=["GET"])
+def image_filter():
+    """ Filter images by color_bin """
+
+    hex_color = request.args.get("hex_color")
+
+    if not hex_color:
+        hex_color = "#6f3f79"
+
+    # if hex_color[0] != '#':
+    #     hex_color = '#' + hex_color
+
+    print 'get hex_color', hex_color
+
+    # get user object from database with their user_id
+    if session["logged_in"]:
+        user_id = session["user_id"]
+        user = User.query.get(user_id)
+    else:
+        user = None
+
+
+    color_bin = get_color_bin(hex_color)
+
+    color_image_query = ImageColor.query.filter(ImageColor.color_bin==color_bin).distinct()
+
+    # If there are photos represented in that bin, display them
+    if color_image_query:
+        photos = []
+        for color_image in color_image_query:
+           photos.append(color_image.image)
+        photos.reverse()
+        return render_template('/image_filter.html',
+                                user=user,
+                                hex_color=hex_color,
+                                photos=photos)
+    # If not, just show user information
+    else:
+        flash("Whoops! No similar images found.")
+        return redirect('/gallery')
+
 
 ################## Redirects ##################
 
@@ -286,6 +310,9 @@ def add_image_to_profile(image_id):
 
     # Grab user_id from the browser session     
     user_id = session["user_id"]
+    print
+    print 'favoriting picture: ', image_id
+    print 'user_id', user_id
     
     userimage_in_db = UserImage.query.filter(UserImage.user_id==user_id, 
                                         UserImage.image_id==image_id).first()
@@ -303,26 +330,18 @@ def add_image_to_profile(image_id):
 
 ################## Helper Functions ##################
 
-def clean_image_records():
-
-    images_in_db = Image.query.all()
-    print 'images_in_db', images_in_db
 
 
-    # Make sure all items in the string are indeed a string and not a set
-    for image in images_in_db:
-        if image.colors[0] == "{":
-            print image.colors
-            image.colors = image.colors[1:-1]
-        elif image.colors[0] == "\"":
-            print image.colors
-            image.colors = image.colors[1:-1]
 
-        # Make sure all files start with /static
-        if image.file_name[0] == "s":
-            image.file_name = "/" + image.file_name
 
-    db.session.commit()
+
+
+
+
+
+
+
+
 
 
 ################## Run Server ##################
@@ -335,7 +354,7 @@ if __name__ == "__main__":
     app.jinja_env.auto_reload = app.debug
 
     connect_to_db(app)
-    # clean_image_records()
+
 
     # Use the DebugToolbar
     DebugToolbarExtension(app)

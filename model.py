@@ -1,6 +1,7 @@
 """ Models and database functions for paleta db. """
 
 from flask_sqlalchemy import SQLAlchemy
+from helpers import get_color_bin
 
 db = SQLAlchemy()
 
@@ -13,8 +14,8 @@ class User(db.Model):
 
     __tablename__ = "users"
     
-    user_id = db.Column(db.Integer, primary_key=True, nullable = False,
-                                    autoincrement = True)
+    user_id = db.Column(db.Integer, primary_key=True, autoincrement = True,
+                                        nullable = False)
     firstname = db.Column(db.String(30), nullable = False)
     lastname = db.Column(db.String(30), nullable = False)
     email = db.Column(db.String(50), nullable = False, unique=True)
@@ -23,21 +24,6 @@ class User(db.Model):
     # There is a relationship defined between User and UserImage in UserImage.
     # Backref to UserImage is "userimages"
 
-class Image(db.Model):
-    """ Image details """
-
-    __tablename__ = "images"
-    
-    image_id = db.Column(db.Integer, primary_key=True, autoincrement = True,
-                                                       nullable = False)
-    file_name = db.Column(db.String(300), nullable = False)
-
-    # colors has a format of: "#aa7c60,#e9cf7a,#c0411a,#fdf1e4,#ede3b3"
-    # table will accommodate up to 10 colors in this format, but default is 5
-    colors = db.Column(db.String(100), nullable = False)
-
-    # There is a relationship defined between Image and ImageColorBin in ImageColorBin.
-    # Backref to ImageColorBin is "imagecolorbins"
 
 class UserImage(db.Model):
     """ All records of a user favoriting an image """
@@ -58,23 +44,132 @@ class UserImage(db.Model):
     image = db.relationship("Image", backref=db.backref("userimages", order_by=user_image_id))
 
 
+    @classmethod
+    def add_user_image_to_db(cls, user_id, image_id):
 
-class ImageColorBin(db.Model):
-    """ Records of images and their color bins """
+        # Query the database for a previous record of this photo and user
+        userimage_in_db = UserImage.query.filter(UserImage.user_id==user_id, 
+                                            UserImage.image_id==image_id).first()
 
-    __tablename__ = "imagecolorbins"
+        # If no prior record, create one
+        if not userimage_in_db:
+            new_user_image = UserImage(user_id=user_id, image_id=image_id)
+            db.session.add(new_user_image)
+            db.session.commit()
 
-    image_color_bin_id = db.Column(db.Integer, primary_key=True, autoincrement = True,
-                                                  nullable = False)
+
+class Image(db.Model):
+    """ Image details """
+
+    __tablename__ = "images"
+    
+    image_id = db.Column(db.Integer, primary_key=True, autoincrement = True,
+                                                       nullable = False)
+    file_name = db.Column(db.String(300), nullable = False)
+
+    # There is a relationship defined between Image and ImageColor in ImageColor.
+    # Backref to ImageColor is "imagecolors"
+
+    @classmethod
+    def add_image_to_db(cls, file_name):
+        # Check if the image is already in the db 
+        image_in_db = cls.query.filter(cls.file_name==file_name).first()
+
+        if image_in_db:
+            # colors = image_in_db.colors
+            image_id = image_in_db.image_id
+        # If not, add the image to the db
+        else:
+            new_photo = cls(file_name=file_name)
+            db.session.add(new_photo)
+            db.session.commit()
+
+            image_id = new_photo.image_id
+
+        return image_id
+
+    users = db.relationship("User", backref="images", 
+                                    secondary="userimages") #Access Image directly
+
+class Color(db.Model):
+    """ Color details """
+
+    __tablename__ = "colors"
+    
+    color_id = db.Column(db.Integer, primary_key=True, autoincrement = True,
+                                                    nullable = False)
+    color = db.Column(db.String(30), nullable = False)
+
+    # There is a relationship defined between Color and ImageColor in ImageColor.
+    # Backref is "imagecolors"
+
+    @classmethod
+    def add_colors_to_db(cls, colors):
+        """ Takes a list of comma-separated hex values, and makes a record in 
+            Color if none existed previously """
+
+        for color in colors:
+            color_in_db = cls.query.filter(cls.color==color).first()
+            # Color not already in the table
+            if not color_in_db:
+                new_color = cls(color=color)
+                db.session.add(new_color)
+                db.session.commit()
+        return
+
+
+
+    
+    
+
+class ImageColor(db.Model):
+    """ Colors in a photo """
+
+    __tablename__ = "imagecolors"
+
+    image_color_id = db.Column(db.Integer, primary_key=True, autoincrement = True,
+                                                    nullable = False)
     image_id = db.Column(db.Integer, db.ForeignKey('images.image_id'), index=True, 
-                                                  nullable = False)
-    color_bin = db.Column(db.Integer, index=True, nullable = False)
+                                                    nullable = False)
+    color_id = db.Column(db.Integer, db.ForeignKey('colors.color_id'), 
+                                                    nullable = False)
+    color_bin = db.Column(db.String(10), index=True, nullable = False)
 
     # Define relationship to image
-    image = db.relationship("Image", backref=db.backref("imagecolorbins"), order_by=image_color_bin_id)
+    image = db.relationship("Image", backref=db.backref("imagecolors"), order_by=image_color_id)
+
+    # Define relationship to color
+    color = db.relationship("Color", backref=db.backref("imagecolors"), order_by=image_color_id)
+    
+
+    @classmethod
+    def add_image_colors_to_db(cls, image_id, colors):
+
+        for color in colors:
+
+            color_record = Color.query.filter(Color.color==color).first()
+            color_id = color_record.color_id
+
+            has_image_color = cls.query.filter(cls.image_id==image_id, 
+                                               cls.color_id==color_id).first()
+
+            if not has_image_color:
+
+                color_bin = get_color_bin(color)
+
+                new_image_color = cls(image_id=image_id, 
+                                             color_id=color_id,
+                                             color_bin=color_bin)
+                print 'new_image_color', new_image_color
+                db.session.add(new_image_color)
+                db.session.commit()
+
+
+        return
 
 
 ################### Helper Functions ####################
+
 
 def connect_to_db(app):
     """Connect the database to our Flask app."""
@@ -93,4 +188,9 @@ if __name__ == "__main__":
     connect_to_db(app)
     print "Connected to DB."
 
+    # add_color_bins_to_db(75)
+
+
     db.create_all()
+
+
