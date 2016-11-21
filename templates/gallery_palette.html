@@ -23,11 +23,15 @@
       
       {% if session["logged_in"] %}
           <div id="image-div-{{ photo.image_id }}" class="favorite-image-div">
-              {% if not user in photo.users %}          
-              <span id="image-{{ photo.image_id }}" data-image="{{ photo.image_id }}" class="favorite-image-btn glyphicon glyphicon-star-empty" aria-hidden="true"></span>
+              {% if not user in photo.users %}  
+              <!-- <button href="">         -->
+                <span id="image-{{ photo.image_id }}" data-image="{{ photo.image_id }}" class="star-empty glyphicon glyphicon-star-empty" aria-hidden="true"></span>
+              <!-- </button> -->
 
-              {% else %}                            
-              <span id="image-{{ photo.image_id }}" data-image="{{ photo.image_id }}" class="remove-image-btn glyphicon glyphicon-star" aria-hidden="true"></span>
+              {% else %} 
+              <!-- <button href=""> -->
+                  <span id="image-{{ photo.image_id }}" data-image="{{ photo.image_id }}" class="star-full glyphicon glyphicon-star" aria-hidden="true"></span>
+              <!-- </button> -->
               {% endif %}
           </div>
       {% endif %}

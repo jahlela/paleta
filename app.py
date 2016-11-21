@@ -269,25 +269,7 @@ def logout():
     return redirect("/")
 
 
-@app.route('/remove_image/<image_id>')
-def remove_image_from_profile(image_id):
-    """ The user should already be logged in. """
 
-    # Grab user_id from the browser session and image_id from the request    
-    user_id = session["user_id"]
-    
-    userimage_in_db = UserImage.query.filter(UserImage.user_id==user_id, 
-                                        UserImage.image_id==image_id).first()
-
-    if userimage_in_db:
-        db.session.delete(userimage_in_db)
-        db.session.commit()
-        flash('Image removed from profile')
-    else: 
-        flash('This image could not be found.')
-
-
-    return redirect('/users/' + str(user_id))
 
 
 
@@ -297,7 +279,7 @@ def add_image_to_profile():
 
     # Grab user_id from the browser session     
     user_id = session["user_id"]
-    image_id = request.form["image_id"]
+    image_id = int(request.form["image_id"])
     print
     print 'favoriting picture: ', image_id
     print 'user_id', user_id
@@ -311,11 +293,30 @@ def add_image_to_profile():
         new_user_image = UserImage(user_id=user_id, image_id=image_id)
         db.session.add(new_user_image)
         db.session.commit()
-        flash('Image added!')
+        # flash('Image added!')
+
+    return "Favorited image"
 
 
-    return redirect('/gallery')
+@app.route('/remove_image', methods=["POST"])
+def remove_image_from_profile():
+    """ The user should already be logged in. """
 
+    # Grab user_id from the browser session and image_id from the request    
+    user_id = session["user_id"]
+    image_id = int(request.form["image_id"])
+    
+    userimage_in_db = UserImage.query.filter(UserImage.user_id==user_id, 
+                                        UserImage.image_id==image_id).first()
+
+    if userimage_in_db:
+        db.session.delete(userimage_in_db)
+        db.session.commit()
+        # flash('Image removed from profile')
+    else: 
+        flash('This image could not be found.')
+
+    return "Removed image"
 
 
 ################## Run Server ##################

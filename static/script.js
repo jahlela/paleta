@@ -1,33 +1,42 @@
-var myThis
 
-function favoriteImage() {
-    var imageId = $(this).data("image");
+$(function() {
+    function addUserImageToDB() {
+        var imageId = $(this).data("image");
+        payload = {"image_id": imageId};
 
-    payload = {"image_id": imageId};
+        $.post("/favorite_image", payload, function(data) {
+           
+            var star = $("#image-" + imageId);
+           
+            star.addClass("star-full glyphicon-star");
+            star.removeClass("star-empty glyphicon-star-empty");
 
-    $.post("/favorite_image", payload, function(data) {
-        console.log(imageId);
-        var button = $("#image-" + imageId)
-
-
-        button.addClass("remove-image-btn");
-        button.addClass("glyphicon-star");
-        button.removeClass("favorite-image-btn");
-        button.removeClass("glyphicon-star-empty");
-        button.off("click");
-        // Add '/remove-favorite' listener
+            star.on("click", removeImage);
+        });
+    }
 
 
+    function removeUserImageFromDB() {
+        var imageId = $(this).data("image");
+        payload = {"image_id": imageId};
 
+        $.post("/remove_image", payload, function(data) {
+            var star = $("#image-" + imageId);
 
-    });
-}
+            star.addClass("star-empty glyphicon-star-empty");
+            star.removeClass("star-full glyphicon-star");
 
+            star.on("click", favoriteImage);
+        });
+    }
 
-$(".favorite-image-btn").on("click", favoriteImage);
+    function removeImageFromPage() {
+        $(this).closest('.image-with-palette').remove();
 
+    }
 
-// 
+    $(".profile-image").on("click", removeImageFromPage);
+    $(".star-empty").on("click", addUserImageToDB);
+    $(".star-full").on("click", removeUserImageFromDB);
 
-// function(data) is the success function
-// Then toggle star classes in f(x)
+});
