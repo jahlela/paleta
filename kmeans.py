@@ -25,7 +25,7 @@ def is_too_dark(rgb):
   r, g, b = rgb
 
   luminance = ((r*0.299 + g*0.587 + b*0.114) / 256.0)
-  return luminance < .1
+  return luminance < .05
 
 def get_random_rgb():
     rgb_tuple = []
@@ -43,7 +43,7 @@ def nearest_is_empty(nearests):
 
 ################### Kmeans Analysis ###################
 
-def get_kmeans(file_path=None, iterations=200):
+def get_kmeans(file_path=None, iterations=20):
     """ Takes in an image file_path and returns a list of RGB values that 
         represent the centroids of 5 k-mean clusters (dominant palette). 
 
@@ -73,8 +73,8 @@ def get_kmeans(file_path=None, iterations=200):
         nearests = [((0,0,0),0.1) for _ in xrange(len(centroids))]
 
         # For each pixel in the image (defined by width and height)
-        for i in xrange(width/2):
-            for j in xrange(height/2):
+        for j in xrange(height/2):        
+            for i in xrange(width/2):
                 # Use PIL's .getpixel() to find the RGB color at each pixel
                 pixel = image.getpixel((2*i,2*j))
 

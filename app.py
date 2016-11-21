@@ -88,7 +88,8 @@ def analyze_photo():
     ImageColor.add_image_colors_to_db(image_id, colors)
     # If user is logged in, add a user_image record if none already exists
     if session["logged_in"]:
-        add_user_image_to_db(session["user_id"], image_id)
+        user_id = session["user_id"]
+        UserImage.add_user_image_to_db(user_id, image_id)
     # This must be a list, even though there is only one element
     new_photo = [Image.query.filter(Image.file_name==file_name).first()]
 
@@ -141,7 +142,7 @@ def user_details(user_id, photos=None):
         photos = []
         for userimage in images_by_user:
 	       photos.append(userimage.image)
-        # photos.reverse()
+        photos.reverse()
         return render_template('/user_profile.html',
                                user=user,
                                photos=photos)
