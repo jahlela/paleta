@@ -69,20 +69,7 @@ h1 img.logo {
     padding: 10px;
 }
 
-.palette-seed-figure img {
-    /*margin-left: 10%;*/
-    height: 250px;
-    padding-bottom: 10px;
-}
 
-.palette-color {
-    display: inline-block;
-    margin: 1%;
-    border: .5px solid black; 
-    border-radius: 5px;
-    height: 50px; 
-    width: 50px; 
-}
 
 /* Hide delete button from the home page images*/
 #sample-palette-section div.favorite-image-div {
@@ -99,6 +86,20 @@ h1 img.logo {
 form.palette-square-form {
     display: inline-block;
     margin: 0 -20px;
+}
+
+.palette-seed-figure img {
+    height: 250px;
+    padding-bottom: 10px;
+}
+
+.palette-color {
+    display: inline-block;
+    margin: 1%;
+    border: .5px solid black; 
+    border-radius: 5px;
+    height: 50px; 
+    width: 50px; 
 }
 
 .palette-color-text {

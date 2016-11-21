@@ -88,13 +88,13 @@ def analyze_photo():
     ImageColor.add_image_colors_to_db(image_id, colors)
     # If user is logged in, add a user_image record if none already exists
     if session["logged_in"]:
-        add_user_image_to_db(session["user_id"], image_id)
+        user_id = session["user_id"]
+        UserImage.add_user_image_to_db(user_id, image_id)
     # This must be a list, even though there is only one element
     new_photo = [Image.query.filter(Image.file_name==file_name).first()]
 
     # Technically just calls the index function in the '/' GET route
     return index(new_photo)
-
 
 
 @app.route('/register')
@@ -142,7 +142,7 @@ def user_details(user_id, photos=None):
         photos = []
         for userimage in images_by_user:
 	       photos.append(userimage.image)
-        # photos.reverse()
+        photos.reverse()
         return render_template('/user_profile.html',
                                user=user,
                                photos=photos)
@@ -152,31 +152,19 @@ def user_details(user_id, photos=None):
                                user=user)
 
 
-
 @app.route('/image_filter', methods=["GET"])
 def image_filter():
     """ Filter images by color_bin """
 
-    hex_color = request.args.get("hex_color")
-
-    if not hex_color:
-        hex_color = "#6f3f79"
-
-    # if hex_color[0] != '#':
-    #     hex_color = '#' + hex_color
-
-    print 'get hex_color', hex_color
+    hex_color = request.args.get("hex_color") or "#6f3f79"
 
     # get user object from database with their user_id
     if session["logged_in"]:
-        user_id = session["user_id"]
-        user = User.query.get(user_id)
+        user = User.query.get(session["user_id"])
     else:
         user = None
 
-
     color_bin = get_color_bin(hex_color)
-
     color_image_query = ImageColor.query.filter(ImageColor.color_bin==color_bin).distinct()
 
     # If there are photos represented in that bin, display them
@@ -281,7 +269,6 @@ def logout():
     return redirect("/")
 
 
-
 @app.route('/remove_image/<image_id>')
 def remove_image_from_profile(image_id):
     """ The user should already be logged in. """
@@ -328,20 +315,6 @@ def add_image_to_profile(image_id):
 
     return redirect('/gallery')
 
-################## Helper Functions ##################
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 ################## Run Server ##################
@@ -354,7 +327,6 @@ if __name__ == "__main__":
     app.jinja_env.auto_reload = app.debug
 
     connect_to_db(app)
-
 
     # Use the DebugToolbar
     DebugToolbarExtension(app)

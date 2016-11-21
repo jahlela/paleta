@@ -91,6 +91,7 @@ class Image(db.Model):
     users = db.relationship("User", backref="images", 
                                     secondary="userimages") #Access Image directly
 
+
 class Color(db.Model):
     """ Color details """
 
@@ -117,10 +118,6 @@ class Color(db.Model):
                 db.session.commit()
         return
 
-
-
-    
-    
 
 class ImageColor(db.Model):
     """ Colors in a photo """
