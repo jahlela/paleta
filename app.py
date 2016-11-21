@@ -291,12 +291,13 @@ def remove_image_from_profile(image_id):
 
 
 
-@app.route('/favorite_image/<image_id>')
-def add_image_to_profile(image_id):
+@app.route('/favorite_image', methods=["POST"])
+def add_image_to_profile():
     """ The user should already be logged in. """
 
     # Grab user_id from the browser session     
     user_id = session["user_id"]
+    image_id = request.form["image_id"]
     print
     print 'favoriting picture: ', image_id
     print 'user_id', user_id
