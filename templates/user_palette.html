@@ -15,9 +15,7 @@
       {% endfor %}
       
       <div class="remove-image-div">
-          <a href="/remove_image/{{ photo.image_id }}">
-            <button class="remove-image-btn">Remove {{ photo.image_id }}</button>
-          </a>
+          <span id="image-{{ photo.image_id }}" data-image="{{ photo.image_id }}" class="star-full profile-image glyphicon glyphicon-star" aria-hidden="true"></span>
       </div>
 
     </div>

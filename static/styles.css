@@ -118,7 +118,32 @@ input.palette-color {
     color: rgba(0,0,0,0);
 }
 
+
+
+
+
+
 /* *********** Interactive Elements *********** */
+
+.star-empty {
+    font-size: 30px;
+    cursor: pointer;
+}
+
+.star-empty:hover {
+    cursor: pointer;
+}
+
+.star-full {
+    font-size: 30px;
+    color: gold;
+}
+
+.star-full:hover {
+    cursor: pointer;
+}
+
+
 
 .alert {
 
