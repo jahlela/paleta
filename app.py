@@ -115,12 +115,7 @@ def gallery(photos=None):
     else:
         user = None
 
-    gallery_images = Image.query.all()
-    photos = []
-
-    for photo in gallery_images:
-        photos.append(photo)
-    photos.reverse()
+    photos = Image.query.order_by(Image.image_id.desc()).all()
 
     return render_template('/gallery.html',
                             photos=photos, 
@@ -135,14 +130,14 @@ def user_details(user_id, photos=None):
     user_id = session["user_id"]
     user = User.query.get(user_id)
 
-    images_by_user = UserImage.query.filter(UserImage.user_id==user_id).all()
+    images_by_user = UserImage.query.filter(UserImage.user_id==user_id).\
+                     order_by(UserImage.user_image_id.desc()).all()
 
-    # If the user has images associated with them, display them by most recent
+    # If the user has images associated with them, grab the images by user_image
     if images_by_user:
         photos = []
         for userimage in images_by_user:
 	       photos.append(userimage.image)
-        # photos.reverse()
         return render_template('/user_profile.html',
                                user=user,
                                photos=photos)
