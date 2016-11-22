@@ -142,7 +142,7 @@ def user_details(user_id, photos=None):
         photos = []
         for userimage in images_by_user:
 	       photos.append(userimage.image)
-        photos.reverse()
+        # photos.reverse()
         return render_template('/user_profile.html',
                                user=user,
                                photos=photos)
@@ -172,7 +172,7 @@ def image_filter():
         photos = []
         for color_image in color_image_query:
            photos.append(color_image.image)
-        photos.reverse()
+        # photos.reverse()
         return render_template('/image_filter.html',
                                 user=user,
                                 hex_color=hex_color,

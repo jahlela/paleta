@@ -11,7 +11,7 @@ $(function() {
             star.addClass("star-full glyphicon-star");
             star.removeClass("star-empty glyphicon-star-empty");
 
-            // star.off("click", ".favorite-image-btn");
+            // Add another event listener
             star.on("click", removeUserImageFromDB);
         });
     }
@@ -39,13 +39,8 @@ $(function() {
 
     }
 
-
-
     $(".profile-image").on("click", removeImageFromProfile);
     $(".star-empty").on("click", addUserImageToDB);
     $(".star-full").on("click", removeUserImageFromDB);
-
-
-
 
 });
