@@ -93,27 +93,23 @@ def get_kmeans(file_path=None, iterations=20):
                         min_cent_idx = cent_idx
                         min_dist = cent_dist
 
-                (s,n) = nearests[min_cent_idx]
-                nearests[min_cent_idx] = (add(pixel, s), n + 1)
+                (s,point_count) = nearests[min_cent_idx]
+                nearests[min_cent_idx] = (add(pixel, s), point_count + 1)
         
         for cent_idx in xrange(len(centroids)):
             
             point_sums = nearests[cent_idx][0]
-            print 'point_sums', point_sums
             point_count = 1 / nearests[cent_idx][1]
-            print 'point_count', point_count
 
             # Reset each of the centroids to the average of all colors closest
             # to that centroid
             point_average = mult(point_sums, point_count)
-            print point_average
             centroids[cent_idx] =  point_average
 
         for idx in xrange(len(centroids)):
             centroids[idx] = (int(centroids[idx][0]), int(centroids[idx][1]), int(centroids[idx][2]))
 
     print '\n Kmeans time elapsed: ', (time.time() - start_kmeans)
-    print centroids
     return centroids
 
 
