@@ -1,5 +1,5 @@
 {% for photo in photos %}
-    <div class="image-with-palette">
+    <div id="gallery-image-with-palette-{{ photo.image_id }}" class="image-with-palette">
 
       <figure class="palette-seed-figure">
           <img src="{{ photo.file_name }}" alt="">

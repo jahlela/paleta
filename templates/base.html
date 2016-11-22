@@ -13,7 +13,6 @@
 
 <header>
     <nav class="navbar navbar-fixed-top navbar-inverse">
-    <!-- <nav class="navbar  navbar-light bg-faded"> -->
         <div class="container">
 
             <div class="navbar-header">
@@ -27,7 +26,7 @@
                     <!-- If user is not logged in, display links to login or register -->
                     {% if not session["logged_in"] %}
                         <li><a href="#" data-toggle="modal" data-target="#loginModal">Login</a></li>
-                        <li><a href="/register">Register</a></li>
+                        <li><a href="#" data-toggle="modal" data-target="#registerModal">Register</a></li>
 
                     <!-- If user is logged in, display profile and logout links -->
                     {% else %}  
@@ -51,25 +50,57 @@
           </div>
 
           <div class="modal-body">
-            <p>Have a login!</p>
             <form action="/login" method="POST">
                 <p>Email  <input type="text" name="email" placeholder="email"></p>
                 <p>Password  <input type="password" name="password"  placeholder="password"></p>
-                <input type="submit" value="Log in">
+                <input type="submit" class="btn btn-primary" value="Log in">
             </form>
 
             <hr>
             <p>Don't have an account?</p>
-            <a class="btn" href="register">Sign Up</a>
+            <a class="btn btn-primary" href="#" data-dismiss="modal" data-toggle="modal" data-target="#registerModal">Sign Up</a>
           </div> <!-- .modal-body -->
 
-          <div class="modal-footer">
-            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-            <button type="button" class="btn btn-primary">Submit</button>
-          </div> <!-- .modal-footer -->
+          <!-- .modal-footer could go here-->
         </div> <!-- .modal-content -->
       </div> <!-- .modal-dialog -->
     </div> <!-- #loginModal-->
+
+
+
+    <!-- jQuery Register Modal -->
+    <div class="modal fade" id="registerModal" tabindex="0" role="dialog" aria-labelledby="myModalLabel">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="myModalLabel">Register</h4>
+          </div>
+
+          <div class="modal-body">
+            <form action="/register" method="POST">
+                <p>First name  <input type="text" name="firstname" placeholder="firstname"></p>
+                <p>Last name  <input type="text" name="lastname"  placeholder="lastname"></p>
+
+                <p>Email  <input type="text" name="email" placeholder="name"></p>
+                <p>Password  <input type="password" name="password"  placeholder="password"></p>
+                <input type="submit" class="btn btn-primary" value="Register">
+            </form>
+
+            <hr>
+            <p>Already have an account?</p>
+            <a class="btn btn-primary" href="#" data-dismiss="modal" data-toggle="modal" data-target="#loginModal">Log In</a>
+          </div> <!-- .modal-body -->
+
+          <!-- .modal-footer could go here-->
+        </div> <!-- .modal-content -->
+      </div> <!-- .modal-dialog -->
+    </div> <!-- #loginModal-->
+
+
+
+
+
 
 </header>
 
