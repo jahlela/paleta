@@ -7,25 +7,28 @@ import time
 
 ################### Helper Functions ###################
 
-def distance(p1, p2):
+def distance(point1, point2):
     """ Find Euclidean distance between two points in 3D space """
-    x1,y1,z1 = p1
-    x2,y2,z2 = p2
+    x1,y1,z1 = point1
+    x2,y2,z2 = point2
     return (x1 - x2)**2 + (y1 - y2)**2 + (z1 - z2)**2
 
-def add(p1,p2):
-    x1,y1,z1 = p1
-    x2,y2,z2 = p2
+def add(point1,point2):
+    """ Add two 3D points, element-wise """
+    x1,y1,z1 = point1
+    x2,y2,z2 = point2
     return (x1 + x2, y1 + y2, z1 + z2)
 
-def mult(p,s):
-    return (s * p[0], s * p[1], s * p[2])
+def mult(point_sums, point_count):
+    """ Note: with kmeans usage, point-count will be 1/count """
+    x, y, z = point_sums
+    return (x * point_count, y * point_count, z * point_count)
 
-def is_too_dark(rgb):
-  r, g, b = rgb
-
-  luminance = ((r*0.299 + g*0.587 + b*0.114) / 256.0)
-  return luminance < .05
+def is_too_dark(rgb, too_low=.05):
+    """ Takes an RGB value and returns True if the luminance is too low """
+    r, g, b = rgb
+    luminance = ((r*0.299 + g*0.587 + b*0.114) / 256.0)
+    return luminance < too_low
 
 def get_random_rgb():
     rgb_tuple = []
@@ -92,25 +95,25 @@ def get_kmeans(file_path=None, iterations=20):
 
                 (s,n) = nearests[min_cent_idx]
                 nearests[min_cent_idx] = (add(pixel, s), n + 1)
-
-
-                # print '\n nearests', nearests
-
-                # # Only check for accidental (0,0,0) values for the first half, 
-                # # in case it's a legitimate value in the image
-                # if count < math.floor(iterations/2):
-                #     nearest_is_empty(nearests)
-
-                # print 'after random nearests', nearests
-                # print
         
         for cent_idx in xrange(len(centroids)):
-            centroids[cent_idx] = mult(nearests[cent_idx][0], 1 / nearests[cent_idx][1]) 
+            
+            point_sums = nearests[cent_idx][0]
+            print 'point_sums', point_sums
+            point_count = 1 / nearests[cent_idx][1]
+            print 'point_count', point_count
+
+            # Reset each of the centroids to the average of all colors closest
+            # to that centroid
+            point_average = mult(point_sums, point_count)
+            print point_average
+            centroids[cent_idx] =  point_average
 
         for idx in xrange(len(centroids)):
             centroids[idx] = (int(centroids[idx][0]), int(centroids[idx][1]), int(centroids[idx][2]))
 
     print '\n Kmeans time elapsed: ', (time.time() - start_kmeans)
+    print centroids
     return centroids
 
 
