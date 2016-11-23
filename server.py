@@ -19,7 +19,7 @@ import bcrypt
 app = Flask(__name__)
 
 # Required to use Flask sessions and the debug toolbar
-app.secret_key = "ABC"
+app.secret_key = "mypaleta"
 
 # Make Jinja2 raise an error if there is an undefined variable
 app.jinja_env.undefined = StrictUndefined
@@ -97,13 +97,6 @@ def analyze_photo():
     return index(new_photo)
 
 
-@app.route('/register')
-def register():
-    """ Render registration page """ 
-
-    return render_template("/register.html")
-
-
 @app.route('/gallery', methods=["GET"])
 def gallery(photos=None):
     """ Display photo gallery """
@@ -164,10 +157,10 @@ def image_filter():
 
     # If there are photos represented in that bin, display them
     if color_image_query:
-        photos = []
+        photo_set = set()
         for color_image in color_image_query:
-           photos.append(color_image.image)
-        # photos.reverse()
+           photo_set.add(color_image.image)
+        photos = list(photo_set)
         return render_template('/image_filter.html',
                                 user=user,
                                 hex_color=hex_color,
