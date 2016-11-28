@@ -6,13 +6,14 @@ $(function() {
 
         $.post("/favorite_image", payload, function(data) {
            
-            var star = $("#image-" + imageId);
+            var heart = $("#image-" + imageId);
            
-            star.addClass("star-full glyphicon-star");
-            star.removeClass("star-empty glyphicon-star-empty");
+            heart.addClass("heart-full glyphicon-heart");
+            heart.removeClass("heart-empty glyphicon-heart-empty");
 
             // Add another event listener
-            star.on("click", removeUserImageFromDB);
+            heart.off("click");
+            heart.on("click", removeUserImageFromDB);
         });
     }
 
@@ -24,12 +25,13 @@ $(function() {
 
         $.post("/remove_image", payload, function(data) {
             console.log(imageId);
-            var star = $("#image-" + imageId);
+            var heart = $("#image-" + imageId);
 
-            star.addClass("star-empty glyphicon-star-empty");
-            star.removeClass("star-full glyphicon-star");
+            heart.addClass("heart-empty glyphicon-heart-empty");
+            heart.removeClass("heart-full glyphicon-heart");
 
-            star.on("click", addUserImageToDB);
+            heart.off("click");
+            heart.on("click", addUserImageToDB);
         });
     }
 
@@ -39,8 +41,8 @@ $(function() {
     }
 
     $(".profile-image").on("click", removeImageFromProfile);
-    $(".star-empty").on("click", addUserImageToDB);
-    $(".star-full").on("click", removeUserImageFromDB);
+    $(".heart-empty").on("click", addUserImageToDB);
+    $(".heart-full").on("click", removeUserImageFromDB);
 
 
     function toggleDemoTextOnProfile() {
@@ -48,7 +50,7 @@ $(function() {
         $('#profile_demo_text').toggle();
     }
 
-    $(".demo_images span.star-empty").on("click", toggleDemoTextOnProfile);
+    $(".demo_images span.heart-empty").on("click", toggleDemoTextOnProfile);
 
 });
 

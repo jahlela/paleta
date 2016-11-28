@@ -135,29 +135,29 @@ input.palette-color {
 
 
 
-/* Hide star from the home page images*/
+/* Hide heart from the home page images*/
 #sample-palette-section div.favorite-image-div {
     display: none;
 }
 
 /* *********** Interactive Elements *********** */
 
-.star-empty {
+.heart-empty {
     font-size: 30px;
     cursor: pointer;
-    color: darkgrey;
+    color: black;
 }
 
-.star-empty:hover {
+.heart-empty:hover {
     cursor: pointer;
 }
 
-.star-full {
+.heart-full {
     font-size: 30px;
-    color: gold;
+    color: red;
 }
 
-.star-full:hover {
+.heart-full:hover {
     cursor: pointer;
 }
 /*

@@ -11,12 +11,12 @@
 
                 {% if not user in photo.users %}  
                 <!-- <button href="">         -->
-                <span id="image-{{ photo.image_id }}" data-image="{{ photo.image_id }}" class="star-empty glyphicon glyphicon-star-empty" aria-hidden="true"></span>
+                <span id="image-{{ photo.image_id }}" data-image="{{ photo.image_id }}" class="heart-empty glyphicon glyphicon-heart-empty" aria-hidden="true"></span>
                 <!-- </button> -->
 
                 {% else %} 
                 <!-- <button href=""> -->
-                <span id="image-{{ photo.image_id }}" data-image="{{ photo.image_id }}" class="star-full glyphicon glyphicon-star" aria-hidden="true"></span>
+                <span id="image-{{ photo.image_id }}" data-image="{{ photo.image_id }}" class="heart-full glyphicon glyphicon-heart" aria-hidden="true"></span>
                 <!-- </button> -->
                 {% endif %}
 
