@@ -133,11 +133,15 @@ def user_details(user_id, photos=None):
            photos.append(userimage.image)
         return render_template('/user_profile.html',
                                user=user,
+                               yes_photos = True,
                                photos=photos)
-    # If not, just show user information
+    # If not, just show user information and a default photo with instructions
     else:
+        photos = [Image.query.get(199)]
         return render_template('/user_profile.html',
-                               user=user)
+                               user=user,
+                               yes_photos = False,
+                               photos=photos)
 
 
 @app.route('/image_filter', methods=["GET"])
@@ -268,15 +272,13 @@ def add_image_to_profile():
     # Grab user_id from the browser session     
     user_id = session["user_id"]
     image_id = int(request.form["image_id"])
-    print
-    print 'favoriting picture: ', image_id
-    print 'user_id', user_id
     
     userimage_in_db = UserImage.query.filter(UserImage.user_id==user_id, 
                                         UserImage.image_id==image_id).first()
 
     if userimage_in_db:
-        flash('Image already added to profile')
+        pass
+        # flash('Image already added to profile')
     else: 
         new_user_image = UserImage(user_id=user_id, image_id=image_id)
         db.session.add(new_user_image)
@@ -313,7 +315,7 @@ def remove_image_from_profile():
 if __name__ == "__main__":
     # We have to set debug=True here, since it has to be True at the
     # point that we invoke the DebugToolbarExtension
-    app.debug = True
+    app.debug = False
     app.jinja_env.auto_reload = app.debug
 
     connect_to_db(app)

@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block content %}
+
+  <h2>{{ user.firstname }}'s Profile</h2>
+
+  {% if yes_photos %}
+  <div id="user-images">
+    {% include 'user_palette.html' %}
+  </div>
+  {% else %}
+  <div id="user-images" class="demo_images">
+    <br>
+    <p id="profile_demo_text">It looks like you don't have any palettes yet. <a href="/">Create your own</a>, star the image below, or pick a few from the <a href="/gallery">gallery</a>.<p>
+    {% include 'gallery_palette.html' %}
+  </div>
+      
+
+  {% endif %}
+
+{% endblock %}

@@ -43,4 +43,19 @@ $(function() {
     $(".star-empty").on("click", addUserImageToDB);
     $(".star-full").on("click", removeUserImageFromDB);
 
+
+    function removeDemoTextFromProfile() {
+        console.log("Removing demo text")
+        
+        $('#profile_demo_text').toggle();
+
+    }
+
+    $(".demo_images span.star-empty").on("click", removeDemoTextFromProfile);
+
 });
+
+
+
+
+
