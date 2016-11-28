@@ -2,7 +2,28 @@
     <div id="gallery-image-with-palette-{{ photo.image_id }}" class="image-with-palette">
 
       <figure class="palette-seed-figure">
-          <img src="{{ photo.file_name }}" alt="">
+          <div class="palette-seed-figure-div">
+            <img src="{{ photo.file_name }}" alt="">
+
+            {% if session["logged_in"] %}
+
+            <div id="image-div-{{ photo.image_id }}" class="favorite-image-div">
+
+                {% if not user in photo.users %}  
+                <!-- <button href="">         -->
+                <span id="image-{{ photo.image_id }}" data-image="{{ photo.image_id }}" class="heart-empty glyphicon glyphicon-heart-empty" aria-hidden="true"></span>
+                <!-- </button> -->
+
+                {% else %} 
+                <!-- <button href=""> -->
+                <span id="image-{{ photo.image_id }}" data-image="{{ photo.image_id }}" class="heart-full glyphicon glyphicon-heart" aria-hidden="true"></span>
+                <!-- </button> -->
+                {% endif %}
+
+            </div>
+
+            {% endif %}
+          </div>
       </figure>
 
 
@@ -21,20 +42,7 @@
       
 
       
-      {% if session["logged_in"] %}
-          <div id="image-div-{{ photo.image_id }}" class="favorite-image-div">
-              {% if not user in photo.users %}  
-              <!-- <button href="">         -->
-                <span id="image-{{ photo.image_id }}" data-image="{{ photo.image_id }}" class="star-empty glyphicon glyphicon-star-empty" aria-hidden="true"></span>
-              <!-- </button> -->
-
-              {% else %} 
-              <!-- <button href=""> -->
-                  <span id="image-{{ photo.image_id }}" data-image="{{ photo.image_id }}" class="star-full glyphicon glyphicon-star" aria-hidden="true"></span>
-              <!-- </button> -->
-              {% endif %}
-          </div>
-      {% endif %}
+      
 
     </div>
 {% endfor %}
