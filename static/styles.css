@@ -8,7 +8,8 @@ html {
 
 body { 
     margin-top: 30px;
-    background-image: url("static/img/design/paper.png");
+    background-image: url("/static/img/design/paper.png");
+    font-family: 'Lato', sans-serif;
 }
 
 .container {
@@ -29,6 +30,7 @@ a:hover {
 
 h1, h2, h3, h4, h5, h6 {
     color: #00acc1;
+    font-family: 'Scope One', serif;
 }
 
 h1 img.logo {
@@ -37,6 +39,10 @@ h1 img.logo {
 
 .h1, h1 {
     font-size: 50px;
+}
+
+.h2, h2 {
+    margin: 75px 0 50px;
 }
 
 .btn {
@@ -52,6 +58,10 @@ h1 img.logo {
 }
 /* *********** Specialized Elements *********** */
 
+section#welcome-section {
+    margin: 60px 0 20px;
+}
+
 #welcome-section .center {
     margin-left: 25%;
     width: 50%;
@@ -62,17 +72,21 @@ h1 img.logo {
     /*color: black;*/
 }
 
+#submit-image-section input[type="text"] {
+    height: 32px;
+}
+
 .image-with-palette {
     display: inline-block;
     min-width: 330px;
     padding: 10px;
+    position: relative;
 }
 
-
-
-/* Hide delete button from the home page images*/
-#sample-palette-section div.favorite-image-div {
-    display: none;
+div.favorite-image-div {
+    top: 10px;
+    right: 10px;
+    position: absolute;
 }
 
 
@@ -85,6 +99,11 @@ h1 img.logo {
 form.palette-square-form {
     display: inline-block;
     margin: 0 -20px;
+}
+
+.palette-seed-figure-div {
+    display: inline-block;
+    position: relative;
 }
 
 .palette-seed-figure img {
@@ -105,9 +124,6 @@ form.palette-square-form {
     display: initial;
 }
 
-#user-info-ul li {
-    list-style-type: none;
-}
 
 h2.no-accent-heading {
     color: black;
@@ -119,14 +135,17 @@ input.palette-color {
 
 
 
-
-
+/* Hide star from the home page images*/
+#sample-palette-section div.favorite-image-div {
+    display: none;
+}
 
 /* *********** Interactive Elements *********** */
 
 .star-empty {
     font-size: 30px;
     cursor: pointer;
+    color: darkgrey;
 }
 
 .star-empty:hover {
@@ -141,17 +160,13 @@ input.palette-color {
 .star-full:hover {
     cursor: pointer;
 }
-
-
-
+/*
 .alert {
-
-
 }
 
 .alert-warnings {
-
 }
+*/
 
 /* *********** @media Queries *********** */
 
