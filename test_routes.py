@@ -33,8 +33,6 @@ class FlaskTests(TestCase):
         self.assertIn('<h2>Paleta Gallery</h2>', result.data)
 
 
-    
-
     def test_filter_route(self):
         """ Test profile route rendering """
 
@@ -109,6 +107,7 @@ class FlaskTestsLoggedIn(TestCase):
             with c.session_transaction() as sess:
                 sess['user_id'] = None
                 sess['logged_in'] = False
+                
 
 if __name__ == "__main__":
     import unittest
