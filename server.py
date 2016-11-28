@@ -19,7 +19,7 @@ import bcrypt
 app = Flask(__name__)
 
 # Required to use Flask sessions and the debug toolbar
-app.secret_key = "ABC"
+app.secret_key = "mypaleta"
 
 # Make Jinja2 raise an error if there is an undefined variable
 app.jinja_env.undefined = StrictUndefined
@@ -97,13 +97,6 @@ def analyze_photo():
     return index(new_photo)
 
 
-@app.route('/register')
-def register():
-    """ Render registration page """ 
-
-    return render_template("/register.html")
-
-
 @app.route('/gallery', methods=["GET"])
 def gallery(photos=None):
     """ Display photo gallery """
@@ -115,12 +108,7 @@ def gallery(photos=None):
     else:
         user = None
 
-    gallery_images = Image.query.all()
-    photos = []
-
-    for photo in gallery_images:
-        photos.append(photo)
-    photos.reverse()
+    photos = Image.query.order_by(Image.image_id.desc()).all()
 
     return render_template('/gallery.html',
                             photos=photos, 
@@ -135,21 +123,25 @@ def user_details(user_id, photos=None):
     user_id = session["user_id"]
     user = User.query.get(user_id)
 
-    images_by_user = UserImage.query.filter(UserImage.user_id==user_id).all()
+    images_by_user = UserImage.query.filter(UserImage.user_id==user_id).\
+                     order_by(UserImage.user_image_id.desc()).all()
 
-    # If the user has images associated with them, display them by most recent
+    # If the user has images associated with them, grab the images by user_image
     if images_by_user:
         photos = []
         for userimage in images_by_user:
-	       photos.append(userimage.image)
-        # photos.reverse()
+           photos.append(userimage.image)
         return render_template('/user_profile.html',
                                user=user,
+                               yes_photos = True,
                                photos=photos)
-    # If not, just show user information
+    # If not, just show user information and a default photo with instructions
     else:
+        photos = [Image.query.get(199)]
         return render_template('/user_profile.html',
-                               user=user)
+                               user=user,
+                               yes_photos = False,
+                               photos=photos)
 
 
 @app.route('/image_filter', methods=["GET"])
@@ -169,10 +161,10 @@ def image_filter():
 
     # If there are photos represented in that bin, display them
     if color_image_query:
-        photos = []
+        photo_set = set()
         for color_image in color_image_query:
-           photos.append(color_image.image)
-        # photos.reverse()
+           photo_set.add(color_image.image)
+        photos = list(photo_set)
         return render_template('/image_filter.html',
                                 user=user,
                                 hex_color=hex_color,
@@ -280,15 +272,13 @@ def add_image_to_profile():
     # Grab user_id from the browser session     
     user_id = session["user_id"]
     image_id = int(request.form["image_id"])
-    print
-    print 'favoriting picture: ', image_id
-    print 'user_id', user_id
     
     userimage_in_db = UserImage.query.filter(UserImage.user_id==user_id, 
                                         UserImage.image_id==image_id).first()
 
     if userimage_in_db:
-        flash('Image already added to profile')
+        pass
+        # flash('Image already added to profile')
     else: 
         new_user_image = UserImage(user_id=user_id, image_id=image_id)
         db.session.add(new_user_image)
@@ -325,7 +315,7 @@ def remove_image_from_profile():
 if __name__ == "__main__":
     # We have to set debug=True here, since it has to be True at the
     # point that we invoke the DebugToolbarExtension
-    app.debug = True
+    app.debug = False
     app.jinja_env.auto_reload = app.debug
 
     connect_to_db(app)

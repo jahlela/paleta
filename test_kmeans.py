@@ -1,5 +1,4 @@
 import unittest
-# import app
 import kmeans
 
 class MyAppUnitTestCase(unittest.TestCase):

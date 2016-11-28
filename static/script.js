@@ -36,11 +36,23 @@ $(function() {
     function removeImageFromProfile() {
         console.log("Removing closest .image-with-palette")
         $(this).closest('.image-with-palette').remove();
-
     }
 
     $(".profile-image").on("click", removeImageFromProfile);
     $(".star-empty").on("click", addUserImageToDB);
     $(".star-full").on("click", removeUserImageFromDB);
 
+
+    function toggleDemoTextOnProfile() {
+        console.log("Toggling demo text")
+        $('#profile_demo_text').toggle();
+    }
+
+    $(".demo_images span.star-empty").on("click", toggleDemoTextOnProfile);
+
 });
+
+
+
+
+
