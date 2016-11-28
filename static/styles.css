@@ -108,7 +108,8 @@ form.palette-square-form {
 
 .palette-seed-figure img {
     height: 250px;
-    padding-bottom: 10px;
+    margin-bottom: 10px;
+    border: 1px solid rgba(128,128,128,0.3)
 }
 
 .palette-color {
@@ -143,9 +144,7 @@ input.palette-color {
 /* *********** Interactive Elements *********** */
 
 div.favorite-image-div {
-    border-radius: 5px;
     height: 30px;
-    background: rgba(255,255,255,0.2);
 }
 
 div.favorite-image-div span.glyphicon {
@@ -153,15 +152,11 @@ div.favorite-image-div span.glyphicon {
     top: 0;
 }
 
-
 .heart-empty {
     font-size: 30px;
-    cursor: pointer;
     color: black;
-}
-
-.heart-empty:hover {
-    cursor: pointer;
+    background: rgba(255,255,255,0.2);
+    border-radius: 5px;
 }
 
 .heart-full {
@@ -169,6 +164,7 @@ div.favorite-image-div span.glyphicon {
     color: red;
 }
 
+.heart-empty:hover,
 .heart-full:hover {
     cursor: pointer;
 }
