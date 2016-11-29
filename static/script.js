@@ -45,6 +45,22 @@ $(function() {
     $(".heart-full").on("click", removeUserImageFromDB);
 
 
+
+    function removeAllRecordsOfImage() {
+        var imageId = $(this).data("image");
+
+        payload = {"image_id": imageId};
+
+        $.post("/remove_gallery_image", payload, function(data) {
+            console.log(imageId);
+            alert(imageId + " Records deleted")
+        });
+    }
+
+    $(".delete-all-records").on("click", removeAllRecordsOfImage);
+
+
+
     function toggleDemoTextOnProfile() {
         console.log("Toggling demo text")
         $('#profile_demo_text').toggle();
