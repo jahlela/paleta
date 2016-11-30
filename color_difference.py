@@ -113,7 +113,7 @@ def get_image_and_palette(URL):
 
         # Add each hex color to final list
         if hex_color == '000':
-            hex_color = '000000'
+            hex_color = '010101'
         palette.append(hex_color)
 
     return [file_path, palette]

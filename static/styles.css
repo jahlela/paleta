@@ -42,7 +42,8 @@ h1 img.logo {
 }
 
 .h2, h2 {
-    margin: 75px 0 50px;
+    margin: 75px 0 30px;
+    font-size: 50px;
 }
 
 .btn {
@@ -79,7 +80,7 @@ section#welcome-section {
 .image-with-palette {
     display: inline-block;
     min-width: 330px;
-    padding: 10px;
+    padding: 20px;
     position: relative;
 }
 
@@ -98,7 +99,7 @@ div.favorite-image-div {
 
 form.palette-square-form {
     display: inline-block;
-    margin: 0 -20px;
+    margin: 0 -22px;
 }
 
 .palette-seed-figure-div {
@@ -180,8 +181,11 @@ div.favorite-image-div span.glyphicon {
 
 @media (min-width: 1250px)
 .container {
-    width: 1300px;
+    width: 1400px;
 }
 
 
-
+@media (min-width: 1300px)
+.container {
+    width: 1400px;
+}
