@@ -59,6 +59,14 @@ h1 img.logo {
 }
 /* *********** Specialized Elements *********** */
 
+.navbar-inverse .navbar-brand {
+    color: #589ea7;
+}
+
+.navbar-inverse .navbar-nav>li>a {
+    color: #589ea7;
+}
+
 section#welcome-section {
     margin: 60px 0 20px;
 }
