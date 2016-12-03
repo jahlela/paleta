@@ -15,6 +15,7 @@ from color_difference import get_image_and_palette
 import os.path
 import requests
 import bcrypt
+import re
 
 app = Flask(__name__)
 
@@ -149,6 +150,12 @@ def image_filter():
     """ Filter images by color_bin """
 
     hex_color = request.args.get("hex_color") or "#6f3f79"
+
+    # Only allow valid hex colors in search
+    is_hex = re.search(r'#[a-fA-F0-9]{6}$', hex_color)
+    if len(hex_color) < 6 or not is_hex:
+        flash("Whoops! Please enter a 6-digit hex color.")
+        return redirect('/image_filter')
 
     # get user object from database with their user_id
     if session["logged_in"]:
