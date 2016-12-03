@@ -187,13 +187,16 @@ def register_new_user():
     email = request.form['email']
     password = request.form['password']
 
+    if not firstname or not lastname or not email or not password: 
+        flash("Please complete all fields.")
+        return redirect("/")
+
     # Grab any record matching this email (will be None if no previous record)
     user_in_db = User.query.filter_by(email=email).first()
 
     # If there is a previous record with this email, prompt user to try again
     if user_in_db:
         flash("It looks like you are already registered. Try logging in again.")
-
         return redirect("/")
 
     # if username (email) is in not in database, add them and log them in
@@ -222,6 +225,11 @@ def user_login():
 
     email = request.form['email']
     password = request.form['password']
+
+    if not email or not password: 
+        flash("Please enter both your email and password.")
+        return redirect("/")
+
 
     if "user_id" not in session:
         session["user_id"] = {}
