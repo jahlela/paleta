@@ -25,6 +25,35 @@ class User(db.Model):
     # Backref to UserImage is "userimages"
 
 
+class Role(db.Model):
+    """ Role details """
+
+    __tablename__ = "roles"
+    
+    role_id = db.Column(db.Integer, primary_key=True, autoincrement = True,
+                                        nullable = False)
+    role = db.Column(db.String(30), nullable = False)
+
+
+class UserRole(db.Model):
+    """ All records of a user's roles """
+
+    __tablename__ = "userroles"
+    
+    user_role_id = db.Column(db.Integer, primary_key=True, autoincrement = True,
+                                                    nullable = False)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), 
+                                                    nullable=False)
+    role_id = db.Column(db.Integer, db.ForeignKey('roles.role_id'), 
+                                                    nullable=False)
+
+    # Define relationship to user
+    user = db.relationship("User", backref=db.backref("userroles", order_by=user_role_id))
+
+    # Define relationship to role
+    role = db.relationship("Role", backref=db.backref("userroles", order_by=user_role_id))
+
+
 class UserImage(db.Model):
     """ All records of a user favoriting an image """
 
