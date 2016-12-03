@@ -1,4 +1,28 @@
 $(function() {
+    $("#login-form").validate({
+        rules: {
+            password: { 
+                required: true
+            },
+            email: { 
+                required: true
+            } 
+        },
+        messages:{
+            email: {
+                required:"email is required"
+            },
+            password: { 
+                required:"password is required"
+            }
+         }
+
+     }
+    });
+
+
+
+
     function addUserImageToDB() {
         var imageId = $(this).data("image");
 

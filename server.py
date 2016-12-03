@@ -15,6 +15,7 @@ from color_difference import get_image_and_palette
 import os.path
 import requests
 import bcrypt
+import re
 
 app = Flask(__name__)
 
@@ -150,6 +151,12 @@ def image_filter():
 
     hex_color = request.args.get("hex_color") or "#6f3f79"
 
+    # Only allow valid hex colors in search
+    is_hex = re.search(r'#[a-fA-F0-9]{6}$', hex_color)
+    if len(hex_color) < 6 or not is_hex:
+        flash("Whoops! Please enter a 6-digit hex color.")
+        return redirect('/image_filter')
+
     # get user object from database with their user_id
     if session["logged_in"]:
         user = User.query.get(session["user_id"])
@@ -187,13 +194,16 @@ def register_new_user():
     email = request.form['email']
     password = request.form['password']
 
+    if not firstname or not lastname or not email or not password: 
+        flash("Please complete all fields.")
+        return redirect("/")
+
     # Grab any record matching this email (will be None if no previous record)
     user_in_db = User.query.filter_by(email=email).first()
 
     # If there is a previous record with this email, prompt user to try again
     if user_in_db:
         flash("It looks like you are already registered. Try logging in again.")
-
         return redirect("/")
 
     # if username (email) is in not in database, add them and log them in
@@ -222,6 +232,11 @@ def user_login():
 
     email = request.form['email']
     password = request.form['password']
+
+    if not email or not password: 
+        flash("Please enter both your email and password.")
+        return redirect("/")
+
 
     if "user_id" not in session:
         session["user_id"] = {}
