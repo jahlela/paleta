@@ -6,7 +6,7 @@ from flask import Flask, jsonify, render_template, request, redirect, session, f
 from flask_debugtoolbar import DebugToolbarExtension
 
 # Don't import session from db -- it may be confused with Flask session
-from model import connect_to_db, db, User, Image, UserImage, Color, ImageColor
+from model import connect_to_db, db, User, Role, UserRole, Image, UserImage, Color, ImageColor
 
 from helpers import get_color_bin
 # from image_analysis import hash_photo
@@ -36,6 +36,9 @@ def before_request():
 
     if "logged_in" not in session and request.endpoint != 'login':
         session["logged_in"] = False
+
+    if "admin" not in session and request.endpoint != 'login':
+        session["admin"] = False
 
 
 ################## Render Templates ##################
@@ -249,12 +252,21 @@ def user_login():
     if not current_user:
         # redirect to /register
         flash("No record found. Please register!")
-        return redirect("/register")
+        return redirect("/")
 
     elif current_user and current_user.password == input_password_hash:
-        # store username in Flask session
-        session["user_id"] = current_user.user_id
+        user_id = current_user.user_id
+
+        session["user_id"] = user_id
         session["logged_in"] = True
+
+        admin_role_id = Role.query.filter(Role.role=='admin').first().role_id
+        admin_user = UserRole.query.filter(UserRole.role_id==admin_role_id,
+                                          UserRole.user_id==user_id).first()
+        if admin_user:
+            session["admin"] = True
+
+        
         flash("Successfully logged in!")
         return redirect("/")
 
@@ -362,7 +374,7 @@ def remove_all_records_of_image():
 if __name__ == "__main__":
     # We have to set debug=True here, since it has to be True at the
     # point that we invoke the DebugToolbarExtension
-    app.debug = False
+    app.debug = True
     app.jinja_env.auto_reload = app.debug
 
     connect_to_db(app)

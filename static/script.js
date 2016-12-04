@@ -1,26 +1,23 @@
 $(function() {
-    $("#login-form").validate({
-        rules: {
-            password: { 
-                required: true
-            },
-            email: { 
-                required: true
-            } 
-        },
-        messages:{
-            email: {
-                required:"email is required"
-            },
-            password: { 
-                required:"password is required"
-            }
-         }
+    // $("#login-form").validate({
+    //     rules: {
+    //         password: { 
+    //             required: true
+    //         },
+    //         email: { 
+    //             required: true
+    //         } 
+    //     },
+    //     messages:{
+    //         email: {
+    //             required:"email is required"
+    //         },
+    //         password: { 
+    //             required:"password is required"
+    //         }
+    //      }
 
-     }
-    });
-
-
+    //  });
 
 
     function addUserImageToDB() {
@@ -77,11 +74,12 @@ $(function() {
 
         $.post("/remove_gallery_image", payload, function(data) {
             console.log(imageId);
-            alert(imageId + " Records deleted")
+            alert("Deleted record " + imageId);
         });
     }
 
     $(".delete-all-records").on("click", removeAllRecordsOfImage);
+    $(".delete-all-records").on("click", removeImageFromProfile);
 
 
 
