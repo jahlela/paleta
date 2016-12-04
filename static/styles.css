@@ -46,11 +46,11 @@ h1 img.logo {
     font-size: 50px;
 }
 
-.btn {
+.btn .btn-primary {
     background-color: #00acc1;
 }
 
-.btn:hover {
+.btn .btn-primary:hover {
     background-color: #589ea7;
 }
 
