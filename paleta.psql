@@ -135,6 +135,39 @@ ALTER SEQUENCE images_image_id_seq OWNED BY images.image_id;
 
 
 --
+-- Name: roles; Type: TABLE; Schema: public; Owner: vagrant
+--
+
+CREATE TABLE roles (
+    role_id integer NOT NULL,
+    role character varying(30) NOT NULL
+);
+
+
+ALTER TABLE roles OWNER TO vagrant;
+
+--
+-- Name: roles_role_id_seq; Type: SEQUENCE; Schema: public; Owner: vagrant
+--
+
+CREATE SEQUENCE roles_role_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE roles_role_id_seq OWNER TO vagrant;
+
+--
+-- Name: roles_role_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: vagrant
+--
+
+ALTER SEQUENCE roles_role_id_seq OWNED BY roles.role_id;
+
+
+--
 -- Name: userimages; Type: TABLE; Schema: public; Owner: vagrant
 --
 
@@ -166,6 +199,40 @@ ALTER TABLE userimages_user_image_id_seq OWNER TO vagrant;
 --
 
 ALTER SEQUENCE userimages_user_image_id_seq OWNED BY userimages.user_image_id;
+
+
+--
+-- Name: userroles; Type: TABLE; Schema: public; Owner: vagrant
+--
+
+CREATE TABLE userroles (
+    user_role_id integer NOT NULL,
+    user_id integer NOT NULL,
+    role_id integer NOT NULL
+);
+
+
+ALTER TABLE userroles OWNER TO vagrant;
+
+--
+-- Name: userroles_user_role_id_seq; Type: SEQUENCE; Schema: public; Owner: vagrant
+--
+
+CREATE SEQUENCE userroles_user_role_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE userroles_user_role_id_seq OWNER TO vagrant;
+
+--
+-- Name: userroles_user_role_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: vagrant
+--
+
+ALTER SEQUENCE userroles_user_role_id_seq OWNED BY userroles.user_role_id;
 
 
 --
@@ -226,10 +293,24 @@ ALTER TABLE ONLY images ALTER COLUMN image_id SET DEFAULT nextval('images_image_
 
 
 --
+-- Name: role_id; Type: DEFAULT; Schema: public; Owner: vagrant
+--
+
+ALTER TABLE ONLY roles ALTER COLUMN role_id SET DEFAULT nextval('roles_role_id_seq'::regclass);
+
+
+--
 -- Name: user_image_id; Type: DEFAULT; Schema: public; Owner: vagrant
 --
 
 ALTER TABLE ONLY userimages ALTER COLUMN user_image_id SET DEFAULT nextval('userimages_user_image_id_seq'::regclass);
+
+
+--
+-- Name: user_role_id; Type: DEFAULT; Schema: public; Owner: vagrant
+--
+
+ALTER TABLE ONLY userroles ALTER COLUMN user_role_id SET DEFAULT nextval('userroles_user_role_id_seq'::regclass);
 
 
 --
@@ -472,7 +553,6 @@ COPY colors (color_id, color) FROM stdin;
 226	#da6a23
 227	#646461
 228	#23558e
-229	#000
 230	#a8a7a1
 231	#b7cae9
 232	#734f41
@@ -1746,6 +1826,70 @@ COPY colors (color_id, color) FROM stdin;
 1500	#af7444
 1501	#4d6c24
 1502	#232e0f
+1503	#c8cebc
+1504	#71a1a5
+1505	#371745
+1506	#bf2a6d
+1507	#525771
+1508	#c5cfd1
+1509	#272830
+1510	#c33f77
+1511	#eda208
+1512	#2f9e92
+1513	#3e2330
+1514	#a74fb3
+1515	#b66732
+1516	#6d3e77
+1517	#ebbca9
+1518	#371b0f
+1519	#8e4325
+1520	#cf7713
+1521	#d38975
+1522	#daccb7
+1523	#614630
+1524	#3a2311
+1525	#7f7b5d
+1526	#aa9c84
+1527	#d3d3cd
+1528	#4b541e
+1529	#222911
+1530	#6b6a45
+1531	#97948a
+1532	#ede0ce
+1533	#615148
+1534	#31251b
+1535	#88786e
+1536	#d1a682
+1537	#d7c8ae
+1538	#2c130c
+1539	#602619
+1540	#af2115
+1541	#956d54
+1542	#fcfbfb
+1543	#013667
+1544	#b630a1
+1545	#b8dd01
+1546	#d9a0c5
+1547	#b3b68f
+1548	#262916
+1549	#cd261e
+1550	#7d844e
+1551	#50572c
+1552	#f4d976
+1553	#425297
+1554	#684c1b
+1555	#d69532
+1556	#a5817d
+1557	#2f69fd
+1558	#fd0000
+1559	#bad900
+1560	#d99bc5
+1561	#fafbfb
+1562	#019047
+1563	#cd2a36
+1564	#b0444b
+1565	#aab6a4
+1566	#dc0802
 \.
 
 
@@ -1753,7 +1897,7 @@ COPY colors (color_id, color) FROM stdin;
 -- Name: colors_color_id_seq; Type: SEQUENCE SET; Schema: public; Owner: vagrant
 --
 
-SELECT pg_catalog.setval('colors_color_id_seq', 1502, true);
+SELECT pg_catalog.setval('colors_color_id_seq', 1566, true);
 
 
 --
@@ -1776,12 +1920,7 @@ COPY imagecolors (image_color_id, image_id, color_id, color_bin) FROM stdin;
 949	243	1090	100
 950	243	1091	230
 951	243	1092	121
-967	247	1108	323
-968	247	1109	111
-969	247	1110	213
-970	247	1111	000
-971	247	1112	122
-972	248	229	000
+1011	256	23	000
 993	253	1133	011
 994	253	1134	022
 995	253	1135	001
@@ -1800,13 +1939,7 @@ COPY imagecolors (image_color_id, image_id, color_id, color_bin) FROM stdin;
 1008	256	1148	011
 1009	256	1149	111
 1010	256	1150	000
-1011	256	229	000
 1012	256	1151	322
-1013	257	1152	211
-1014	257	1153	122
-1015	257	1154	000
-1016	257	1155	111
-1017	257	1156	001
 1018	258	1157	333
 1019	258	1158	100
 1020	258	1159	200
@@ -1822,17 +1955,11 @@ COPY imagecolors (image_color_id, image_id, color_id, color_bin) FROM stdin;
 1030	260	1169	310
 1031	260	1170	321
 1032	260	1171	000
-1038	262	1176	333
-1039	262	1177	211
-1040	262	1178	000
-1041	262	1179	321
-1042	262	1180	322
 1067	268	1204	333
 1068	268	1205	021
 1069	268	1206	000
 1070	268	1207	310
 1071	268	1208	222
-1086	271	1223	011
 1087	272	1224	322
 1088	272	1225	111
 1089	272	1226	100
@@ -1843,16 +1970,6 @@ COPY imagecolors (image_color_id, image_id, color_id, color_bin) FROM stdin;
 1094	273	1231	110
 1095	273	1232	311
 1096	273	1233	000
-1097	274	1234	000
-1098	274	1235	110
-1099	274	1236	210
-1100	274	1237	320
-1101	274	1238	121
-1102	275	1239	222
-1103	275	1240	012
-1104	275	1241	010
-1105	275	1242	111
-1106	275	1243	121
 1107	276	1244	000
 1108	276	1245	221
 1109	276	1246	301
@@ -1883,21 +2000,6 @@ COPY imagecolors (image_color_id, image_id, color_id, color_bin) FROM stdin;
 1134	281	1271	101
 1135	281	1272	231
 1136	281	1273	000
-1137	282	1274	333
-1138	282	1275	111
-1139	282	1276	100
-1140	282	1277	200
-1141	282	1278	322
-1142	283	393	333
-1143	283	1279	122
-1144	283	1280	000
-1145	283	1281	110
-1146	283	1282	322
-1147	284	1283	100
-1148	284	1284	211
-1149	284	1285	000
-1150	284	1286	322
-1151	284	1287	211
 1152	285	1288	333
 1153	285	1289	011
 1154	285	1290	200
@@ -1908,31 +2010,16 @@ COPY imagecolors (image_color_id, image_id, color_id, color_bin) FROM stdin;
 1159	286	1295	000
 1160	286	1296	000
 1161	286	1297	011
-1162	287	1298	232
-1163	287	1299	000
-1164	287	1300	111
-1165	287	1301	311
-1166	287	1302	121
 1167	288	1303	222
 1168	288	1304	100
 1169	288	1305	200
 1170	288	1306	311
 1171	288	1307	111
-1172	289	1308	222
-1173	289	1309	011
-1174	289	1310	000
-1175	289	1311	320
-1176	289	1312	000
 1177	290	1313	222
 1178	290	1314	123
 1179	290	1315	100
 1180	290	1316	211
 1181	290	1317	112
-1182	291	1318	222
-1183	291	1319	022
-1184	291	1320	000
-1185	291	1321	111
-1186	291	1322	011
 1187	292	1323	331
 1188	292	1324	122
 1189	292	1325	100
@@ -1943,95 +2030,43 @@ COPY imagecolors (image_color_id, image_id, color_id, color_bin) FROM stdin;
 1194	293	1330	100
 1195	293	1331	200
 1196	293	1332	011
-1197	294	1333	332
-917	237	1059	222
-918	237	1060	111
-919	237	1061	111
-920	237	1062	000
-921	237	1063	111
-952	244	1093	332
-953	244	1094	100
-954	244	1095	000
-955	244	1096	221
-956	244	1097	111
-973	249	1113	332
-974	249	1114	100
-975	249	1115	000
+1395	334	701	232
+1396	334	1513	000
+1397	334	1514	212
+1398	334	1515	210
+1399	334	1516	101
+1400	335	1517	322
+1401	335	1518	000
+1402	335	1519	210
 201	45	192	222
 202	45	193	110
 203	45	194	000
 204	45	195	320
 205	45	196	112
-206	46	197	332
-207	46	198	000
-208	46	199	213
-209	46	200	221
-210	46	201	010
-211	47	202	322
-212	47	203	000
-213	47	204	000
-214	47	205	110
-215	47	206	221
+1403	335	1520	310
+1404	335	1521	321
+390	126	23	000
+394	127	23	000
+1375	330	1508	333
+1376	330	1509	000
+1377	330	1510	301
+1378	330	1511	320
+1379	330	1512	022
 216	48	207	332
 217	48	208	012
 218	48	209	000
 219	48	210	210
 220	48	211	122
-221	49	212	321
-222	49	213	221
-223	49	214	111
-224	49	215	000
-225	49	216	233
-226	50	217	332
-227	50	218	200
-228	50	219	000
-229	50	220	310
-230	50	221	211
-231	51	222	111
-232	51	223	110
-233	51	224	000
-234	51	225	321
-235	51	226	310
-976	249	1116	111
-977	249	1117	221
-238	53	231	233
-239	53	232	111
-240	53	233	221
-241	53	234	000
-242	53	235	122
-978	250	1118	321
-979	250	1119	000
 245	57	250	332
 246	57	251	010
 247	57	252	000
 248	57	253	110
 249	57	254	221
-980	250	1120	200
-252	59	259	222
-253	59	260	000
-254	59	261	111
-255	59	262	310
-256	59	263	221
 257	60	264	332
 258	60	265	011
 259	60	266	000
 260	60	267	111
 261	60	268	221
-269	64	279	333
-270	64	280	100
-271	64	281	310
-272	64	282	211
-273	64	283	321
-274	65	284	333
-275	65	285	011
-276	65	286	110
-277	65	287	111
-278	65	288	222
-279	66	289	232
-280	66	290	122
-281	66	291	211
-282	66	292	321
-283	66	293	311
 284	67	294	101
 285	67	295	012
 286	67	296	200
@@ -2062,11 +2097,6 @@ COPY imagecolors (image_color_id, image_id, color_id, color_bin) FROM stdin;
 311	72	321	110
 312	72	322	310
 313	72	323	221
-314	73	324	333
-315	73	325	002
-316	73	326	100
-317	73	327	310
-318	73	328	110
 321	75	333	212
 322	75	334	100
 323	75	335	210
@@ -2120,31 +2150,29 @@ COPY imagecolors (image_color_id, image_id, color_id, color_bin) FROM stdin;
 387	126	553	333
 388	126	554	211
 389	126	555	110
-390	126	229	000
 391	126	556	222
 392	127	557	331
 393	127	558	010
-394	127	229	000
 395	127	559	321
 396	127	560	111
-397	128	561	111
-398	128	229	000
-399	128	562	230
-400	128	563	221
+1405	336	1522	332
+1406	336	1523	110
+1407	336	1524	000
+1408	336	1525	111
 401	129	564	333
 402	129	565	122
 403	129	566	300
 404	129	567	211
 405	129	568	110
-406	130	569	000
-407	130	229	000
-408	130	570	322
-409	130	571	211
-410	131	572	110
-411	131	229	000
-412	131	573	200
-413	131	574	320
-414	131	575	110
+1409	336	1526	222
+1410	337	1527	333
+1411	337	1528	110
+1412	337	1529	000
+1413	337	1530	111
+1414	337	1531	222
+427	134	23	000
+924	238	23	000
+478	149	23	000
 415	132	576	332
 416	132	577	111
 417	132	578	010
@@ -2157,19 +2185,9 @@ COPY imagecolors (image_color_id, image_id, color_id, color_bin) FROM stdin;
 424	133	585	210
 425	134	586	211
 426	134	587	101
-427	134	229	000
 428	134	588	321
-429	135	229	000
-430	135	589	022
-431	135	590	011
-432	136	591	332
-433	136	592	122
-434	136	593	110
-435	136	594	210
-436	136	595	221
 922	238	1064	100
 923	238	1065	000
-924	238	229	000
 925	238	1066	321
 926	238	1067	211
 927	239	1068	322
@@ -2182,23 +2200,8 @@ COPY imagecolors (image_color_id, image_id, color_id, color_bin) FROM stdin;
 449	140	605	000
 450	140	606	211
 451	140	607	111
-932	240	1073	332
-933	240	1074	110
-454	142	609	221
-455	142	610	100
-456	142	229	000
-457	142	611	210
-458	142	612	110
-934	240	1075	000
-935	240	1076	121
-936	240	1077	221
-472	148	621	231
-473	148	229	000
-474	148	622	220
-475	148	623	221
 476	149	624	231
 477	149	625	000
-478	149	229	000
 479	149	626	121
 480	149	627	110
 481	150	628	011
@@ -2221,10 +2224,6 @@ COPY imagecolors (image_color_id, image_id, color_id, color_bin) FROM stdin;
 498	153	645	210
 499	153	646	200
 500	153	647	321
-501	154	648	111
-502	154	649	000
-503	154	229	000
-504	154	650	222
 505	155	651	332
 506	155	652	110
 507	155	653	000
@@ -2235,21 +2234,6 @@ COPY imagecolors (image_color_id, image_id, color_id, color_bin) FROM stdin;
 512	156	658	100
 513	156	659	221
 514	156	660	221
-515	157	661	322
-516	157	662	110
-517	157	663	100
-518	157	664	211
-519	157	665	221
-520	158	666	333
-521	158	667	022
-522	158	668	000
-523	158	669	321
-524	158	670	012
-525	159	671	333
-526	159	672	211
-527	159	673	111
-528	159	674	321
-529	159	675	222
 530	160	676	233
 531	160	677	023
 532	160	678	000
@@ -2275,21 +2259,11 @@ COPY imagecolors (image_color_id, image_id, color_id, color_bin) FROM stdin;
 552	164	698	200
 553	164	699	310
 554	164	700	110
-555	165	701	232
-556	165	702	100
-557	165	703	212
-558	165	704	210
-559	165	705	101
 560	166	706	332
 561	166	707	200
 562	166	708	100
 563	166	709	210
 564	166	710	320
-565	167	711	222
-566	167	712	023
-567	167	713	000
-568	167	714	211
-569	167	715	012
 570	168	716	312
 571	168	717	013
 572	168	718	100
@@ -2300,25 +2274,11 @@ COPY imagecolors (image_color_id, image_id, color_id, color_bin) FROM stdin;
 577	169	723	302
 578	169	724	320
 579	169	725	112
-580	170	726	322
-581	170	727	221
-981	250	1121	210
-982	250	1122	111
-983	251	1123	333
-984	251	1124	100
-985	251	1125	200
-986	251	1126	320
-987	251	1127	222
-1033	261	1172	000
-1034	261	1173	110
-582	170	728	210
-583	170	729	010
-584	170	730	120
-585	171	731	333
-586	171	732	012
-587	171	733	001
-588	171	734	111
-589	171	735	123
+1415	338	1532	333
+1416	338	1533	111
+1417	338	1534	000
+1418	338	1535	211
+1419	338	1536	322
 937	241	1078	233
 938	241	1079	122
 592	172	738	333
@@ -2351,11 +2311,8 @@ COPY imagecolors (image_color_id, image_id, color_id, color_bin) FROM stdin;
 619	177	765	000
 620	177	766	222
 621	177	767	111
-622	178	768	233
-623	178	769	111
-624	178	770	000
-625	178	771	321
-626	178	772	122
+719	197	23	000
+735	200	23	000
 627	179	773	222
 628	179	774	011
 629	179	775	100
@@ -2366,26 +2323,6 @@ COPY imagecolors (image_color_id, image_id, color_id, color_bin) FROM stdin;
 634	180	780	200
 635	180	781	211
 636	180	782	011
-637	181	783	222
-638	181	784	001
-639	181	785	100
-640	181	786	211
-641	181	787	111
-642	182	788	332
-643	182	789	022
-644	182	790	001
-645	182	791	110
-646	182	792	221
-647	183	793	333
-648	183	794	100
-649	183	795	301
-650	183	796	210
-651	183	797	322
-652	184	798	333
-653	184	799	000
-654	184	800	110
-655	184	801	311
-656	184	802	210
 657	185	803	222
 658	185	804	111
 659	185	805	100
@@ -2416,11 +2353,6 @@ COPY imagecolors (image_color_id, image_id, color_id, color_bin) FROM stdin;
 684	190	830	000
 685	190	831	310
 686	190	832	322
-687	191	833	322
-688	191	834	002
-689	191	835	000
-690	191	836	211
-691	191	837	112
 692	192	838	332
 693	192	839	222
 694	192	840	000
@@ -2448,7 +2380,6 @@ COPY imagecolors (image_color_id, image_id, color_id, color_bin) FROM stdin;
 716	196	862	220
 717	197	863	321
 718	197	864	000
-719	197	229	000
 720	197	865	210
 721	197	866	110
 722	198	867	223
@@ -2464,7 +2395,6 @@ COPY imagecolors (image_color_id, image_id, color_id, color_bin) FROM stdin;
 732	200	877	333
 733	200	878	011
 734	200	879	011
-735	200	229	000
 736	200	880	222
 737	201	881	123
 738	201	882	012
@@ -2486,26 +2416,11 @@ COPY imagecolors (image_color_id, image_id, color_id, color_bin) FROM stdin;
 754	204	898	211
 755	204	899	310
 756	204	900	100
-757	205	901	222
-758	205	902	112
-759	205	903	100
-760	205	904	221
-761	205	905	210
-762	206	906	000
-763	206	229	000
-764	206	907	210
-765	206	908	321
-766	206	909	110
-772	208	915	332
-773	208	916	011
-774	208	917	000
-775	208	918	210
-776	208	919	222
-777	209	920	333
-778	209	921	101
-779	209	922	212
-780	209	923	331
-781	209	924	223
+1425	340	1542	333
+1426	340	1543	001
+1427	340	1544	202
+1428	340	1545	230
+1429	340	1546	323
 782	210	925	333
 783	210	926	110
 784	210	927	311
@@ -2536,11 +2451,6 @@ COPY imagecolors (image_color_id, image_id, color_id, color_bin) FROM stdin;
 809	215	952	000
 810	215	953	320
 811	215	954	221
-812	216	955	222
-813	216	956	000
-814	216	957	210
-815	216	958	321
-816	216	959	111
 817	217	960	333
 818	217	961	012
 819	217	962	200
@@ -2563,7 +2473,6 @@ COPY imagecolors (image_color_id, image_id, color_id, color_bin) FROM stdin;
 836	220	979	011
 837	221	980	000
 838	221	981	021
-839	221	229	000
 840	221	982	230
 841	221	983	111
 842	222	984	222
@@ -2596,26 +2505,8 @@ COPY imagecolors (image_color_id, image_id, color_id, color_bin) FROM stdin;
 869	227	1011	311
 870	227	1012	321
 871	227	1013	222
-872	228	1014	332
-873	228	1015	000
-874	228	1016	111
-875	228	1017	222
-876	228	1018	211
-877	229	1019	210
-878	229	1020	111
-879	229	1021	110
-880	229	1022	220
-881	229	1023	222
-882	230	1024	332
-883	230	1025	112
-884	230	1026	000
-885	230	1027	221
-886	230	1028	110
-887	231	1029	222
-888	231	1030	012
-889	231	1031	001
-890	231	1032	111
-891	231	1033	122
+839	221	23	000
+1045	263	23	000
 892	232	1034	111
 893	232	1035	001
 894	232	1036	212
@@ -2639,12 +2530,8 @@ COPY imagecolors (image_color_id, image_id, color_id, color_bin) FROM stdin;
 990	252	1130	200
 991	252	1131	300
 992	252	1132	311
-1035	261	229	000
-1036	261	1174	320
-1037	261	1175	000
 1043	263	1181	001
 1044	263	1182	012
-1045	263	229	000
 1046	263	1183	011
 1047	264	1184	321
 1048	264	1185	211
@@ -2676,39 +2563,11 @@ COPY imagecolors (image_color_id, image_id, color_id, color_bin) FROM stdin;
 1079	270	1216	100
 1080	270	1217	210
 1081	270	1218	221
-1082	271	1219	322
-1083	271	1220	010
-1084	271	1221	110
-1085	271	1222	221
-1198	294	1334	210
-1199	294	1335	100
-1200	294	1336	120
-1201	294	1337	321
-1202	295	1338	221
-1203	295	1339	023
-1204	295	1340	000
-1205	295	1341	110
-1206	295	1342	011
-1207	296	1343	000
-1208	296	1344	112
-1209	296	1345	110
-1210	296	1346	220
-1211	296	1347	223
 1212	297	1348	322
 1213	297	1349	012
 1214	297	1350	200
 1215	297	1351	100
 1216	297	1352	211
-1217	298	1353	333
-1218	298	1354	112
-1219	298	1355	222
-1220	298	1356	000
-1221	298	1357	100
-1222	299	1358	333
-1223	299	1359	111
-1224	299	1360	000
-1225	299	1361	100
-1226	299	1362	221
 1227	300	1363	222
 1228	300	1364	012
 1229	300	1365	000
@@ -2719,91 +2578,26 @@ COPY imagecolors (image_color_id, image_id, color_id, color_bin) FROM stdin;
 1234	301	1370	102
 1235	301	1371	310
 1236	301	1372	211
-1237	302	1373	123
-1238	302	1374	000
-1239	302	1375	321
-1240	302	1376	111
-1241	302	1377	211
-1242	303	1378	223
-1243	303	1379	111
-1244	303	1380	001
-1245	303	1381	000
-1246	303	1382	112
-1247	304	1383	222
-1248	304	1384	111
-1249	304	1385	312
-1250	304	1386	000
-1251	304	1387	111
 1252	305	1388	233
 1253	305	1389	022
 1254	305	1390	012
 1255	305	1391	001
 1256	305	1392	123
-1257	306	1393	333
-1258	306	1394	110
-1259	306	1395	000
-1260	306	1396	111
-1261	306	1397	222
 1262	307	1398	333
 1263	307	1399	110
 1264	307	1400	000
 1265	307	1401	111
 1266	307	1402	222
-1267	308	1403	233
-1268	308	1404	122
-1269	308	1405	000
-1270	308	1406	311
-1271	308	1407	111
-1272	309	1408	333
-1273	309	1409	012
-1274	309	1410	000
-1275	309	1411	330
-1276	309	1412	222
-1277	310	1413	321
-1278	310	1414	213
-1279	310	1415	110
-1280	310	1416	310
-1281	310	1417	000
 1282	311	666	333
 1283	311	1418	200
 1284	311	1419	310
 1285	311	1420	321
 1286	311	1421	332
-1287	312	1422	322
-1288	312	1423	000
-1289	312	1424	000
-1290	312	1425	221
-1291	312	1426	111
-1292	313	1427	333
-1293	313	1428	100
-1294	313	1429	222
-1295	313	1430	111
-1296	313	1431	322
 1297	314	1432	232
 1298	314	1433	121
 1299	314	1434	010
 1300	314	1435	220
 1301	314	1436	000
-1302	315	1437	333
-1303	315	1438	111
-1304	315	1439	011
-1305	315	1440	000
-1306	315	1441	222
-1307	316	1442	333
-1308	316	1443	233
-1309	316	1444	000
-1310	316	1445	110
-1311	316	1446	321
-1312	317	1447	310
-1313	317	1448	000
-1314	317	1449	200
-1315	317	1450	310
-1316	317	1451	100
-1317	318	1452	223
-1318	318	1453	221
-1319	318	1454	111
-1320	318	1455	000
-1321	318	1456	322
 1322	319	1457	333
 1323	319	1458	122
 1324	319	1459	310
@@ -2814,44 +2608,6 @@ COPY imagecolors (image_color_id, image_id, color_id, color_bin) FROM stdin;
 1329	320	1464	100
 1330	320	1465	211
 1331	320	1466	122
-1332	321	1467	233
-1333	321	1468	011
-1334	321	1469	100
-1335	321	1470	300
-1336	321	1471	122
-1337	322	1472	001
-1338	322	1473	013
-1339	322	1474	212
-1340	322	1475	310
-1341	322	1476	200
-1342	323	1477	332
-1343	323	1478	200
-1344	323	1479	300
-1345	323	1480	310
-1346	323	1481	320
-1347	324	1482	333
-1348	324	1483	210
-1349	324	1484	100
-1350	324	1485	221
-1351	324	1486	222
-1352	325	1487	333
-1353	325	1488	110
-1354	325	229	000
-1355	325	1489	321
-1356	325	1490	332
-1357	326	229	000
-1358	326	1491	221
-1359	326	1492	333
-1360	327	1493	123
-1361	327	1494	011
-1362	327	1495	110
-1363	327	1496	210
-1364	327	1497	000
-1365	328	1498	222
-1366	328	1499	013
-1367	328	1500	211
-1368	328	1501	110
-1369	328	1502	000
 \.
 
 
@@ -2859,7 +2615,7 @@ COPY imagecolors (image_color_id, image_id, color_id, color_bin) FROM stdin;
 -- Name: imagecolors_image_color_id_seq; Type: SEQUENCE SET; Schema: public; Owner: vagrant
 --
 
-SELECT pg_catalog.setval('imagecolors_image_color_id_seq', 1369, true);
+SELECT pg_catalog.setval('imagecolors_image_color_id_seq', 1451, true);
 
 
 --
@@ -2867,23 +2623,21 @@ SELECT pg_catalog.setval('imagecolors_image_color_id_seq', 1369, true);
 --
 
 COPY images (image_id, file_name) FROM stdin;
+330	/static/img/photos/x48566aee034e14e4.png
+334	/static/img/photos/1x15e329ee7536143f.png
+335	/static/img/photos/1x7631f0b4c35a3dab.png
+340	/static/img/photos/1x42b8d70c9067c93e.png
 235	/static/img/photos/1x55832a0089538010.png
 236	/static/img/photos/x4c3ddae587493d2d.png
 241	/static/img/photos/1x287b51008b058eee.png
 320	/static/img/photos/x2f2848fe1559e2b9.png
-247	/static/img/photos/x5dc9e1bbf9e1a25a.png
-248	/static/img/photos/xf91834c9125f8ce.png
 253	/static/img/photos/1x5ab36f7b9c809002.png
 254	/static/img/photos/1x58f9a985315f5e59.png
 255	/static/img/photos/1x2a2edc87a9c281ac.png
 256	/static/img/photos/1x192d7b6db9055c2c.png
-257	/static/img/photos/1x5189b80362ec4970.png
 258	/static/img/photos/x77899c694d4fd51c.png
 259	/static/img/photos/x61172ea547adebcd.png
 260	/static/img/photos/1x6bf46f00dc15c4c6.png
-321	/static/img/photos/x2ca3653a4da57ab6.png
-322	/static/img/photos/x311467a05634807c.png
-328	/static/img/photos/1x353ff3e53096fb0.png
 263	/static/img/photos/x15299da0d36e160.png
 264	/static/img/photos/1x3a0de5b42ab904a8.png
 265	/static/img/photos/1x196e8c289b6baf1f.png
@@ -2893,148 +2647,83 @@ COPY images (image_id, file_name) FROM stdin;
 279	/static/img/photos/1x5ef3cf89cb0d670a.png
 280	/static/img/photos/x3ca895775ff2ba67.png
 281	/static/img/photos/1x26fd2567576a5989.png
-282	/static/img/photos/1x4c7875bcd1f5ce87.png
-283	/static/img/photos/x67defe9e406b770e.png
 45	/static/img/photos/x7707728018b47dc7.png
-46	/static/img/photos/x14c30acc9136155f.png
-47	/static/img/photos/1x2accc000207ee80e.png
 48	/static/img/photos/1x868fa493d5f059c.png
-49	/static/img/photos/x43c1f42bc53ac07b.png
-50	/static/img/photos/x7924130d123ab8b9.png
-51	/static/img/photos/x622ad4bdc5747908.png
-284	/static/img/photos/x70a28c3326b89dc1.png
-53	/static/img/photos/x432edc312cdba2e8.png
 285	/static/img/photos/1x9ba767b509547d7.png
 286	/static/img/photos/x350455fa215a7bd2.png
-313	/static/img/photos/x374ce4cb06a450d0.png
 57	/static/img/photos/x4e464287fd3b5216.png
 314	/static/img/photos/xf62f23f4ebe746e.png
-59	/static/img/photos/1x607344e59216ca95.png
 60	/static/img/photos/x2d2c05cce0f6c879.png
-315	/static/img/photos/x45256603c869919e.png
-316	/static/img/photos/x6935d2ec6629ad1b.png
-64	/static/img/photos/x183bd48d522b95bc.png
-65	/static/img/photos/1x75c06d84cc7b9da3.png
-66	/static/img/photos/xf09277bc9be4549.png
 67	/static/img/photos/1x18b4653d13a8c1b1.png
 68	/static/img/photos/1x3dbaf6d82ba7d76f.png
 69	/static/img/photos/x59eb737f912436ef.png
 70	/static/img/photos/1x76658421381745b2.png
-317	/static/img/photos/1x37a1f7654fc60339.png
-318	/static/img/photos/x52dfa1e91a4964e.png
 319	/static/img/photos/x6441765538605139.png
 71	/static/img/photos/x56ea3c4aaaa4b1d9.png
 72	/static/img/photos/x57961ebfde7fbef.png
-73	/static/img/photos/1x3ed5753de37836d0.png
-237	/static/img/photos/1x79087cf5ef8a1201.png
+336	/static/img/photos/1x41805d8c0df1eace.png
+337	/static/img/photos/x4972144c01b0310d.png
 75	/static/img/photos/x232f9bcd3b6b92fd.png
 243	/static/img/photos/1x40c56278df8043ce.png
-249	/static/img/photos/1x43127ebe6c9bcf0f.png
-250	/static/img/photos/x19636ab2029a2ac3.png
-251	/static/img/photos/1x25582b6c58724fc1.png
-261	/static/img/photos/xa08edadaeb8e692.png
 268	/static/img/photos/1x21c0a9f68d26254b.png
-287	/static/img/photos/x46f44b77e90ca529.png
 288	/static/img/photos/1x25cb62919510a8c.png
-289	/static/img/photos/x71ddab199a3729cf.png
 290	/static/img/photos/xcae2e0a936ac98c.png
-291	/static/img/photos/x196070940ab0fa8e.png
 292	/static/img/photos/1x1cc6e2749526d5b7.png
 293	/static/img/photos/x386bf18bcb2dd6d1.png
 89	/static/img/photos/x6791ac4db6106789.png
 90	/static/img/photos/x5cefc98837550e43.png
 91	/static/img/photos/xae176390640f4ce.png
-294	/static/img/photos/x9d5e96ea6031636.png
 93	/static/img/photos/x294bc2dbe8dfc4d7.png
 94	/static/img/photos/1x709e98a050f898d4.png
-295	/static/img/photos/x215971e2584c873a.png
-296	/static/img/photos/1x7196b56a2741ab44.png
 97	/static/img/photos/1x69779bd24fb9b236.png
 297	/static/img/photos/1x3f0f3966049481af.png
-298	/static/img/photos/x31cd2d76fcff046d.png
-299	/static/img/photos/x5c1267a59fd94ea7.png
 300	/static/img/photos/x2e33d4625bd6d4a1.png
 102	/static/img/photos/1x1106ae6910c634b1.png
 301	/static/img/photos/1x633bda115662247c.png
-302	/static/img/photos/1x55a406694b996570.png
-303	/static/img/photos/1x2a693aa2ed7b2a12.png
-304	/static/img/photos/1x71cd3d210afde66d.png
 305	/static/img/photos/1x416ea7177c55c140.png
-306	/static/img/photos/1x58f4061b54e93fc1.png
 307	/static/img/photos/x4887ffb8875046a8.png
-308	/static/img/photos/x42db30bb2422ff3.png
-309	/static/img/photos/1x1b90995bede33366.png
-310	/static/img/photos/1x1694c207bdea1524.png
 311	/static/img/photos/x64f0e01d094be48e.png
-312	/static/img/photos/1x2385da1d30a6ed29.png
-323	/static/img/photos/1x73b499952101a35.png
-324	/static/img/photos/1x5148aa0173c8974e.png
-325	/static/img/photos/1x1aa249b400df74bf.png
-326	/static/img/photos/x261013e758b25a1f.png
-327	/static/img/photos/1x72fdbbdf373c9a5e.png
 124	/static/img/photos/x122c47eb45e390b5.png
 125	/static/img/photos/x2ba7b3d15e25a6ed.png
 126	/static/img/photos/1x48a0f276873750fe.png
 127	/static/img/photos/x35bc0037ce0cfabd.png
-128	/static/img/photos/x7f70377a41ce6903.png
 129	/static/img/photos/x9200fba4cecb3b0.png
-130	/static/img/photos/1x7613d1fc56f8805d.png
-131	/static/img/photos/1x41f17862302aa6aa.png
 132	/static/img/photos/x4d3b1444f6525200.png
 133	/static/img/photos/x4e46c41c38db07ab.png
 134	/static/img/photos/x5d0086f796d89add.png
-135	/static/img/photos/x79fa714697835b30.png
-136	/static/img/photos/1x5d978e550e8605b9.png
 140	/static/img/photos/x5bdc9f8e1518e5cd.png
-142	/static/img/photos/1x5e606a255491a40f.png
 238	/static/img/photos/x4c281ffeab526ef1.png
 239	/static/img/photos/x31759ed7c03fbaba.png
-240	/static/img/photos/x6f0bd0e22f4c2391.png
-244	/static/img/photos/1x1689bc65cc7e59ca.png
-148	/static/img/photos/1x5cb22b56b49a25e1.png
+338	/static/img/photos/x494321552640b02c.png
 149	/static/img/photos/1x8a3908b1cea3b12.png
 150	/static/img/photos/1x7a51b1b92b625ccb.png
 151	/static/img/photos/x2ab39fe2a26cdf8e.png
 152	/static/img/photos/1x60bd6e557c87f52e.png
 153	/static/img/photos/x240c49f3f7021ab8.png
-154	/static/img/photos/1x53839744f2e546d1.png
 155	/static/img/photos/1x59c904003223448b.png
 156	/static/img/photos/1x78796a86d836d0c.png
-157	/static/img/photos/x150e5590c5f89c40.png
-158	/static/img/photos/x5a88b23be6d6b070.png
-159	/static/img/photos/x70992df51b582adc.png
 160	/static/img/photos/x1239d1daf6922cf.png
 161	/static/img/photos/x4591e08d2740ffeb.png
 162	/static/img/photos/1x6c7683d416c24454.png
 163	/static/img/photos/x334867c4d3f50288.png
 164	/static/img/photos/1x75e7eef2d93f020b.png
-165	/static/img/photos/1x2d57b34207e73ed8.png
 166	/static/img/photos/1x7f61b6588d0cdbe6.png
-167	/static/img/photos/x1d18354898d5ba35.png
 168	/static/img/photos/x558ff6b12f06c080.png
 169	/static/img/photos/x2684c8a1cea3913d.png
-170	/static/img/photos/1x7280662764e261b5.png
-171	/static/img/photos/x71c8109d93ee412.png
 172	/static/img/photos/1x61c0e0c65bb76822.png
 173	/static/img/photos/x237ad09a05c226eb.png
 174	/static/img/photos/x120b47a198ce7af2.png
 175	/static/img/photos/xbfdc9efeede5dab.png
 176	/static/img/photos/1x6c4aaf7f8c1badcb.png
 177	/static/img/photos/x54344ebc94defd86.png
-178	/static/img/photos/x506c7c42d975975e.png
 179	/static/img/photos/1x4c07493630cea6c6.png
 180	/static/img/photos/1x5e0ac67669e51e0b.png
-181	/static/img/photos/1x3994c4969a2dead.png
-182	/static/img/photos/1x26ed30a48daf2ca7.png
-183	/static/img/photos/x228b16174e1efa31.png
-184	/static/img/photos/x2ff2a2653ab9afd0.png
 185	/static/img/photos/xb0691b9138f3d20.png
 186	/static/img/photos/1x4e307f12ccef21e.png
 187	/static/img/photos/1x5bb9bd41dc6db61a.png
 188	/static/img/photos/1x7aa5b2c5b1f7676c.png
 189	/static/img/photos/1xe9f9c5f003e6feb.png
 190	/static/img/photos/x58e74bd635c75672.png
-191	/static/img/photos/1x49996a93c7a63602.png
 192	/static/img/photos/x5b06a076208febdc.png
 193	/static/img/photos/1x7efe7ff640ef374e.png
 194	/static/img/photos/x27a2c7ca4816ca80.png
@@ -3048,17 +2737,12 @@ COPY images (image_id, file_name) FROM stdin;
 202	/static/img/photos/xa8f60889aa1afa3.png
 203	/static/img/photos/x2ae621d956d2443c.png
 204	/static/img/photos/1x59225658ead5a9fc.png
-205	/static/img/photos/x51a6a5f2f7a755ce.png
-206	/static/img/photos/x686f0ce1622ddad1.png
-208	/static/img/photos/x1f33245d2b6fb21e.png
-209	/static/img/photos/x171cb411d1bb03fc.png
 210	/static/img/photos/x1385b46827a488f0.png
 211	/static/img/photos/1x1d7c5b09e4e93ed6.png
 212	/static/img/photos/1xc01b3b3386f3e31.png
 213	/static/img/photos/x5cc6131dd4919137.png
 214	/static/img/photos/1x7a9823db19921789.png
 215	/static/img/photos/x30aded73e45faf8d.png
-216	/static/img/photos/x4c5d35c79c0e654b.png
 217	/static/img/photos/1x77f67273795ebd7.png
 218	/static/img/photos/1x2b12aea6c9c23e98.png
 219	/static/img/photos/x5bd577acbd424673.png
@@ -3070,22 +2754,14 @@ COPY images (image_id, file_name) FROM stdin;
 225	/static/img/photos/1x2c10197d2a0e7e5a.png
 226	/static/img/photos/x4f730ebde155f87c.png
 227	/static/img/photos/x589617f33d3bcb7d.png
-228	/static/img/photos/x2c23a1d4cbd1464c.png
-229	/static/img/photos/x601e66a3bc1a22ba.png
-230	/static/img/photos/x6020242c1b91baaa.png
-231	/static/img/photos/1x7b7b1b742dc8558c.png
 232	/static/img/photos/x7fb479f1e871a9e9.png
 233	/static/img/photos/x4042cb906314258a.png
 234	/static/img/photos/1x5f06bc305c0c10b4.png
 252	/static/img/photos/1x35c4265af72b9e2b.png
-262	/static/img/photos/x235d87432c6a24a1.png
 269	/static/img/photos/1x575971624e95331b.png
 270	/static/img/photos/1x6d56a6c6d7d3266d.png
-271	/static/img/photos/1x6d09dfdce959ee88.png
 272	/static/img/photos/x1ba481252aa166af.png
 273	/static/img/photos/1x470eb16e788cfa1b.png
-274	/static/img/photos/x601113f714de336f.png
-275	/static/img/photos/x1978c4d8e375e81d.png
 276	/static/img/photos/x17909ceb94d01525.png
 277	/static/img/photos/1x7cb0395d6dc3990.png
 \.
@@ -3095,7 +2771,23 @@ COPY images (image_id, file_name) FROM stdin;
 -- Name: images_image_id_seq; Type: SEQUENCE SET; Schema: public; Owner: vagrant
 --
 
-SELECT pg_catalog.setval('images_image_id_seq', 328, true);
+SELECT pg_catalog.setval('images_image_id_seq', 345, true);
+
+
+--
+-- Data for Name: roles; Type: TABLE DATA; Schema: public; Owner: vagrant
+--
+
+COPY roles (role_id, role) FROM stdin;
+1	admin
+\.
+
+
+--
+-- Name: roles_role_id_seq; Type: SEQUENCE SET; Schema: public; Owner: vagrant
+--
+
+SELECT pg_catalog.setval('roles_role_id_seq', 1, true);
 
 
 --
@@ -3105,136 +2797,67 @@ SELECT pg_catalog.setval('images_image_id_seq', 328, true);
 COPY userimages (user_image_id, user_id, image_id) FROM stdin;
 164	1	190
 165	1	198
-304	4	316
+452	7	301
+453	7	164
 167	1	67
-305	4	317
+454	7	268
+455	7	266
 307	4	319
-171	1	201
-172	1	202
-173	1	203
-174	1	204
-175	2	209
+456	7	72
+457	8	221
+458	8	174
+459	8	338
 308	4	320
-309	4	321
-310	4	322
+462	8	285
 177	2	210
 178	2	211
 179	2	212
-311	4	323
-312	4	324
+463	8	223
+464	8	198
 180	2	213
 181	2	214
 182	2	215
-183	2	216
 184	2	217
 185	2	218
 186	2	219
 187	2	220
 188	2	221
-313	4	325
 189	2	222
 190	2	223
 191	2	224
 192	2	225
-315	5	327
-316	5	318
+468	11	340
+469	11	336
 317	5	319
 318	5	224
-43	1	45
-44	1	46
-45	1	47
 46	1	48
-47	1	49
+445	1	334
 193	2	226
-49	1	51
+446	1	311
 194	2	227
-51	1	53
-195	2	228
-196	2	229
+447	1	335
 55	1	75
-197	2	230
-198	2	231
 199	2	232
 200	2	233
-202	1	213
+449	7	337
+450	7	335
 204	1	235
-205	1	236
-207	1	134
-208	1	238
-209	1	239
+451	7	334
 70	1	89
-71	1	90
-72	1	91
-211	1	232
-420	6	314
-75	1	94
-421	6	308
-213	1	227
-78	1	97
-215	1	230
-83	1	102
-218	1	226
 219	1	225
 221	1	188
-426	6	328
-223	1	221
-225	1	64
-226	1	195
-227	1	211
-428	6	298
-230	1	73
-233	1	223
+430	6	188
+431	6	196
 238	1	233
-105	1	124
 106	1	125
-107	1	126
-108	1	127
-112	1	140
-242	1	234
-120	1	148
-123	1	151
-124	1	152
 125	1	153
-127	1	155
-129	1	157
-132	1	158
 133	1	160
 135	1	161
 136	1	163
 137	1	164
-138	1	165
 139	1	166
-140	1	167
-141	1	168
-142	1	169
 146	1	172
-361	6	300
-362	6	293
-150	1	176
-363	6	276
-364	6	196
-365	6	188
-154	1	180
-251	1	263
-252	1	254
-159	1	185
 160	1	186
-253	1	269
-254	1	270
-256	1	272
-372	6	303
-259	1	274
-261	1	275
-262	1	276
-263	1	277
-267	1	279
-268	1	281
-269	1	280
-270	1	282
-271	1	283
-272	1	284
-273	1	285
-274	1	286
 275	3	226
 276	3	225
 277	3	224
@@ -3243,27 +2866,13 @@ COPY userimages (user_image_id, user_id, image_id) FROM stdin;
 280	3	222
 281	3	219
 282	3	220
-284	3	294
-285	3	295
-286	3	296
 287	3	297
-288	3	298
-289	3	299
 290	3	300
 291	3	301
-292	3	302
-293	3	303
-294	3	304
 295	3	305
-296	3	306
 297	3	307
-298	3	308
 299	4	293
-300	4	312
 302	4	314
-388	6	324
-400	6	319
-404	6	309
 \.
 
 
@@ -3271,7 +2880,23 @@ COPY userimages (user_image_id, user_id, image_id) FROM stdin;
 -- Name: userimages_user_image_id_seq; Type: SEQUENCE SET; Schema: public; Owner: vagrant
 --
 
-SELECT pg_catalog.setval('userimages_user_image_id_seq', 428, true);
+SELECT pg_catalog.setval('userimages_user_image_id_seq', 469, true);
+
+
+--
+-- Data for Name: userroles; Type: TABLE DATA; Schema: public; Owner: vagrant
+--
+
+COPY userroles (user_role_id, user_id, role_id) FROM stdin;
+1	1	1
+\.
+
+
+--
+-- Name: userroles_user_role_id_seq; Type: SEQUENCE SET; Schema: public; Owner: vagrant
+--
+
+SELECT pg_catalog.setval('userroles_user_role_id_seq', 1, true);
 
 
 --
@@ -3285,6 +2910,9 @@ COPY users (user_id, firstname, lastname, email, password) FROM stdin;
 4	Life	Lunar	life@lunar.com	$2b$12$lhkuWYIffzQfxa1gbrC4yunN1CKhhX5Cxg4yBvncfO1fiandnu97y
 5	Ben	H	ben@h.com	$2b$12$wfv.tiFdS5v7d29GIdl3RO21TsHZswEqOGtX8IEDvdOz02P/1GYea
 6	Shawn	Lee	shawn@lee.com	$2b$12$/3VHGbT/Azxpxd2q038OXOa/h49S5UtvD3802nJhLhkGJT4kx..1y
+7	Arup	Chakrabarti	arupchak@gmail.com	$2b$12$KV/kQzA.m9Va9IDJz829XOARDbyMzjpY3a5TUJweWM1ZKkDBpJeGK
+8	Emily	Berk	tziporahh@gmail.com	$2b$12$CFdfv3AEwJhSx11drqrbb.LA77sOtUCr8Af3kvIcvX9OyV432GgXq
+11	Kellie	Medlin	abc@gmail.com	$2b$12$3muVDuLJGSRO8DfbzuocNeTvA5JrhCGGixljN6EIW2kgHlGnZgqWK
 \.
 
 
@@ -3292,7 +2920,7 @@ COPY users (user_id, firstname, lastname, email, password) FROM stdin;
 -- Name: users_user_id_seq; Type: SEQUENCE SET; Schema: public; Owner: vagrant
 --
 
-SELECT pg_catalog.setval('users_user_id_seq', 6, true);
+SELECT pg_catalog.setval('users_user_id_seq', 11, true);
 
 
 --
@@ -3320,11 +2948,27 @@ ALTER TABLE ONLY images
 
 
 --
+-- Name: roles_pkey; Type: CONSTRAINT; Schema: public; Owner: vagrant
+--
+
+ALTER TABLE ONLY roles
+    ADD CONSTRAINT roles_pkey PRIMARY KEY (role_id);
+
+
+--
 -- Name: userimages_pkey; Type: CONSTRAINT; Schema: public; Owner: vagrant
 --
 
 ALTER TABLE ONLY userimages
     ADD CONSTRAINT userimages_pkey PRIMARY KEY (user_image_id);
+
+
+--
+-- Name: userroles_pkey; Type: CONSTRAINT; Schema: public; Owner: vagrant
+--
+
+ALTER TABLE ONLY userroles
+    ADD CONSTRAINT userroles_pkey PRIMARY KEY (user_role_id);
 
 
 --
@@ -3387,6 +3031,22 @@ ALTER TABLE ONLY userimages
 
 ALTER TABLE ONLY userimages
     ADD CONSTRAINT userimages_user_id_fkey FOREIGN KEY (user_id) REFERENCES users(user_id);
+
+
+--
+-- Name: userroles_role_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: vagrant
+--
+
+ALTER TABLE ONLY userroles
+    ADD CONSTRAINT userroles_role_id_fkey FOREIGN KEY (role_id) REFERENCES roles(role_id);
+
+
+--
+-- Name: userroles_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: vagrant
+--
+
+ALTER TABLE ONLY userroles
+    ADD CONSTRAINT userroles_user_id_fkey FOREIGN KEY (user_id) REFERENCES users(user_id);
 
 
 --
