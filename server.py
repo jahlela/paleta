@@ -37,7 +37,7 @@ def before_request():
     if "logged_in" not in session and request.endpoint != 'login':
         session["logged_in"] = False
 
-    if "admin" not in session and request.endpoint != 'login':
+    if "admin" not in session:
         session["admin"] = False
 
 
@@ -263,8 +263,12 @@ def user_login():
         admin_role_id = Role.query.filter(Role.role=='admin').first().role_id
         admin_user = UserRole.query.filter(UserRole.role_id==admin_role_id,
                                           UserRole.user_id==user_id).first()
+
+        # If a user is an admin, add this to the browser session
         if admin_user:
             session["admin"] = True
+        else: 
+            session["admin"] = False
 
         
         flash("Successfully logged in!")
