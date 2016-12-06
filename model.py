@@ -35,58 +35,6 @@ class Role(db.Model):
     role = db.Column(db.String(30), nullable = False)
 
 
-class UserRole(db.Model):
-    """ All records of a user's roles """
-
-    __tablename__ = "userroles"
-    
-    user_role_id = db.Column(db.Integer, primary_key=True, autoincrement = True,
-                                                    nullable = False)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), 
-                                                    nullable=False)
-    role_id = db.Column(db.Integer, db.ForeignKey('roles.role_id'), 
-                                                    nullable=False)
-
-    # Define relationship to user
-    user = db.relationship("User", backref=db.backref("userroles", order_by=user_role_id))
-
-    # Define relationship to role
-    role = db.relationship("Role", backref=db.backref("userroles", order_by=user_role_id))
-
-
-class UserImage(db.Model):
-    """ All records of a user favoriting an image """
-
-    __tablename__ = "userimages"
-    
-    user_image_id = db.Column(db.Integer, primary_key=True, autoincrement = True,
-                                                    nullable = False)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), 
-                                                    nullable=False)
-    image_id = db.Column(db.Integer, db.ForeignKey('images.image_id'), 
-                                                    nullable=False)
-
-    # Define relationship to user
-    user = db.relationship("User", backref=db.backref("userimages", order_by=user_image_id))
-
-    # Define relationship to image
-    image = db.relationship("Image", backref=db.backref("userimages", order_by=user_image_id))
-
-
-    @classmethod
-    def add_user_image_to_db(cls, user_id, image_id):
-
-        # Query the database for a previous record of this photo and user
-        userimage_in_db = UserImage.query.filter(UserImage.user_id==user_id, 
-                                            UserImage.image_id==image_id).first()
-
-        # If no prior record, create one
-        if not userimage_in_db:
-            new_user_image = UserImage(user_id=user_id, image_id=image_id)
-            db.session.add(new_user_image)
-            db.session.commit()
-
-
 class Image(db.Model):
     """ Image details """
 
@@ -148,6 +96,86 @@ class Color(db.Model):
         return
 
 
+
+class UserRole(db.Model):
+    """ All records of a user's roles """
+
+    __tablename__ = "userroles"
+    
+    user_role_id = db.Column(db.Integer, primary_key=True, autoincrement = True,
+                                                    nullable = False)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), 
+                                                    nullable=False)
+    role_id = db.Column(db.Integer, db.ForeignKey('roles.role_id'), 
+                                                    nullable=False)
+
+    # Define relationship to user
+    user = db.relationship("User", backref=db.backref("userroles", order_by=user_role_id))
+
+    # Define relationship to role
+    role = db.relationship("Role", backref=db.backref("userroles", order_by=user_role_id))
+
+
+class UserImage(db.Model):
+    """ All records of a user favoriting an image """
+
+    __tablename__ = "userimages"
+    
+    user_image_id = db.Column(db.Integer, primary_key=True, autoincrement = True,
+                                                    nullable = False)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), 
+                                                    nullable=False)
+    image_id = db.Column(db.Integer, db.ForeignKey('images.image_id'), 
+                                                    nullable=False)
+
+    # Define relationship to user
+    user = db.relationship("User", backref=db.backref("userimages", order_by=user_image_id))
+
+    # Define relationship to image
+    image = db.relationship("Image", backref=db.backref("userimages", order_by=user_image_id))
+
+
+    @classmethod
+    def add_user_image_to_db(cls, user_id, image_id):
+
+        # Query the database for a previous record of this photo and user
+        user_image_in_db = UserImage.query.filter(UserImage.user_id==user_id, 
+                                                 UserImage.image_id==image_id).first()
+
+        # If no prior record, create one
+        if not user_image_in_db:
+            new_user_image = UserImage(user_id=user_id, image_id=image_id)
+            db.session.add(new_user_image)
+            db.session.commit()
+
+
+class GalleryImage(db.Model):
+    """ All records of images in the gallery """
+
+    __tablename__ = "galleryimages"
+    
+    gallery_image_id = db.Column(db.Integer, primary_key=True, autoincrement = True,
+                                                    nullable = False)
+    image_id = db.Column(db.Integer, db.ForeignKey('images.image_id'), 
+                                                    nullable=False)
+
+    # Define relationship to image
+    image = db.relationship("Image", backref=db.backref("galleryimages", 
+                                     order_by=gallery_image_id))
+
+    @classmethod
+    def add_gallery_image_to_db(cls, image_id):
+
+        # Query the database for a previous record of this photo in the gallery
+        gallery_image_in_db = GalleryImage.query.filter(GalleryImage.image_id==image_id).first()
+
+        # If no prior record, create one
+        if not gallery_image_in_db:
+            new_gallery_image = GalleryImage(image_id=image_id)
+            db.session.add(new_gallery_image)
+            db.session.commit()
+
+
 class ImageColor(db.Model):
     """ Colors in a photo """
 
@@ -184,8 +212,8 @@ class ImageColor(db.Model):
                 color_bin = get_color_bin(color)
 
                 new_image_color = cls(image_id=image_id, 
-                                             color_id=color_id,
-                                             color_bin=color_bin)
+                                      color_id=color_id,
+                                      color_bin=color_bin)
                 print 'new_image_color', new_image_color
                 db.session.add(new_image_color)
                 db.session.commit()
