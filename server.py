@@ -6,7 +6,8 @@ from flask import Flask, jsonify, render_template, request, redirect, session, f
 from flask_debugtoolbar import DebugToolbarExtension
 
 # Don't import session from db -- it may be confused with Flask session
-from model import connect_to_db, db, User, Role, UserRole, Image, UserImage, Color, ImageColor
+from model import connect_to_db, db, User, Role, Image, Color, UserRole, 
+                  UserImage, GalleryImage, ImageColor
 
 from helpers import get_color_bin
 # from image_analysis import hash_photo
@@ -240,7 +241,6 @@ def user_login():
         flash("Please enter both your email and password.")
         return redirect("/")
 
-
     if "user_id" not in session:
         session["user_id"] = {}
 
@@ -293,10 +293,7 @@ def logout():
 
 
 
-
-
-
-@app.route('/favorite_image', methods=["POST"])
+@app.route('/add_user_image', methods=["POST"])
 def add_image_to_profile():
     """ The user should already be logged in. """
 
@@ -319,7 +316,7 @@ def add_image_to_profile():
     return "Favorited image"
 
 
-@app.route('/remove_image', methods=["POST"])
+@app.route('/remove_user_image', methods=["POST"])
 def remove_image_from_profile():
     """ The user should already be logged in. """
 

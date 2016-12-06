@@ -25,7 +25,7 @@ $(function() {
 
         payload = {"image_id": imageId};
 
-        $.post("/favorite_image", payload, function(data) {
+        $.post("/add_user_image", payload, function(data) {
            
             var heart = $("#image-" + imageId);
            
@@ -44,7 +44,7 @@ $(function() {
 
         payload = {"image_id": imageId};
 
-        $.post("/remove_image", payload, function(data) {
+        $.post("/remove_user_image", payload, function(data) {
             console.log(imageId);
             var heart = $("#image-" + imageId);
 
