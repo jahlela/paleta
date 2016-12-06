@@ -222,7 +222,19 @@ class ImageColor(db.Model):
         return
 
 
+
 ################### Helper Functions ####################
+
+def add_gallery_images():
+
+    photos = Image.query.order_by(Image.image_id).all()
+
+    for photo in photos:
+        GalleryImage.add_gallery_image_to_db(photo.image_id)
+        print "added ", photo.image_id
+
+
+
 
 
 def connect_to_db(app, URI='postgresql:///paleta'):
@@ -243,6 +255,7 @@ if __name__ == "__main__":
     from server import app
     connect_to_db(app)
     print "Connected to DB."
+    add_gallery_images()
 
     db.create_all()
 
