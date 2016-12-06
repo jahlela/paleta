@@ -3,3 +3,4 @@ image_analysis.pyc model.pyc
 color_difference.pyc image_analysis.pyc kmeans.pyc model.pyc
 color_difference.pyc image_analysis.pyc kmeans.pyc model.pyc
 *.pyc
+*.DS_Store
