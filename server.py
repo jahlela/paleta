@@ -6,7 +6,7 @@ from flask import Flask, jsonify, render_template, request, redirect, session, f
 from flask_debugtoolbar import DebugToolbarExtension
 
 # Don't import session from db -- it may be confused with Flask session
-from model import connect_to_db, db, User, Role, Image, Color, UserRole, 
+from model import connect_to_db, db, User, Role, Image, Color, UserRole, \
                   UserImage, GalleryImage, ImageColor
 
 from helpers import get_color_bin
@@ -76,7 +76,8 @@ def analyze_photo():
     # Grab URL from form and use it to create an image file path and palette
     #  image is a hashed file name of the original image's content
     URL = request.form['URL']
-    
+    print 'URL', URL
+
     try:
         file_name, colors = get_image_and_palette(URL)
     except StandardError as error:
@@ -334,12 +335,28 @@ def remove_image_from_profile():
     else: 
         flash('This image could not be found.')
 
-    return "Removed image"
+    return "Removed image from user profile"
 
 
 @app.route('/remove_gallery_image', methods=["POST"])
+def remove_gallery_image():
+    """ Removes galleryimage record. """
+
+    image_id = int(request.form["image_id"])
+
+    gallery_image_in_db = GalleryImage.query.filter(GalleryImage.image_id==image_id).all()
+
+    if gallery_image_in_db:
+        for gallery_image in gallery_image_in_db:
+            db.session.delete(gallery_image)
+            db.session.commit()
+
+    return "Removed gallery image record"
+
+
+@app.route('/remove_all_image_records', methods=["POST"])
 def remove_all_records_of_image():
-    """ Removes userimages, imagecolors, and image. Does not remove colors. """
+    """ Removes userimages, galleryimages, imagecolors, and image. Does not remove colors. """
 
     image_id = int(request.form["image_id"])
 
@@ -358,6 +375,13 @@ def remove_all_records_of_image():
             db.session.delete(imagecolor)
             db.session.commit()
 
+
+    gallery_image_in_db = GalleryImage.query.filter(GalleryImage.image_id==image_id).all()
+
+    if gallery_image_in_db:
+        for gallery_image in gallery_image_in_db:
+            db.session.delete(gallery_image)
+            db.session.commit()
 
     image = Image.query.get(image_id)
 

@@ -34,21 +34,23 @@ def resize_and_save(local_file_name, input_height = 250.0):
     image.close()
 
 
-def get_file_path(URL):
+def get_file_path(url):
     """ Takes a web-hosted URL and returns the local file path of the image after
         performing a get request. """
 
     # Start timer for get request
     start_get = time.time()
-
     os_path = define_os_path()
 
     # Fake sites into thinking my app's request is coming from a browser
-    headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) \
-                    AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 \
-                    Safari/537.36'}
+    headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 6.2; Win64; x64) \
+        AppleWebKit/537.36 (KHTML, like Gecko) Chrome/32.0.1667.0 Safari/537.36'}
+
     # Grab the image from a URL using fake browser headers
-    image_response = requests.get(URL, headers=headers)
+    print "Starting image response"
+    print headers
+    image_response = requests.get(url, headers=headers)
+    print "Finish image response"
     # Show 
     print '\n Get request time elapsed: ', (time.time() - start_get)
 
@@ -90,6 +92,7 @@ def get_image_and_palette(URL):
     """ Takes in a string URL of an image and returns a list of hex 
         strings with the image palette. """
 
+    print 'starting get_image_and_palette'
     # Fail elegantly
     try:
         file_path = get_file_path(URL)

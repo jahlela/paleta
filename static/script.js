@@ -56,15 +56,25 @@ $(function() {
         });
     }
 
-    function removeImageFromProfile() {
+    $(".heart-empty").on("click", addUserImageToDB);
+    $(".heart-full").on("click", removeUserImageFromDB);
+
+    function removeImageFromBrowser() {
         console.log("Removing closest .image-with-palette")
         $(this).closest('.image-with-palette').remove();
     }
 
-    $(".profile-image").on("click", removeImageFromProfile);
-    $(".heart-empty").on("click", addUserImageToDB);
-    $(".heart-full").on("click", removeUserImageFromDB);
+    $(".profile-image").on("click", removeImageFromBrowser);
+    
 
+
+
+    function removeGalleryImageFromDB() {
+        console.log("Removing closest .image-with-palette")
+        $(this).closest('.image-with-palette').remove();
+    }
+
+    $(".gallery-image").on("click", removeGalleryImageFromDB);
 
 
     function removeAllRecordsOfImage() {
@@ -72,14 +82,16 @@ $(function() {
 
         payload = {"image_id": imageId};
 
-        $.post("/remove_gallery_image", payload, function(data) {
+        $.post("/remove_all_image_records", payload, function(data) {
             console.log(imageId);
             alert("Deleted record " + imageId);
         });
     }
 
     $(".delete-all-records").on("click", removeAllRecordsOfImage);
-    $(".delete-all-records").on("click", removeImageFromProfile);
+    $(".delete-all-records").on("click", removeImageFromBrowser);
+
+
 
 
 
