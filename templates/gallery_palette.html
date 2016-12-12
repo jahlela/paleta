@@ -2,8 +2,11 @@
     <div id="gallery-image-with-palette-{{ photo.image_id }}" class="image-with-palette">
 
       {% if session["admin"] %}
-      <button class="btn btn-warning" style="margin: 0 0 20px;">
-        <span class="delete-all-records" data-image="{{ photo.image_id }}" >Delete {{ photo.image_id }}</span>
+      <button class="btn btn-warning" style="margin: 0 10px 20px;">
+        <span class="remove-gallery-image" data-image="{{ photo.image_id }}" >Delete gallery image {{ photo.image_id }}</span>
+      </button>
+      <button class="btn btn-danger" style="margin: 0 10px 20px;">
+        <span class="remove-all-image-records" data-image="{{ photo.image_id }}" >Delete all records of {{ photo.image_id }}</span>
       </button>
       {% endif %}
 

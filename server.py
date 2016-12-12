@@ -214,10 +214,7 @@ def register_new_user():
     # if username (email) is in not in database, add them and log them in
     else:
         # Add new user to db
-        new_user = User(firstname=firstname, lastname=lastname, email=email, 
-                password=bcrypt.hashpw(password.encode("UTF_8"), bcrypt.gensalt()))
-        db.session.add(new_user)
-        db.session.commit()
+        User.add_user_to_db(firstname, lastname, email, password)
 
         # Get new User record for logging in
         current_user = User.query.filter_by(email=email).first()
@@ -301,19 +298,9 @@ def add_image_to_profile():
     # Grab user_id from the browser session     
     user_id = session["user_id"]
     image_id = int(request.form["image_id"])
+
+    UserImage.add_user_image_to_db(user_id, image_id)
     
-    userimage_in_db = UserImage.query.filter(UserImage.user_id==user_id, 
-                                        UserImage.image_id==image_id).first()
-
-    if userimage_in_db:
-        pass
-        # flash('Image already added to profile')
-    else: 
-        new_user_image = UserImage(user_id=user_id, image_id=image_id)
-        db.session.add(new_user_image)
-        db.session.commit()
-        # flash('Image added!')
-
     return "Favorited image"
 
 
@@ -324,16 +311,8 @@ def remove_image_from_profile():
     # Grab user_id from the browser session and image_id from the request    
     user_id = session["user_id"]
     image_id = int(request.form["image_id"])
-    
-    userimage_in_db = UserImage.query.filter(UserImage.user_id==user_id, 
-                                        UserImage.image_id==image_id).first()
 
-    if userimage_in_db:
-        db.session.delete(userimage_in_db)
-        db.session.commit()
-        # flash('Image removed from profile')
-    else: 
-        flash('This image could not be found.')
+    UserImage.remove_user_image_from_db(user_id, image_id)
 
     return "Removed image from user profile"
 
@@ -354,6 +333,7 @@ def remove_gallery_image():
 
     image_id = int(request.form["image_id"])
     GalleryImage.remove_gallery_image_from_db(image_id)
+    print 'Removed '
 
     return "Removed gallery image record"
 
@@ -367,7 +347,7 @@ def remove_all_records_of_image():
     # Remove gallery image record
     GalleryImage.remove_gallery_image_from_db(image_id)   
     # Remove user image records
-    User.remove_user_image_from_db(image_id)
+    UserImage.remove_user_image_from_db(image_id)
     # Remove image color records
     ImageColor.remove_image_colors_from_db(image_id)
     # Remove image record 

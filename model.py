@@ -24,6 +24,15 @@ class User(db.Model):
     # There is a relationship defined between User and UserImage in UserImage.
     # Backref to UserImage is "userimages"
 
+    @classmethod
+    def add_user_to_db(cls, firstname, lastname, email, password):
+        
+        new_user = User(firstname=firstname, lastname=lastname, email=email, 
+                password=bcrypt.hashpw(password.encode("UTF_8"), bcrypt.gensalt()))
+        db.session.add(new_user)
+        db.session.commit()
+
+        return "Added new user"
 
 class Role(db.Model):
     """ Role details """
@@ -73,7 +82,7 @@ class Image(db.Model):
     def remove_image_from_db(cls, image_id):
 
         # Query the database for record of this photo
-        image_in_db = Image.query.get(image_id).first()
+        image_in_db = Image.query.get(image_id)
 
         # If prior record, delete it
         if image_in_db:
@@ -161,16 +170,18 @@ class UserImage(db.Model):
             db.session.commit()
 
     @classmethod
-    def remove_user_image_from_db(cls, image_id):
+    def remove_user_image_from_db(cls, user_id, image_id):
 
         # Query the database for record of this photo associated with any user
-        user_image_in_db = UserImage.query.filter(UserImage.image_id==image_id).all()
+        user_image_in_db = UserImage.query.filter(UserImage.user_id==user_id, 
+                                                 UserImage.image_id==image_id).all()
 
         # If prior records, delete them
         if user_image_in_db:
             for user_image in user_image_in_db:
                 db.session.delete(user_image)
                 db.session.commit()
+        
 
 
 class GalleryImage(db.Model):
@@ -302,7 +313,7 @@ if __name__ == "__main__":
     from server import app
     connect_to_db(app)
     print "Connected to DB."
-    add_gallery_images()
+    # add_gallery_images()
 
     db.create_all()
 
