@@ -338,18 +338,22 @@ def remove_image_from_profile():
     return "Removed image from user profile"
 
 
+@app.route('/add_gallery_image', methods=["POST"])
+def add_gallery_image():
+    """ Adds galleryimage record. """
+
+    image_id = int(request.form["image_id"])
+    GalleryImage.add_gallery_image_to_db(image_id)
+
+    return "Added gallery image record"
+
+
 @app.route('/remove_gallery_image', methods=["POST"])
 def remove_gallery_image():
     """ Removes galleryimage record. """
 
     image_id = int(request.form["image_id"])
-
-    gallery_image_in_db = GalleryImage.query.filter(GalleryImage.image_id==image_id).all()
-
-    if gallery_image_in_db:
-        for gallery_image in gallery_image_in_db:
-            db.session.delete(gallery_image)
-            db.session.commit()
+    GalleryImage.remove_gallery_image_from_db(image_id)
 
     return "Removed gallery image record"
 
@@ -359,6 +363,8 @@ def remove_all_records_of_image():
     """ Removes userimages, galleryimages, imagecolors, and image. Does not remove colors. """
 
     image_id = int(request.form["image_id"])
+
+    GalleryImage.remove_gallery_image_from_db(image_id)   
 
     userimage_in_db = UserImage.query.filter(UserImage.image_id==image_id).all()
 
@@ -376,12 +382,7 @@ def remove_all_records_of_image():
             db.session.commit()
 
 
-    gallery_image_in_db = GalleryImage.query.filter(GalleryImage.image_id==image_id).all()
 
-    if gallery_image_in_db:
-        for gallery_image in gallery_image_in_db:
-            db.session.delete(gallery_image)
-            db.session.commit()
 
     image = Image.query.get(image_id)
 

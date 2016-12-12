@@ -175,6 +175,18 @@ class GalleryImage(db.Model):
             db.session.add(new_gallery_image)
             db.session.commit()
 
+    @classmethod
+    def remove_gallery_image_from_db(cls, image_id):
+
+        # Query the database for record of this photo in the gallery
+        gallery_image_in_db = GalleryImage.query.filter(GalleryImage.image_id==image_id).first()
+
+        # If prior record, delete it
+        if gallery_image_in_db:
+            db.session.delete(gallery_image_in_db)
+            db.session.commit()
+
+
 
 class ImageColor(db.Model):
     """ Colors in a photo """
