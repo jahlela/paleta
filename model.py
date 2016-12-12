@@ -44,6 +44,10 @@ class Image(db.Model):
                                                        nullable = False)
     file_name = db.Column(db.String(300), nullable = False)
 
+
+    users = db.relationship("User", backref="images", 
+                                    secondary="userimages") #Access Image directly
+
     # There is a relationship defined between Image and ImageColor in ImageColor.
     # Backref to ImageColor is "imagecolors"
 
@@ -65,8 +69,16 @@ class Image(db.Model):
 
         return image_id
 
-    users = db.relationship("User", backref="images", 
-                                    secondary="userimages") #Access Image directly
+    @classmethod
+    def remove_image_from_db(cls, image_id):
+
+        # Query the database for record of this photo
+        image_in_db = Image.query.get(image_id).first()
+
+        # If prior record, delete it
+        if image_in_db:
+            db.session.delete(image_in_db)
+            db.session.commit()
 
 
 class Color(db.Model):
@@ -148,6 +160,18 @@ class UserImage(db.Model):
             db.session.add(new_user_image)
             db.session.commit()
 
+    @classmethod
+    def remove_user_image_from_db(cls, image_id):
+
+        # Query the database for record of this photo associated with any user
+        user_image_in_db = UserImage.query.filter(UserImage.image_id==image_id).all()
+
+        # If prior records, delete them
+        if user_image_in_db:
+            for user_image in user_image_in_db:
+                db.session.delete(user_image)
+                db.session.commit()
+
 
 class GalleryImage(db.Model):
     """ All records of images in the gallery """
@@ -185,7 +209,6 @@ class GalleryImage(db.Model):
         if gallery_image_in_db:
             db.session.delete(gallery_image_in_db)
             db.session.commit()
-
 
 
 class ImageColor(db.Model):
@@ -230,8 +253,20 @@ class ImageColor(db.Model):
                 db.session.add(new_image_color)
                 db.session.commit()
 
+        return "Added image colors to db"
 
-        return
+    @classmethod
+    def remove_image_colors_from_db(cls, image_id):
+
+        imagecolor_in_db = ImageColor.query.filter(ImageColor.image_id==image_id).all()
+
+        if imagecolor_in_db:
+            for imagecolor in imagecolor_in_db:
+                db.session.delete(imagecolor)
+                db.session.commit()
+
+        return "Removed image colors from db"
+
 
 
 

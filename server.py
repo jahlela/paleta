@@ -364,32 +364,14 @@ def remove_all_records_of_image():
 
     image_id = int(request.form["image_id"])
 
+    # Remove gallery image record
     GalleryImage.remove_gallery_image_from_db(image_id)   
-
-    userimage_in_db = UserImage.query.filter(UserImage.image_id==image_id).all()
-
-    if userimage_in_db:
-        for userimage in userimage_in_db:
-            db.session.delete(userimage)
-            db.session.commit()
-
-
-    imagecolor_in_db = ImageColor.query.filter(ImageColor.image_id==image_id).all()
-
-    if imagecolor_in_db:
-        for imagecolor in imagecolor_in_db:
-            db.session.delete(imagecolor)
-            db.session.commit()
-
-
-
-
-    image = Image.query.get(image_id)
-
-    if image:
-        db.session.delete(image)
-        db.session.commit()
-
+    # Remove user image records
+    User.remove_user_image_from_db(image_id)
+    # Remove image color records
+    ImageColor.remove_image_colors_from_db(image_id)
+    # Remove image record 
+    Image.remove_image_from_db(image_id)
 
     return "Removed all records connected with image"
 
