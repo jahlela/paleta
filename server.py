@@ -25,6 +25,7 @@ app.secret_key = "mypaleta"
 
 # Make Jinja2 raise an error if there is an undefined variable
 app.jinja_env.undefined = StrictUndefined
+app.jinja_env.auto_reload = True
 
 
 ################## Setup ##################
@@ -114,7 +115,13 @@ def gallery(photos=None):
     else:
         user = None
 
-    photos = Image.query.order_by(Image.image_id.desc()).all()
+    gallery_image_query = GalleryImage.query.order_by(GalleryImage.image_id.desc()).all()
+
+    # If there are photos represented in that bin, display them
+    if gallery_image_query:
+        photos = []
+        for gallery_image in gallery_image_query:
+           photos.append(gallery_image.image)
 
     return render_template('/gallery.html',
                             photos=photos, 
@@ -343,11 +350,12 @@ def remove_all_records_of_image():
     """ Removes userimages, galleryimages, imagecolors, and image. Does not remove colors. """
 
     image_id = int(request.form["image_id"])
+    user_id = session["user_id"]
 
     # Remove gallery image record
     GalleryImage.remove_gallery_image_from_db(image_id)   
     # Remove user image records
-    UserImage.remove_user_image_from_db(image_id)
+    UserImage.remove_user_image_from_db(user_id, image_id)
     # Remove image color records
     ImageColor.remove_image_colors_from_db(image_id)
     # Remove image record 
@@ -371,3 +379,5 @@ if __name__ == "__main__":
     DebugToolbarExtension(app)
 
     app.run(host='0.0.0.0')
+
+
