@@ -93,6 +93,8 @@ def analyze_photo():
     Color.add_colors_to_db(colors)
     # Add image colors to db
     ImageColor.add_image_colors_to_db(image_id, colors)
+    # Add image to Gallery
+    GalleryImage.add_gallery_image_to_db(image_id)
     # If user is logged in, add a user_image record if none already exists
     if session["logged_in"]:
         user_id = session["user_id"]
