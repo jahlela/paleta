@@ -294,6 +294,7 @@ def logout():
     # remove the username from the session if it's there
     session['user_id'] = None
     session['logged_in'] = False
+    session["admin"] = False
 
     flash("Successfully logged out!")
     return redirect("/")
@@ -377,7 +378,7 @@ def remove_all_records_of_image():
 if __name__ == "__main__":
     # We have to set debug=True here, since it has to be True at the
     # point that we invoke the DebugToolbarExtension
-    app.debug = True
+    app.debug = False
     app.jinja_env.auto_reload = app.debug
 
     connect_to_db(app)
