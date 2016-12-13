@@ -1,5 +1,7 @@
 """ Models and database functions for paleta db. """
 
+import os
+from path import path
 from flask_sqlalchemy import SQLAlchemy
 from helpers import get_color_bin
 
@@ -88,6 +90,23 @@ class Image(db.Model):
         if image_in_db:
             db.session.delete(image_in_db)
             db.session.commit()
+
+
+    @classmethod
+    def delete_image_from_folder(cls, file_name):
+
+        # os_path = os.path.dirname(os.path.abspath(__file__))
+
+        # photo_directory = path(os_path + '/static/img/photos/')
+        photo_directory = path('/home/vagrant/src/projects/paleta/static/img/photos/')
+
+        for image in photo_directory.walk():
+            if image.isfile():
+                if image.name == file_name:
+                    image.remove()
+                    print "Deleted", file_name
+
+
 
 
 class Color(db.Model):
@@ -290,6 +309,28 @@ def add_gallery_images():
     for photo in photos:
         GalleryImage.add_gallery_image_to_db(photo.image_id)
         print "added ", photo.image_id
+
+
+def remove_all_unnecessary_images():
+
+    photos = Image.query.order_by(Image.image_id).all()
+
+    photo_name_set = set()
+    for photo in photos:
+        photo_name_set.add(photo.file_name)
+
+    photo_directory = path('/home/vagrant/src/projects/paleta/static/img/photos/')
+
+    for image in photo_directory.walk():
+        if image.isfile():
+            db_file_name = '/static/img/photos/' + image.name
+            if db_file_name not in photo_name_set:
+                image.remove()
+                print 'Deleted', image.name
+
+    return
+
+
 
 
 
