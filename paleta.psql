@@ -1985,6 +1985,11 @@ COPY colors (color_id, color) FROM stdin;
 1619	#1b1d20
 1620	#505560
 1621	#828894
+1622	#eef3f1
+1623	#e3b844
+1624	#1a3609
+1625	#e25207
+1626	#24b901
 \.
 
 
@@ -1992,7 +1997,7 @@ COPY colors (color_id, color) FROM stdin;
 -- Name: colors_color_id_seq; Type: SEQUENCE SET; Schema: public; Owner: vagrant
 --
 
-SELECT pg_catalog.setval('colors_color_id_seq', 1621, true);
+SELECT pg_catalog.setval('colors_color_id_seq', 1626, true);
 
 
 --
@@ -2020,7 +2025,6 @@ COPY galleryimages (gallery_image_id, image_id) FROM stdin;
 18	102
 19	124
 20	125
-21	126
 22	127
 23	129
 24	132
@@ -2141,7 +2145,7 @@ COPY galleryimages (gallery_image_id, image_id) FROM stdin;
 141	340
 146	355
 147	356
-148	357
+149	358
 \.
 
 
@@ -2149,7 +2153,7 @@ COPY galleryimages (gallery_image_id, image_id) FROM stdin;
 -- Name: galleryimages_gallery_image_id_seq; Type: SEQUENCE SET; Schema: public; Owner: vagrant
 --
 
-SELECT pg_catalog.setval('galleryimages_gallery_image_id_seq', 148, true);
+SELECT pg_catalog.setval('galleryimages_gallery_image_id_seq', 149, true);
 
 
 --
@@ -2297,7 +2301,6 @@ COPY imagecolors (image_color_id, image_id, color_id, color_bin) FROM stdin;
 205	45	196	112
 1403	335	1520	310
 1404	335	1521	321
-390	126	23	000
 394	127	23	000
 1375	330	1508	333
 1376	330	1509	000
@@ -2399,10 +2402,6 @@ COPY imagecolors (image_color_id, image_id, color_id, color_bin) FROM stdin;
 384	125	550	101
 385	125	551	320
 386	125	552	212
-387	126	553	333
-388	126	554	211
-389	126	555	110
-391	126	556	222
 392	127	557	331
 393	127	558	010
 395	127	559	321
@@ -2885,11 +2884,11 @@ COPY imagecolors (image_color_id, image_id, color_id, color_bin) FROM stdin;
 1504	356	1614	000
 1505	356	1615	110
 1506	356	1616	011
-1507	357	1617	333
-1508	357	1618	000
-1509	357	1619	000
-1510	357	1620	111
-1511	357	1621	222
+1512	358	1622	333
+1513	358	1623	321
+1514	358	1624	000
+1515	358	1625	310
+1516	358	1626	020
 \.
 
 
@@ -2897,7 +2896,7 @@ COPY imagecolors (image_color_id, image_id, color_id, color_bin) FROM stdin;
 -- Name: imagecolors_image_color_id_seq; Type: SEQUENCE SET; Schema: public; Owner: vagrant
 --
 
-SELECT pg_catalog.setval('imagecolors_image_color_id_seq', 1511, true);
+SELECT pg_catalog.setval('imagecolors_image_color_id_seq', 1516, true);
 
 
 --
@@ -2965,7 +2964,6 @@ COPY images (image_id, file_name) FROM stdin;
 311	/static/img/photos/x64f0e01d094be48e.png
 124	/static/img/photos/x122c47eb45e390b5.png
 125	/static/img/photos/x2ba7b3d15e25a6ed.png
-126	/static/img/photos/1x48a0f276873750fe.png
 127	/static/img/photos/x35bc0037ce0cfabd.png
 129	/static/img/photos/x9200fba4cecb3b0.png
 132	/static/img/photos/x4d3b1444f6525200.png
@@ -3052,6 +3050,7 @@ COPY images (image_id, file_name) FROM stdin;
 355	/static/img/photos/1x4bed0cb4869d1c31.png
 356	/static/img/photos/x4aab29ae74f1ba72.png
 357	/static/img/photos/x1bf0002933a11ae8.png
+358	/static/img/photos/1x32f10e899a607cda.png
 \.
 
 
@@ -3059,7 +3058,7 @@ COPY images (image_id, file_name) FROM stdin;
 -- Name: images_image_id_seq; Type: SEQUENCE SET; Schema: public; Owner: vagrant
 --
 
-SELECT pg_catalog.setval('images_image_id_seq', 357, true);
+SELECT pg_catalog.setval('images_image_id_seq', 358, true);
 
 
 --
@@ -3170,7 +3169,6 @@ COPY userimages (user_image_id, user_id, image_id) FROM stdin;
 489	1	354
 490	1	355
 491	1	356
-492	1	357
 \.
 
 
