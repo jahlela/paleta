@@ -360,8 +360,13 @@ def remove_all_records_of_image():
     UserImage.remove_user_image_from_db(user_id, image_id)
     # Remove image color records
     ImageColor.remove_image_colors_from_db(image_id)
+
+    # Get image file name before deleting from db
+    file_name = Image.query.get(image_id).file_name
     # Remove image record 
     Image.remove_image_from_db(image_id)
+    # Remove image from folder
+    Image.delete_image_from_folder(file_name)
 
     return "Removed all records connected with image"
 

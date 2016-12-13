@@ -96,15 +96,41 @@ class Image(db.Model):
     def delete_image_from_folder(cls, file_name):
 
         # os_path = os.path.dirname(os.path.abspath(__file__))
-
         # photo_directory = path(os_path + '/static/img/photos/')
+
+        # Use only on local machine -- must be changed on hosted version
+        photo_directory = path('/home/vagrant/src/projects/paleta/static/img/photos/')
+
+        matches = photo_directory.files(file_name)
+
+        for match in matches:
+            print 'Match:', match
+            path.remove(match)
+
+        print "Deleted %s from folder" %(file_name)
+
+
+    @classmethod
+    def remove_all_unused_images():
+
+        photos = Image.query.order_by(Image.image_id).all()
+
+        photo_name_set = set()
+        for photo in photos:
+            photo_name_set.add(photo.file_name)
+
+        # Must be changed to relative os_path for non-local machines
         photo_directory = path('/home/vagrant/src/projects/paleta/static/img/photos/')
 
         for image in photo_directory.walk():
             if image.isfile():
-                if image.name == file_name:
+                db_file_name = '/static/img/photos/' + image.name
+                if db_file_name not in photo_name_set:
                     image.remove()
-                    print "Deleted", file_name
+                    print 'Deleted', image.name
+
+        return
+
 
 
 
@@ -273,13 +299,11 @@ class ImageColor(db.Model):
                                                cls.color_id==color_id).first()
 
             if not has_image_color:
-
                 color_bin = get_color_bin(color)
-
                 new_image_color = cls(image_id=image_id, 
                                       color_id=color_id,
                                       color_bin=color_bin)
-                print 'new_image_color', new_image_color
+
                 db.session.add(new_image_color)
                 db.session.commit()
 
@@ -301,34 +325,6 @@ class ImageColor(db.Model):
 
 
 ################### Helper Functions ####################
-
-def add_gallery_images():
-
-    photos = Image.query.order_by(Image.image_id).all()
-
-    for photo in photos:
-        GalleryImage.add_gallery_image_to_db(photo.image_id)
-        print "added ", photo.image_id
-
-
-def remove_all_unnecessary_images():
-
-    photos = Image.query.order_by(Image.image_id).all()
-
-    photo_name_set = set()
-    for photo in photos:
-        photo_name_set.add(photo.file_name)
-
-    photo_directory = path('/home/vagrant/src/projects/paleta/static/img/photos/')
-
-    for image in photo_directory.walk():
-        if image.isfile():
-            db_file_name = '/static/img/photos/' + image.name
-            if db_file_name not in photo_name_set:
-                image.remove()
-                print 'Deleted', image.name
-
-    return
 
 
 
@@ -354,7 +350,7 @@ if __name__ == "__main__":
     from server import app
     connect_to_db(app)
     print "Connected to DB."
-    # add_gallery_images()
+    # remove_all_unnecessary_images()
 
     db.create_all()
 
