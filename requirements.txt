@@ -23,10 +23,7 @@ ipywidgets==5.2.2
 itsdangerous==0.24
 Jinja2==2.8
 jsonschema==2.5.1
-jupyter-client==4.4.0
-jupyter-core==4.2.0
 MarkupSafe==0.23
-matplotlib==1.5.3
 mistune==0.7.3
 nbconvert==4.2.0
 nbformat==4.1.0
@@ -50,8 +47,6 @@ pytz==2016.7
 pyzmq==16.0.0
 qtconsole==4.2.1
 requests==2.11.1
-scikit-image==0.12.3
-scipy==0.18.1
 simplegeneric==0.8.1
 singledispatch==3.4.0.3
 six==1.10.0
