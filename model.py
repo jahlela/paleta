@@ -323,9 +323,10 @@ def remove_all_unnecessary_images():
 
     for image in photo_directory.walk():
         if image.isfile():
-            if image.name not in photo_name_set:
-                # image.remove()
-                print image.name, "not found in db"
+            db_file_name = '/static/img/photos/' + image.name
+            if db_file_name not in photo_name_set:
+                image.remove()
+                print 'Deleted', image.name
 
     return
 
