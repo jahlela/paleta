@@ -2,8 +2,8 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 9.5.4
--- Dumped by pg_dump version 9.5.4
+-- Dumped from database version 9.5.5
+-- Dumped by pg_dump version 9.5.5
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -64,6 +64,39 @@ ALTER TABLE colors_color_id_seq OWNER TO vagrant;
 --
 
 ALTER SEQUENCE colors_color_id_seq OWNED BY colors.color_id;
+
+
+--
+-- Name: galleryimages; Type: TABLE; Schema: public; Owner: vagrant
+--
+
+CREATE TABLE galleryimages (
+    gallery_image_id integer NOT NULL,
+    image_id integer NOT NULL
+);
+
+
+ALTER TABLE galleryimages OWNER TO vagrant;
+
+--
+-- Name: galleryimages_gallery_image_id_seq; Type: SEQUENCE; Schema: public; Owner: vagrant
+--
+
+CREATE SEQUENCE galleryimages_gallery_image_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE galleryimages_gallery_image_id_seq OWNER TO vagrant;
+
+--
+-- Name: galleryimages_gallery_image_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: vagrant
+--
+
+ALTER SEQUENCE galleryimages_gallery_image_id_seq OWNED BY galleryimages.gallery_image_id;
 
 
 --
@@ -276,6 +309,13 @@ ALTER SEQUENCE users_user_id_seq OWNED BY users.user_id;
 --
 
 ALTER TABLE ONLY colors ALTER COLUMN color_id SET DEFAULT nextval('colors_color_id_seq'::regclass);
+
+
+--
+-- Name: gallery_image_id; Type: DEFAULT; Schema: public; Owner: vagrant
+--
+
+ALTER TABLE ONLY galleryimages ALTER COLUMN gallery_image_id SET DEFAULT nextval('galleryimages_gallery_image_id_seq'::regclass);
 
 
 --
@@ -1901,6 +1941,162 @@ SELECT pg_catalog.setval('colors_color_id_seq', 1566, true);
 
 
 --
+-- Data for Name: galleryimages; Type: TABLE DATA; Schema: public; Owner: vagrant
+--
+
+COPY galleryimages (gallery_image_id, image_id) FROM stdin;
+1	45
+2	48
+3	57
+4	60
+5	67
+6	68
+7	69
+8	70
+9	71
+10	72
+11	75
+12	89
+13	90
+14	91
+15	93
+16	94
+17	97
+18	102
+19	124
+20	125
+21	126
+22	127
+23	129
+24	132
+25	133
+26	134
+27	140
+28	149
+29	150
+30	151
+31	152
+32	153
+33	155
+34	156
+35	160
+36	161
+37	162
+38	163
+39	164
+40	166
+41	168
+42	169
+43	172
+44	173
+45	174
+46	175
+47	176
+48	177
+49	179
+50	180
+51	185
+52	186
+53	187
+54	188
+55	189
+56	190
+57	192
+58	193
+59	194
+60	195
+61	196
+62	197
+63	198
+64	199
+65	200
+66	201
+67	202
+68	203
+69	204
+70	210
+71	211
+72	212
+73	213
+74	214
+75	215
+76	217
+77	218
+78	219
+79	220
+80	221
+81	222
+82	223
+83	224
+84	225
+85	226
+86	227
+87	232
+88	233
+89	234
+90	235
+91	236
+92	238
+93	239
+94	241
+95	243
+96	252
+97	253
+98	254
+99	255
+100	256
+101	258
+102	259
+103	260
+104	263
+105	264
+106	265
+107	266
+108	267
+109	268
+110	269
+111	270
+112	272
+113	273
+114	276
+115	277
+116	278
+117	279
+118	280
+119	281
+120	285
+121	286
+122	288
+123	290
+124	292
+125	293
+126	297
+127	300
+128	301
+129	305
+130	307
+131	311
+132	314
+133	319
+134	320
+135	330
+136	334
+137	335
+138	336
+139	337
+140	338
+141	340
+\.
+
+
+--
+-- Name: galleryimages_gallery_image_id_seq; Type: SEQUENCE SET; Schema: public; Owner: vagrant
+--
+
+SELECT pg_catalog.setval('galleryimages_gallery_image_id_seq', 141, true);
+
+
+--
 -- Data for Name: imagecolors; Type: TABLE DATA; Schema: public; Owner: vagrant
 --
 
@@ -2932,6 +3128,14 @@ ALTER TABLE ONLY colors
 
 
 --
+-- Name: galleryimages_pkey; Type: CONSTRAINT; Schema: public; Owner: vagrant
+--
+
+ALTER TABLE ONLY galleryimages
+    ADD CONSTRAINT galleryimages_pkey PRIMARY KEY (gallery_image_id);
+
+
+--
 -- Name: imagecolors_pkey; Type: CONSTRAINT; Schema: public; Owner: vagrant
 --
 
@@ -2999,6 +3203,14 @@ CREATE INDEX ix_imagecolors_color_bin ON imagecolors USING btree (color_bin);
 --
 
 CREATE INDEX ix_imagecolors_image_id ON imagecolors USING btree (image_id);
+
+
+--
+-- Name: galleryimages_image_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: vagrant
+--
+
+ALTER TABLE ONLY galleryimages
+    ADD CONSTRAINT galleryimages_image_id_fkey FOREIGN KEY (image_id) REFERENCES images(image_id);
 
 
 --

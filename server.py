@@ -6,7 +6,8 @@ from flask import Flask, jsonify, render_template, request, redirect, session, f
 from flask_debugtoolbar import DebugToolbarExtension
 
 # Don't import session from db -- it may be confused with Flask session
-from model import connect_to_db, db, User, Role, UserRole, Image, UserImage, Color, ImageColor
+from model import connect_to_db, db, User, Role, Image, Color, UserRole, \
+                  UserImage, GalleryImage, ImageColor
 
 from helpers import get_color_bin
 # from image_analysis import hash_photo
@@ -24,6 +25,7 @@ app.secret_key = "mypaleta"
 
 # Make Jinja2 raise an error if there is an undefined variable
 app.jinja_env.undefined = StrictUndefined
+app.jinja_env.auto_reload = True
 
 
 ################## Setup ##################
@@ -75,7 +77,8 @@ def analyze_photo():
     # Grab URL from form and use it to create an image file path and palette
     #  image is a hashed file name of the original image's content
     URL = request.form['URL']
-    
+    print 'URL', URL
+
     try:
         file_name, colors = get_image_and_palette(URL)
     except StandardError as error:
@@ -90,6 +93,8 @@ def analyze_photo():
     Color.add_colors_to_db(colors)
     # Add image colors to db
     ImageColor.add_image_colors_to_db(image_id, colors)
+    # Add image to Gallery
+    GalleryImage.add_gallery_image_to_db(image_id)
     # If user is logged in, add a user_image record if none already exists
     if session["logged_in"]:
         user_id = session["user_id"]
@@ -112,7 +117,13 @@ def gallery(photos=None):
     else:
         user = None
 
-    photos = Image.query.order_by(Image.image_id.desc()).all()
+    gallery_image_query = GalleryImage.query.order_by(GalleryImage.image_id.desc()).all()
+
+    # If there are photos represented in that bin, display them
+    if gallery_image_query:
+        photos = []
+        for gallery_image in gallery_image_query:
+           photos.append(gallery_image.image)
 
     return render_template('/gallery.html',
                             photos=photos, 
@@ -212,10 +223,7 @@ def register_new_user():
     # if username (email) is in not in database, add them and log them in
     else:
         # Add new user to db
-        new_user = User(firstname=firstname, lastname=lastname, email=email, 
-                password=bcrypt.hashpw(password.encode("UTF_8"), bcrypt.gensalt()))
-        db.session.add(new_user)
-        db.session.commit()
+        User.add_user_to_db(firstname, lastname, email, password)
 
         # Get new User record for logging in
         current_user = User.query.filter_by(email=email).first()
@@ -239,7 +247,6 @@ def user_login():
     if not email or not password: 
         flash("Please enter both your email and password.")
         return redirect("/")
-
 
     if "user_id" not in session:
         session["user_id"] = {}
@@ -293,81 +300,68 @@ def logout():
 
 
 
-
-
-
-@app.route('/favorite_image', methods=["POST"])
+@app.route('/add_user_image', methods=["POST"])
 def add_image_to_profile():
     """ The user should already be logged in. """
 
     # Grab user_id from the browser session     
     user_id = session["user_id"]
     image_id = int(request.form["image_id"])
+
+    UserImage.add_user_image_to_db(user_id, image_id)
     
-    userimage_in_db = UserImage.query.filter(UserImage.user_id==user_id, 
-                                        UserImage.image_id==image_id).first()
-
-    if userimage_in_db:
-        pass
-        # flash('Image already added to profile')
-    else: 
-        new_user_image = UserImage(user_id=user_id, image_id=image_id)
-        db.session.add(new_user_image)
-        db.session.commit()
-        # flash('Image added!')
-
     return "Favorited image"
 
 
-@app.route('/remove_image', methods=["POST"])
+@app.route('/remove_user_image', methods=["POST"])
 def remove_image_from_profile():
     """ The user should already be logged in. """
 
     # Grab user_id from the browser session and image_id from the request    
     user_id = session["user_id"]
     image_id = int(request.form["image_id"])
-    
-    userimage_in_db = UserImage.query.filter(UserImage.user_id==user_id, 
-                                        UserImage.image_id==image_id).first()
 
-    if userimage_in_db:
-        db.session.delete(userimage_in_db)
-        db.session.commit()
-        # flash('Image removed from profile')
-    else: 
-        flash('This image could not be found.')
+    UserImage.remove_user_image_from_db(user_id, image_id)
 
-    return "Removed image"
+    return "Removed image from user profile"
+
+
+@app.route('/add_gallery_image', methods=["POST"])
+def add_gallery_image():
+    """ Adds galleryimage record. """
+
+    image_id = int(request.form["image_id"])
+    GalleryImage.add_gallery_image_to_db(image_id)
+
+    return "Added gallery image record"
 
 
 @app.route('/remove_gallery_image', methods=["POST"])
-def remove_all_records_of_image():
-    """ Removes userimages, imagecolors, and image. Does not remove colors. """
+def remove_gallery_image():
+    """ Removes galleryimage record. """
 
     image_id = int(request.form["image_id"])
+    GalleryImage.remove_gallery_image_from_db(image_id)
+    print 'Removed '
 
-    userimage_in_db = UserImage.query.filter(UserImage.image_id==image_id).all()
-
-    if userimage_in_db:
-        for userimage in userimage_in_db:
-            db.session.delete(userimage)
-            db.session.commit()
+    return "Removed gallery image record"
 
 
-    imagecolor_in_db = ImageColor.query.filter(ImageColor.image_id==image_id).all()
+@app.route('/remove_all_image_records', methods=["POST"])
+def remove_all_records_of_image():
+    """ Removes userimages, galleryimages, imagecolors, and image. Does not remove colors. """
 
-    if imagecolor_in_db:
-        for imagecolor in imagecolor_in_db:
-            db.session.delete(imagecolor)
-            db.session.commit()
+    image_id = int(request.form["image_id"])
+    user_id = session["user_id"]
 
-
-    image = Image.query.get(image_id)
-
-    if image:
-        db.session.delete(image)
-        db.session.commit()
-
+    # Remove gallery image record
+    GalleryImage.remove_gallery_image_from_db(image_id)   
+    # Remove user image records
+    UserImage.remove_user_image_from_db(user_id, image_id)
+    # Remove image color records
+    ImageColor.remove_image_colors_from_db(image_id)
+    # Remove image record 
+    Image.remove_image_from_db(image_id)
 
     return "Removed all records connected with image"
 
@@ -387,3 +381,5 @@ if __name__ == "__main__":
     DebugToolbarExtension(app)
 
     app.run(host='0.0.0.0')
+
+
