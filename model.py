@@ -1,6 +1,7 @@
 """ Models and database functions for paleta db. """
 
 import os
+import bcrypt
 from path import path
 from flask_sqlalchemy import SQLAlchemy
 from helpers import get_color_bin
