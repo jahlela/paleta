@@ -1990,6 +1990,11 @@ COPY colors (color_id, color) FROM stdin;
 1624	#1a3609
 1625	#e25207
 1626	#24b901
+1627	#eddfcd
+1628	#404e27
+1629	#232713
+1630	#bd9d6c
+1631	#747445
 \.
 
 
@@ -1997,7 +2002,7 @@ COPY colors (color_id, color) FROM stdin;
 -- Name: colors_color_id_seq; Type: SEQUENCE SET; Schema: public; Owner: vagrant
 --
 
-SELECT pg_catalog.setval('colors_color_id_seq', 1626, true);
+SELECT pg_catalog.setval('colors_color_id_seq', 1631, true);
 
 
 --
@@ -2146,6 +2151,7 @@ COPY galleryimages (gallery_image_id, image_id) FROM stdin;
 146	355
 147	356
 149	358
+150	359
 \.
 
 
@@ -2153,7 +2159,7 @@ COPY galleryimages (gallery_image_id, image_id) FROM stdin;
 -- Name: galleryimages_gallery_image_id_seq; Type: SEQUENCE SET; Schema: public; Owner: vagrant
 --
 
-SELECT pg_catalog.setval('galleryimages_gallery_image_id_seq', 149, true);
+SELECT pg_catalog.setval('galleryimages_gallery_image_id_seq', 150, true);
 
 
 --
@@ -2889,6 +2895,11 @@ COPY imagecolors (image_color_id, image_id, color_id, color_bin) FROM stdin;
 1514	358	1624	000
 1515	358	1625	310
 1516	358	1626	020
+1517	359	1627	333
+1518	359	1628	110
+1519	359	1629	000
+1520	359	1630	221
+1521	359	1631	111
 \.
 
 
@@ -2896,7 +2907,7 @@ COPY imagecolors (image_color_id, image_id, color_id, color_bin) FROM stdin;
 -- Name: imagecolors_image_color_id_seq; Type: SEQUENCE SET; Schema: public; Owner: vagrant
 --
 
-SELECT pg_catalog.setval('imagecolors_image_color_id_seq', 1516, true);
+SELECT pg_catalog.setval('imagecolors_image_color_id_seq', 1521, true);
 
 
 --
@@ -3051,6 +3062,7 @@ COPY images (image_id, file_name) FROM stdin;
 356	/static/img/photos/x4aab29ae74f1ba72.png
 357	/static/img/photos/x1bf0002933a11ae8.png
 358	/static/img/photos/1x32f10e899a607cda.png
+359	/static/img/photos/1x30c1a6d4c7e0392e.png
 \.
 
 
@@ -3058,7 +3070,7 @@ COPY images (image_id, file_name) FROM stdin;
 -- Name: images_image_id_seq; Type: SEQUENCE SET; Schema: public; Owner: vagrant
 --
 
-SELECT pg_catalog.setval('images_image_id_seq', 358, true);
+SELECT pg_catalog.setval('images_image_id_seq', 359, true);
 
 
 --
@@ -3164,11 +3176,13 @@ COPY userimages (user_image_id, user_id, image_id) FROM stdin;
 478	6	311
 483	1	348
 486	1	351
-487	1	352
 488	1	353
 489	1	354
 490	1	355
 491	1	356
+493	1	358
+494	12	330
+495	12	319
 \.
 
 
@@ -3176,7 +3190,7 @@ COPY userimages (user_image_id, user_id, image_id) FROM stdin;
 -- Name: userimages_user_image_id_seq; Type: SEQUENCE SET; Schema: public; Owner: vagrant
 --
 
-SELECT pg_catalog.setval('userimages_user_image_id_seq', 492, true);
+SELECT pg_catalog.setval('userimages_user_image_id_seq', 495, true);
 
 
 --
@@ -3209,6 +3223,7 @@ COPY users (user_id, firstname, lastname, email, password) FROM stdin;
 7	Arup	Chakrabarti	arupchak@gmail.com	$2b$12$KV/kQzA.m9Va9IDJz829XOARDbyMzjpY3a5TUJweWM1ZKkDBpJeGK
 8	Emily	Berk	tziporahh@gmail.com	$2b$12$CFdfv3AEwJhSx11drqrbb.LA77sOtUCr8Af3kvIcvX9OyV432GgXq
 11	Kellie	Medlin	abc@gmail.com	$2b$12$3muVDuLJGSRO8DfbzuocNeTvA5JrhCGGixljN6EIW2kgHlGnZgqWK
+12	Hyon	Lee	hyon@lee.com	$2b$12$U/Pqf1UZ0h9Efd91Jhrhr.n0GLhOok6cU1k87CSI9mt3rPzehpD6q
 \.
 
 
@@ -3216,7 +3231,7 @@ COPY users (user_id, firstname, lastname, email, password) FROM stdin;
 -- Name: users_user_id_seq; Type: SEQUENCE SET; Schema: public; Owner: vagrant
 --
 
-SELECT pg_catalog.setval('users_user_id_seq', 11, true);
+SELECT pg_catalog.setval('users_user_id_seq', 12, true);
 
 
 --
