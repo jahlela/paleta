@@ -121,7 +121,9 @@ def get_image_and_palette(URL):
             hex_color = '010101'
         palette.append(hex_color)
 
-    return [file_path, palette]
+    print "\n I got to the end of get_image_and_palette"
+
+    return [file_path, palette, pixel_percents]
 
 
 

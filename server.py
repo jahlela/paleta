@@ -80,7 +80,7 @@ def analyze_photo():
     print 'URL', URL
 
     try:
-        file_name, colors = get_image_and_palette(URL)
+        file_name, colors, percents = get_image_and_palette(URL)
     except StandardError as error:
         print error 
         flash("Whoops! Looks like we can't access that image. \
@@ -92,7 +92,7 @@ def analyze_photo():
     # make db entry for each color
     Color.add_colors_to_db(colors)
     # Add image colors to db
-    ImageColor.add_image_colors_to_db(image_id, colors)
+    ImageColor.add_image_colors_to_db(image_id, colors, percents)
     # Add image to Gallery
     GalleryImage.add_gallery_image_to_db(image_id)
     # If user is logged in, add a user_image record if none already exists
