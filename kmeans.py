@@ -67,6 +67,13 @@ def get_kmeans(file_path=None, iterations=20):
     width, height = image.size
 
     centroids = [(255,255,255), (0, 255, 255), (255,0, 255), (255,255,0), (200,200,200)]
+    pixel_percents = [0,0,0,0,0]
+
+    total_pixels = height * width
+    print '\n \n \n kmeans total_pixels', total_pixels
+
+    # percent_color = int((float(pixel_count)/total_pixels)*100)
+
 
     for count in xrange(iterations):
 
@@ -98,6 +105,9 @@ def get_kmeans(file_path=None, iterations=20):
         
         for cent_idx in xrange(len(centroids)):
             
+            pixel_count = nearests[cent_idx][1]
+            pixel_percents[cent_idx] = int((float(pixel_count)/total_pixels)*100)
+
             point_sums = nearests[cent_idx][0]
             point_count = 1 / nearests[cent_idx][1]
 
@@ -110,7 +120,7 @@ def get_kmeans(file_path=None, iterations=20):
             centroids[idx] = (int(centroids[idx][0]), int(centroids[idx][1]), int(centroids[idx][2]))
 
     print '\n Kmeans time elapsed: ', (time.time() - start_kmeans)
-    return centroids
+    return (centroids, pixel_percents)
 
 
 

@@ -101,7 +101,9 @@ def get_image_and_palette(URL):
         raise StandardError("File not valid. Try another image.")
 
     # Perform kmeans distribution analysis on the local file
-    kmeans_list = get_kmeans(file_path)
+    kmeans_list, pixel_percents = get_kmeans(file_path)
+    print '\n \n kmeans_list', kmeans_list
+    print '\n pixel_percents', pixel_percents
 
     palette = []
 
