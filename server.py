@@ -77,7 +77,6 @@ def analyze_photo():
     # Grab URL from form and use it to create an image file path and palette
     #  image is a hashed file name of the original image's content
     URL = request.form['URL']
-    print 'URL', URL
 
     try:
         file_name, colors, percents = get_image_and_palette(URL)
