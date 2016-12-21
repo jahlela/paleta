@@ -47,11 +47,9 @@ def get_file_path(url):
         AppleWebKit/537.36 (KHTML, like Gecko) Chrome/32.0.1667.0 Safari/537.36'}
 
     # Grab the image from a URL using fake browser headers
-    print "Starting image response"
-    print headers
     image_response = requests.get(url, headers=headers)
-    print "Finish image response"
-    # Show 
+
+    # Show time elapsed for get request
     print '\n Get request time elapsed: ', (time.time() - start_get)
 
     # Raise an error if the get request was unsuccessful
@@ -62,7 +60,6 @@ def get_file_path(url):
 
     # Create a hexidecimal hash of the image data string for a unique filename
     file_hash = hex(hash(image_response.content))
-    print 'file_hash', file_hash
 
     # Sometimes there is a dash at the beginning -- not great for a file name
     # Replace the '-' with a 1 to maintain uniqueness
@@ -92,7 +89,6 @@ def get_image_and_palette(URL):
     """ Takes in a string URL of an image and returns a list of hex 
         strings with the image palette. """
 
-    print 'starting get_image_and_palette'
     # Fail elegantly
     try:
         file_path = get_file_path(URL)
@@ -102,8 +98,7 @@ def get_image_and_palette(URL):
 
     # Perform kmeans distribution analysis on the local file
     kmeans_list, pixel_percents = get_kmeans(file_path)
-    print '\n \n kmeans_list', kmeans_list
-    print '\n pixel_percents', pixel_percents
+    print 'kmeans_list', kmeans_list
 
     palette = []
 
@@ -120,8 +115,6 @@ def get_image_and_palette(URL):
         if hex_color == '000':
             hex_color = '010101'
         palette.append(hex_color)
-
-    print "\n I got to the end of get_image_and_palette"
 
     return [file_path, palette, pixel_percents]
 

@@ -46,7 +46,7 @@ def nearest_is_empty(nearests):
 
 ################### Kmeans Analysis ###################
 
-def get_kmeans(file_path=None, iterations=20):
+def get_kmeans(file_path=None, iterations=20, down_sample=2):
     """ Takes in an image file_path and returns a list of RGB values that 
         represent the centroids of 5 k-mean clusters (dominant palette). 
 
@@ -69,11 +69,7 @@ def get_kmeans(file_path=None, iterations=20):
     centroids = [(255,255,255), (0, 255, 255), (255,0, 255), (255,255,0), (200,200,200)]
     pixel_percents = [0,0,0,0,0]
 
-    total_pixels = height * width
-    print '\n \n \n kmeans total_pixels', total_pixels
-
-    # percent_color = int((float(pixel_count)/total_pixels)*100)
-
+    total_pixels = height/down_sample * width/down_sample
 
     for count in xrange(iterations):
 
@@ -83,10 +79,10 @@ def get_kmeans(file_path=None, iterations=20):
         nearests = [((0,0,0),0.1) for _ in xrange(len(centroids))]
 
         # For each pixel in the image (defined by width and height)
-        for j in xrange(height/2):        
-            for i in xrange(width/2):
+        for j in xrange(height/down_sample):        
+            for i in xrange(width/down_sample):
                 # Use PIL's .getpixel() to find the RGB color at each pixel
-                pixel = image.getpixel((2*i,2*j))
+                pixel = image.getpixel((down_sample*i,down_sample*j))
 
                 # Skip this pixel if it's luminance is too low
                 if is_too_dark(pixel):
@@ -105,9 +101,6 @@ def get_kmeans(file_path=None, iterations=20):
         
         for cent_idx in xrange(len(centroids)):
             
-            pixel_count = nearests[cent_idx][1]
-            pixel_percents[cent_idx] = int((float(pixel_count)/total_pixels)*100)
-
             point_sums = nearests[cent_idx][0]
             point_count = 1 / nearests[cent_idx][1]
 
@@ -119,7 +112,16 @@ def get_kmeans(file_path=None, iterations=20):
         for idx in xrange(len(centroids)):
             centroids[idx] = (int(centroids[idx][0]), int(centroids[idx][1]), int(centroids[idx][2]))
 
-    print '\n Kmeans time elapsed: ', (time.time() - start_kmeans)
+    for idx in xrange(len(pixel_percents)):
+        # Grab pixel count from each final centroid
+        pixel_count = nearests[idx][1]
+        # Store percentage of that bin's pixels compared to overall pixel count
+        # Because Python rounds down, add .5 to each so that numbers > mod .5
+        # will 'round up' accodingly 
+        pixel_percents[idx] = int(0.5 + ((pixel_count) / total_pixels)*100)
+
+
+    print 'Kmeans time elapsed: ', (time.time() - start_kmeans)
     return (centroids, pixel_percents)
 
 
