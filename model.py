@@ -280,6 +280,7 @@ class ImageColor(db.Model):
     color_id = db.Column(db.Integer, db.ForeignKey('colors.color_id'), 
                                                     nullable = False)
     color_bin = db.Column(db.String(10), index=True, nullable = False)
+    color_percent = db.Column(db.Integer, nullable = True)
 
     # Define relationship to image
     image = db.relationship("Image", backref=db.backref("imagecolors"), order_by=image_color_id)
@@ -289,9 +290,9 @@ class ImageColor(db.Model):
     
 
     @classmethod
-    def add_image_colors_to_db(cls, image_id, colors):
+    def add_image_colors_to_db(cls, image_id, colors, percents):
 
-        for color in colors:
+        for idx, color in enumerate(colors):
 
             color_record = Color.query.filter(Color.color==color).first()
             color_id = color_record.color_id
@@ -299,11 +300,14 @@ class ImageColor(db.Model):
             has_image_color = cls.query.filter(cls.image_id==image_id, 
                                                cls.color_id==color_id).first()
 
+            color_percent = percents[idx]
+
             if not has_image_color:
                 color_bin = get_color_bin(color)
                 new_image_color = cls(image_id=image_id, 
                                       color_id=color_id,
-                                      color_bin=color_bin)
+                                      color_bin=color_bin,
+                                      color_percent=color_percent)
 
                 db.session.add(new_image_color)
                 db.session.commit()
@@ -326,11 +330,6 @@ class ImageColor(db.Model):
 
 
 ################### Helper Functions ####################
-
-
-
-
-
 
 
 def connect_to_db(app, URI='postgresql:///paleta'):

@@ -77,10 +77,9 @@ def analyze_photo():
     # Grab URL from form and use it to create an image file path and palette
     #  image is a hashed file name of the original image's content
     URL = request.form['URL']
-    print 'URL', URL
 
     try:
-        file_name, colors = get_image_and_palette(URL)
+        file_name, colors, percents = get_image_and_palette(URL)
     except StandardError as error:
         print error 
         flash("Whoops! Looks like we can't access that image. \
@@ -92,7 +91,7 @@ def analyze_photo():
     # make db entry for each color
     Color.add_colors_to_db(colors)
     # Add image colors to db
-    ImageColor.add_image_colors_to_db(image_id, colors)
+    ImageColor.add_image_colors_to_db(image_id, colors, percents)
     # Add image to Gallery
     GalleryImage.add_gallery_image_to_db(image_id)
     # If user is logged in, add a user_image record if none already exists
@@ -378,7 +377,7 @@ def remove_all_records_of_image():
 if __name__ == "__main__":
     # We have to set debug=True here, since it has to be True at the
     # point that we invoke the DebugToolbarExtension
-    app.debug = False
+    app.debug = True
     app.jinja_env.auto_reload = app.debug
 
     connect_to_db(app)
