@@ -16,12 +16,12 @@ from color_difference import get_image_and_palette
 import os.path
 import requests
 import bcrypt
-import re
+import re #regular expressions
 
 app = Flask(__name__)
 
 # Required to use Flask sessions and the debug toolbar
-app.secret_key = "mypaleta"
+app.secret_key = os.environ.get("FLASK_SECRET_KEY", "mypaleta")
 
 # Make Jinja2 raise an error if there is an undefined variable
 app.jinja_env.undefined = StrictUndefined
@@ -380,13 +380,14 @@ if __name__ == "__main__":
     app.debug = False
     app.jinja_env.auto_reload = app.debug
 
-    connect_to_db(app)
+    connect_to_db(app, os.environ.get("DATABASE_URL"))
 
     # Use the DebugToolbar
     DebugToolbarExtension(app)
 
+    DEBUG = "NO_DEBUG" not in os.environ
     PORT = int(os.environ.get("PORT", 5000))
 
-    app.run(host="0.0.0.0", port=PORT)
+    app.run(host="0.0.0.0", port=PORT, debug=DEBUG)
 
 
