@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block content %}
+
+  <h2>About Paleta</h2>
+
+  <div id="about-copy-div">
+    <p class="center">Hey, I'm <a href="https://www.linkedin.com/in/jahlelahasle/" target="_blank">Jahlela</a>, the creator of Paleta. Here's a little FAQ about the project.</p>
+
+    <h3>How do I make a palette?</h3>
+    <p>Right click any image on the internet and click 'copy image address'. Paste this into the Paleta <a href="/">homepage</a> and activate wizardry!</p>
+
+    <h3>How does the palette generation work?</h3>
+    <p>The app takes an image, breaks it down pixel-by-pixel, and uses a machine learning algorithm called K-Means Clustering to pick out the dominant colors in the image. You can see the code for that algorithm <a href="https://github.com/jahlela/paleta/blob/master/kmeans.py" target="_blank">here</a>.</p>
+
+    <h3>Where did Paleta come from, anyway?</h3>
+    <p>Paleta started as a final project while I was attending <a href="hackbrightacademy.com" target="_blank">Hackbright Academy</a> in SF. I was inspired to build it because I have often created color palettes for projects by hand (or used a site like <a href="design-seeds.com" target="_blank">Design Seeds</a>). However, I wanted to build an app that would generate palettes automatically.</p>
+
+    <h3>Can I fork it? Yes, you can!</h3>
+    <p>Fork it, break it, twist it, turn it, just be sure to link to the original code if you do use it. :) Also, you may want to start with a fresh database and image library.</p>
+    <p>You can find the source code at <a href="https://github.com/jahlela/paleta" target="_blank">https://github.com/jahlela/paleta</a></p>
+
+    <h3>I have questions...</h3>
+    <p>Send them over to jahlela.hasle@gmail.com. Or tweet me <a href="https://twitter.com/jahlela" target="_blank">@jahlela</a>.<p>
+
+  </div>
+
+{% endblock %}

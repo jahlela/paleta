@@ -158,6 +158,19 @@ def user_details(user_id, photos=None):
                                photos=photos)
 
 
+@app.route('/about', methods=['GET'])
+def about():
+    """ Render about page """
+    if session["logged_in"]:
+        user_id = session["user_id"]
+        user = User.query.get(user_id)
+    else:
+        user = None
+
+    return render_template('about.html', 
+                            user=user)
+
+
 @app.route('/image_filter', methods=["GET"])
 def image_filter():
     """ Filter images by color_bin """
