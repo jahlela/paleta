@@ -5,9 +5,13 @@
 
 <section id="welcome-section">
     <div class="center">
-        <h1>Welcome to Paleta <img class="logo" src="/static/img/demo/paleta.png" alt="logo" /></h1> 
+        {% if user %}
+            <h1>Welcome, {{user.firstname}} <img class="logo" src="/static/img/demo/paleta.png" alt="logo" /></h1>
+        {% else %}
+            <h1>Welcome to Paleta <img class="logo" src="/static/img/demo/paleta.png" alt="logo" /></h1>
+            <h3><i>Your friendly neighborhood palette generator</i></h3>
+        {% endif %}
 
-        <h3><i>Your friendly neighborhood palette generator</i></h3>
     </div>
 </section>
 
