@@ -51,11 +51,8 @@ def index(photos=None):
     """ Render homepage """
 
     if "user_id" not in session:
-        session["user_id"] = {}
         user = None
 
-    elif "user_id" in session and session["user_id"] == None:
-        user = None
     else:
         user_id = session["user_id"]
         # get user object from database with their user_id
@@ -161,6 +158,7 @@ def user_details(user_id, photos=None):
 @app.route('/about', methods=['GET'])
 def about():
     """ Render about page """
+
     if session["logged_in"]:
         user_id = session["user_id"]
         user = User.query.get(user_id)
@@ -259,9 +257,6 @@ def user_login():
     if not email or not password: 
         flash("Please enter both your email and password.")
         return redirect("/")
-
-    if "user_id" not in session:
-        session["user_id"] = {}
 
     current_user = User.query.filter_by(email=email).first()
     input_password_hash = bcrypt.hashpw(password.encode("UTF_8"),
