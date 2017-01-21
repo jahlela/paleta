@@ -5,6 +5,8 @@ from sqlalchemy import func, desc
 from flask import Flask, jsonify, render_template, request, redirect, session, flash, url_for
 from flask_debugtoolbar import DebugToolbarExtension
 
+from werkzeug.routing import RequestRedirect
+
 # Don't import session from db -- it may be confused with Flask session
 from model import connect_to_db, db, User, Role, Image, Color, UserRole, \
                   UserImage, GalleryImage, ImageColor
@@ -17,6 +19,7 @@ import os.path
 import requests
 import bcrypt
 import re #regular expressions
+import logging
 
 app = Flask(__name__)
 
@@ -43,6 +46,25 @@ def before_request():
         session["admin"] = False
 
 
+#################### Helpers ####################
+
+
+def get_user_safely():
+    """ Fail gracefully on db failure when fetching user with user_id """
+    
+    user_id = session["user_id"]
+        # get user object from database with their user_id
+    try:
+        user = User.query.get(user_id)
+        return user
+    except:        
+        logging.exception('Invalid user_id. Session: %s', session) 
+        session.clear()
+        # Flash after clearing the session, because messages are deleted with the session
+        flash('Looks like something went wrong. Please log in again to continue.')
+        raise RequestRedirect('/')
+
+
 ################## Render Templates ##################
 
 
@@ -54,9 +76,7 @@ def index(photos=None):
         user = None
 
     else:
-        user_id = session["user_id"]
-        # get user object from database with their user_id
-        user = User.query.get(user_id)
+        user = get_user_safely() 
 
     if photos is None:
         photos = [Image.query.get(162)]
@@ -93,8 +113,8 @@ def analyze_photo():
     GalleryImage.add_gallery_image_to_db(image_id)
     # If user is logged in, add a user_image record if none already exists
     if session["logged_in"]:
-        user_id = session["user_id"]
-        UserImage.add_user_image_to_db(user_id, image_id)
+        user = get_user_safely()
+        UserImage.add_user_image_to_db(user.user_id, image_id)
     # This must be a list, even though there is only one element
     new_photo = [Image.query.filter(Image.file_name==file_name).first()]
 
@@ -108,8 +128,7 @@ def gallery(photos=None):
 
     # get user object from database with their user_id
     if session["logged_in"]:
-        user_id = session["user_id"]
-        user = User.query.get(user_id)
+        user = get_user_safely()
     else:
         user = None
 
@@ -131,10 +150,9 @@ def user_details(user_id, photos=None):
     """ User details """
 
     # get user object from database with their user_id
-    user_id = session["user_id"]
-    user = User.query.get(user_id)
+    user = get_user_safely()
 
-    images_by_user = UserImage.query.filter(UserImage.user_id==user_id).\
+    images_by_user = UserImage.query.filter(UserImage.user_id==user.user_id).\
                      order_by(UserImage.user_image_id.desc()).all()
 
     # If the user has images associated with them, grab the images by user_image
@@ -160,8 +178,7 @@ def about():
     """ Render about page """
 
     if session["logged_in"]:
-        user_id = session["user_id"]
-        user = User.query.get(user_id)
+        user = get_user_safely()
     else:
         user = None
 
@@ -183,7 +200,7 @@ def image_filter():
 
     # get user object from database with their user_id
     if session["logged_in"]:
-        user = User.query.get(session["user_id"])
+        user = get_user_safely()
     else:
         user = None
 
@@ -298,11 +315,8 @@ def user_login():
 def logout():
     """ User logout """
 
-    # remove the username from the session if it's there
-    session['user_id'] = None
-    session['logged_in'] = False
-    session["admin"] = False
-
+    # Clear everything from the session
+    session.clear()
     flash("Successfully logged out!")
     return redirect("/")
 
